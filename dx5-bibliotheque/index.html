@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr" class="is-bib">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>DX-5 The Nigma — Bibliothèque (prototype salle d'écoute)</title>
+<meta name="description" content="Prototype HBEXIUM : lecteur audio réactif et vidéothèque de DX-5 The Nigma.">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/bibliotheque/styles.css">
+<link rel="stylesheet" href="/assets/hbx-player.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="wordmark" href="../" title="Accueil">DX-5 The Nigma</a>
+  <nav class="top-nav" aria-label="Navigation principale">
+    <a class="nav-link mono active" href="./" aria-current="page">BIBLIOTHÈQUE</a>
+    <a class="nav-link mono" href="/agenda/">AGENDA</a>
+    <a class="nav-link mono" href="/ecrits/">ÉCRITS</a>
+    <a class="nav-link mono" href="/a-propos/">À PROPOS</a>
+    <a class="nav-link mono" href="/pro/">PRO</a>
+    <a class="nav-link mono" href="/contact/">CONTACT</a>
+  </nav>
+  <span class="nav-sub">
+      <button class="nav-link mono nav-more" id="navMore" aria-expanded="false" aria-controls="navMenu" aria-haspopup="true">PLUS ▾</button>
+      <div class="nav-menu" id="navMenu" hidden>
+        <a class="mono" href="/boutique/">BOUTIQUE</a>
+        <a class="mono" href="/soutenir/">SOUTENIR</a>
+        <a class="mono" href="/actualites/">ACTUALITÉS</a>
+      </div>
+    </span>
+  <a class="nav-cta mono" href="#discographie">ÉCOUTER</a>
+</header>
+
+<main>
+
+  <section class="hero">
+    <p class="mono kicker">DX-5 THE NIGMA — BIBLIOTHÈQUE</p>
+    <h1><span data-scramble>La bibliothèque</span><br><em data-scramble>de l'artiste.</em></h1>
+    <p class="sub">Le signal est visible : la scène réagit à ce qui joue.
+    Quand rien ne joue, elle respire. <span class="mono ash">SON JAMAIS AUTOMATIQUE — APPUYEZ SUR ▶</span></p>
+  </section>
+
+  <section class="block" id="discographie" aria-labelledby="h-disco">
+    <div class="block-head">
+      <p class="mono kicker">EXTRAITS — 30 SECONDES</p>
+      <h2 id="h-disco" data-scramble>Discographie</h2>
+      <p class="mono ash meta">HUIT TITRES — CATALOGUE RÉEL · EXTRAITS PROVISOIRES</p>
+    </div>
+    <ol class="tracks" id="trackList"></ol>
+  </section>
+
+  <section class="block" id="album" aria-labelledby="h-album">
+    <div class="block-head">
+      <p class="mono kicker gold">SOUS EMBARGO</p>
+      <h2 id="h-album" data-scramble>L'album — 12 titres</h2>
+      <p class="mono red meta">DÉVERROUILLAGE TITRE PAR TITRE — NOVEMBRE 2026 · DATE EXACTE À CONFIRMER</p>
+    </div>
+    <ul class="vault" id="vault" aria-label="Douze titres chiffrés, à déverrouiller avant la sortie"></ul>
+  </section>
+
+  <section class="block" id="videos" aria-labelledby="h-videos">
+    <div class="block-head">
+      <p class="mono kicker">VIDÉOTHÈQUE</p>
+      <h2 id="h-videos" data-scramble>Clips officiels</h2>
+      <p class="mono ash meta">CHARGEMENT À LA DEMANDE — RIEN NE PART VERS YOUTUBE AVANT VOTRE CLIC</p>
+    </div>
+    <div class="vidgrid" id="clipGrid"></div>
+
+    <div class="block-head sub-head">
+      <h2 class="h-live" data-scramble>Live &amp; interviews</h2>
+    </div>
+    <div class="vidgrid" id="liveGrid"></div>
+  </section>
+
+  <footer class="foot">
+    <p class="mono ash">PROTOTYPE HBEXIUM CONSULTING — CONCEPT « L'ÉNIGME » · VIDÉOS : CHAÎNE OFFICIELLE DE L'ARTISTE ·
+    EXTRAITS AUDIO : 30 S ISSUES DES TITRES PUBLIÉS PAR L'ARTISTE — MASTERS OFFICIELS À RECEVOIR</p>
+    <p class="mono ash">DANS LE SITE FINAL, CETTE PAGE EST ALIMENTÉE PAR LE DASHBOARD HBEXIUM (TITRES, EXTRAITS, DÉVERROUILLAGE, LIENS)</p>
+  </footer>
+
+</main>
+
+<div class="player" id="player" aria-label="Lecteur audio">
+  <button class="pbtn" id="btnPrev" aria-label="Titre précédent">⏮</button>
+  <button class="pbtn main" id="btnPlay" aria-label="Lecture / pause">▶</button>
+  <button class="pbtn" id="btnNext" aria-label="Titre suivant">⏭</button>
+  <div class="pmeta">
+    <div class="ptitle"><span id="pTrack">—</span> <span class="mono badge gold" id="pBadge">EXTRAIT 30 S</span></div>
+    <div class="pbar" id="pBar" role="slider" aria-label="Position de lecture" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+      <div class="pfill" id="pFill"></div>
+    </div>
+  </div>
+  <span class="mono ptime" id="pTime">0:00 / 0:00</span>
+</div>
+
+<script src="/bibliotheque/data.js"></script>
+<script src="/assets/hbx-player.js"></script>
+<script src="/assets/fx.js"></script>
+<script src="/bibliotheque/app.js"></script>
+<script src="/assets/nav.js"></script>
+</body>
+</html>

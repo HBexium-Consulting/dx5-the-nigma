@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fr" class="is-pg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Espace professionnel — DX-5 The Nigma</title>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/bibliotheque/styles.css">
+<link rel="stylesheet" href="/assets/hbx-player.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="wordmark" href="/" title="Accueil">DX-5 The Nigma</a>
+  <nav class="top-nav" aria-label="Navigation principale">
+    <a class="nav-link mono" href="/bibliotheque/">BIBLIOTHÈQUE</a>
+    <a class="nav-link mono" href="/agenda/">AGENDA</a>
+    <a class="nav-link mono" href="/ecrits/">ÉCRITS</a>
+    <a class="nav-link mono" href="/a-propos/">À PROPOS</a>
+    <a class="nav-link mono active" href="/pro/" aria-current="page">PRO</a>
+    <a class="nav-link mono" href="/contact/">CONTACT</a>
+    <span class="nav-sub">
+      <button class="nav-link mono nav-more" id="navMore" aria-expanded="false" aria-controls="navMenu" aria-haspopup="true">PLUS ▾</button>
+      <div class="nav-menu" id="navMenu" hidden>
+        <a class="mono" href="/boutique/">BOUTIQUE</a>
+        <a class="mono" href="/soutenir/">SOUTENIR</a>
+        <a class="mono" href="/actualites/">ACTUALITÉS</a>
+      </div>
+    </span>
+  </nav>
+  <a class="nav-cta mono" href="/bibliotheque/#discographie">ÉCOUTER</a>
+</header>
+
+<main>
+  <div class="page-head">
+    <span class="mono kicker">ACCÈS RESTREINT</span>
+    <h1>Le passage en <em>coulisses.</em></h1>
+    <p class="lead">Presse, programmateurs, partenaires : dossier de presse, fiche technique
+    et demande de booking. L’accès s’ouvre avec un code.</p>
+  </div>
+
+  <section id="gate">
+    <form id="gateForm">
+      <label>CODE D’ACCÈS
+        <input type="password" id="gateCode" autocomplete="off" placeholder="•••" required>
+      </label>
+      <div><button class="btn" type="submit">DÉVERROUILLER</button></div>
+      <p class="form-note">PROTOTYPE : LE CODE EST « DX5 ». SUR LE SITE FINAL, CHAQUE PROGRAMMATEUR REÇOIT SON PROPRE ACCÈS (MODULE PRIVATE_SPACES, PHASE 2).</p>
+      <p class="ok-msg hidden" id="gateErr" style="color:var(--red)">CODE REFUSÉ — RÉESSAYEZ.</p>
+    </form>
+  </section>
+
+  <section id="proContent" class="hidden">
+    <h2>Le dossier professionnel</h2>
+    <div class="cards">
+      <div class="card"><h3>Dossier de presse</h3><span class="mono ash">PDF</span>
+        <p>Parcours, photos, liens. <span class="notice">PDF À RECEVOIR DU CLIENT</span></p>
+        <p style="margin-top:12px"><button class="btn ghost" disabled>TÉLÉCHARGER (BIENTÔT)</button></p></div>
+      <div class="card"><h3>Fiche technique</h3><span class="mono ash">RIDER</span>
+        <p>Besoins scène et son. <span class="notice">À RECEVOIR DU CLIENT</span></p></div>
+      <div class="card"><h3>Photos HD</h3><span class="mono ash">MÉDIATHÈQUE</span>
+        <p>Visuels presse en haute définition, avec crédits. <span class="notice">5 À 15 PHOTOS À RECEVOIR</span></p></div>
+    </div>
+
+    <h2>Demande de booking</h2>
+    <form id="bookingForm">
+      <div class="frow">
+        <label>ORGANISATEUR·RICE <input name="organizer_name" required></label>
+        <label>STRUCTURE <input name="organization"></label>
+      </div>
+      <div class="frow">
+        <label>E-MAIL <input type="email" name="email" required></label>
+        <label>TÉLÉPHONE / WHATSAPP <input name="phone"></label>
+      </div>
+      <div class="frow">
+        <label>TYPE D’ÉVÉNEMENT
+          <select name="event_type"><option>Concert</option><option>Festival</option><option>Émission / média</option><option>Événement privé</option></select></label>
+        <label>DATE ENVISAGÉE <input type="date" name="event_date"></label>
+      </div>
+      <div class="frow">
+        <label>VILLE <input name="city"></label>
+        <label>PAYS <input name="country"></label>
+      </div>
+      <div class="frow">
+        <label>PUBLIC ATTENDU <input name="expected_audience" inputmode="numeric"></label>
+        <label>BUDGET (USD) <input name="budget_amount" inputmode="numeric"></label>
+      </div>
+      <label>VOTRE PROJET <textarea name="message" rows="4"></textarea></label>
+      <div><button class="btn" type="submit">ENVOYER LA DEMANDE</button></div>
+      <p class="ok-msg hidden" id="bookingOk">PROTOTYPE : DEMANDE NON ENVOYÉE. SUR LE SITE FINAL, ELLE EST ENREGISTRÉE LOCALEMENT PUIS TRANSMISE AU DASHBOARD (BOOKING_REQUESTS) — AUCUNE DEMANDE NE SE PERD, MÊME DASHBOARD ÉTEINT.</p>
+    </form>
+  </section>
+
+
+  <footer class="foot">
+    <nav class="foot-links mono" aria-label="Pied de page">
+      <a href="/">ACCUEIL</a><a href="/boutique/">BOUTIQUE</a><a href="/soutenir/">SOUTENIR</a><a href="/actualites/">ACTUALITÉS</a><a href="/mentions-legales/">MENTIONS LÉGALES</a><a href="/confidentialite/">CONFIDENTIALITÉ</a>
+    </nav>
+    <nav class="foot-links mono" aria-label="Réseaux">
+      <a href="https://www.tiktok.com/@dx5thenigma" target="_blank" rel="noopener">TIKTOK ↗</a>
+      <a href="https://youtube.com/@dx-5thenigma" target="_blank" rel="noopener">YOUTUBE ↗</a>
+      <a href="https://www.instagram.com/dx5thenigma" target="_blank" rel="noopener">INSTAGRAM ↗</a>
+      <a href="https://www.facebook.com/dx5thenigma" target="_blank" rel="noopener">FACEBOOK ↗</a>
+    </nav>
+    <p class="mono ash">© 2026 DX-5 THE NIGMA — PORT-DE-PAIX · SOFIA</p>
+    <p class="mono ash">PROTOTYPE HBEXIUM CONSULTING — SUR LE SITE FINAL, CHAQUE CONTENU DE CETTE PAGE EST PILOTÉ DEPUIS LE DASHBOARD</p>
+  </footer>
+</main>
+<script src="/bibliotheque/data.js"></script>
+<script src="/assets/hbx-player.js"></script>
+<script src="/assets/fx.js"></script>
+<script src="/bibliotheque/app.js"></script>
+<script src="/assets/nav.js"></script>
+</body>
+</html>

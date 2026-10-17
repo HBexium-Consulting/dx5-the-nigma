@@ -1,0 +1,27 @@
+{
+  "version": "0.1.0",
+  "configurations": [
+    {
+      "name": "Maquette DX-5 The Nigma",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/.claude/serve-dx5thenigma.mjs",
+      "serverReadyAction": {
+        "pattern": "http://localhost:4385",
+        "uriFormat": "http://localhost:4385",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "Prototype bibliothèque DX-5",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/.claude/serve-bibliotheque.mjs",
+      "serverReadyAction": {
+        "pattern": "http://localhost:4386",
+        "uriFormat": "http://localhost:4386",
+        "action": "openExternally"
+      }
+    }
+  ]
+}
