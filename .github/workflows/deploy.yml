@@ -1,0 +1,18 @@
+name: Déploiement HBexium
+on: { push: { branches: [main] } }
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Si votre site doit être compilé, décommentez :
+      # - run: npm ci && npm run build
+      - uses: burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr --delete
+          path: ./                 # ou ./dist si build
+          remote_path: /home/dx5thenigma/web/dx5thenigma.com/public_html/
+          remote_host: 40.75.19.27
+          remote_port: 22
+          remote_user: dx5thenigma
+          remote_key: ${{ secrets.HBEXIUM_SSH_KEY }}
