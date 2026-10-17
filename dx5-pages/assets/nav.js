@@ -6,7 +6,9 @@
   if (window.HBXNAV) return;
   const INNER = new Set(['bibliotheque', 'a-propos', 'agenda', 'ecrits', 'pro', 'contact',
     'boutique', 'soutenir', 'actualites', 'mentions-legales', 'confidentialite']);
-  const seg = (path) => (path.split('/')[1] || '');
+  // préfixe d'hébergement (ex. GitHub Pages : /dx5-the-nigma) — vide sur le domaine final
+  const BASE = ((document.querySelector('meta[name="hbx-base"]') || {}).content || '').replace(/\/$/, '');
+  const seg = (path) => ((BASE && path.startsWith(BASE + '/') ? path.slice(BASE.length) : path).split('/')[1] || '');
   const isInner = (url) => url.origin === location.origin && INNER.has(seg(url.pathname));
 
   function setActive(path) {
