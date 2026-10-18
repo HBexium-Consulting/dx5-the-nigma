@@ -207,3 +207,17 @@ html.js .rv {
 }
 html.js .rv.in { opacity: 1; transform: none; }
 
+
+/* ── header mobile : une seule rangée ; la navigation se verse dans PLUS ▾ ── */
+.nav-menu .m-only { display: none; }
+@media (max-width: 600px) {
+  .top-nav { display: none; }
+  .nav-menu .m-only { display: block; }
+}
+
+@media (max-width: 380px) {
+  /* wordmark + PLUS + CTA doivent tenir sur UNE rangée à 320 px */
+  .top { padding: 10px 12px; gap: 10px; }
+  .wordmark { font-size: 15px; }
+  .nav-cta { padding: 7px 10px; }
+}

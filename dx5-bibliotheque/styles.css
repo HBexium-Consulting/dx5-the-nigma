@@ -163,3 +163,10 @@ html.is-bib body {
   transition: color 0.2s, border-color 0.2s;
 }
 .t-full:hover { color: var(--blue); border-color: var(--blue); }
+
+@media (max-width: 380px) {
+  /* la ligne 24+40+titre+bouton doit tenir dans 320 px */
+  .track { gap: 8px; grid-template-columns: 24px 40px 1fr auto; padding: 13px 2px; }
+  .t-play { width: 40px; height: 40px; }
+  .t-full { padding: 5px 8px; font-size: 9px; letter-spacing: 0.06em; }
+}
