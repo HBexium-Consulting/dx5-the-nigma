@@ -208,9 +208,15 @@ html.js .rv {
 html.js .rv.in { opacity: 1; transform: none; }
 
 
-/* ── header mobile : une seule rangée ; la navigation se verse dans PLUS ▾ ── */
+/* ── header compact : une seule rangée partout ── */
 .nav-menu .m-only { display: none; }
-@media (max-width: 600px) {
+@media (max-width: 920px) {
+  /* tablette : la rangée unique doit tenir à 768 px */
+  .top { gap: 12px; }
+  .top-nav { gap: 14px; }
+}
+@media (max-width: 800px) {
+  /* téléphone et petite tablette : la navigation se verse dans PLUS ▾ */
   .top-nav { display: none; }
   .nav-menu .m-only { display: block; }
 }
