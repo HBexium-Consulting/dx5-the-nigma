@@ -1,18 +1,24 @@
 name: Déploiement HBexium
-on: { push: { branches: [main] } }
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}   # relance manuelle (ex. après ouverture du pare-feu)
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # Si votre site doit être compilé, décommentez :
-      # - run: npm ci && npm run build
+      # On déploie UNIQUEMENT le site assemblé (_site) — jamais le dépôt entier :
+      # docs/ (devis, coordonnées client), .claude/ et .github/ restent privés.
+      - name: Assembler le site (chemins racine, sans préfixe)
+        run: BASE_PATH=/ scripts/build-pages.sh
       - uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avzr --delete
-          path: ./                 # ou ./dist si build
+          path: _site/
           remote_path: /home/dx5thenigma/web/dx5thenigma.com/public_html/
           remote_host: 40.75.19.27
           remote_port: 22
           remote_user: dx5thenigma
-          remote_key: ${{ secrets.HBEXIUM_SSH_KEY }}
+          remote_key: ${{ secrets.DX_THE_NIGMA }}
