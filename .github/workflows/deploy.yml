@@ -13,6 +13,16 @@ jobs:
       # docs/ (devis, coordonnées client), .claude/ et .github/ restent privés.
       - name: Assembler le site (chemins racine, sans préfixe)
         run: BASE_PATH=/ scripts/build-pages.sh
+      - name: Diagnostic SSH (empreinte de la clé, jamais la clé)
+        run: |
+          umask 077
+          printf '%s\n' "${{ secrets.DX_THE_NIGMA }}" > /tmp/k
+          echo "— empreinte de la clé du secret —"
+          ssh-keygen -lf /tmp/k || echo "⚠ le secret n'est pas une clé privée lisible"
+          echo "— test de connexion dx5thenigma@40.75.19.27 —"
+          ssh -i /tmp/k -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=accept-new \
+            dx5thenigma@40.75.19.27 'echo CONNEXION OK — $(whoami)@$(hostname); ls /home/dx5thenigma/web/dx5thenigma.com/public_html | head -6' \
+            || { echo "— échec en tant que dx5thenigma, détail verbeux : —"; ssh -i /tmp/k -vv -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=accept-new dx5thenigma@40.75.19.27 true 2>&1 | grep -E "Authenticating|Offering|debug1: Trying|denied|Connection|identity" | tail -12; }
       - uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avzr --delete
