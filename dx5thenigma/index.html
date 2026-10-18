@@ -32,6 +32,14 @@
     transition: background 0.25s var(--ease-out);
   }
   .dock-menu a:hover { background: var(--ink-faint); }
+
+  /* Pied de page : le template calibre l'e-mail géant et le nom géant pour
+     des textes courts (« bonjour@exemple.fr », « Élise Aubert »). Les nôtres
+     sont plus longs — sur mobile on abaisse le plancher, desktop inchangé. */
+  @media (max-width: 700px) {
+    .footer-mail { font-size: clamp(17px, 7vw, 34px); }
+    .footer-name { font-size: clamp(26px, 11.2vw, 60px); }
+  }
   </style>
 </head>
 <body>
