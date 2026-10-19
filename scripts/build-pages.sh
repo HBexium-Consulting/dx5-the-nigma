@@ -33,4 +33,10 @@ if [ -n "$BASE" ]; then
     -e "s#(['\"\`])/bibliotheque/#\1${BASE}/bibliotheque/#g"
 fi
 
-echo "Site assemblé dans $OUT/ (base : ${BASE:-/})"
+# ── anti-cache : le serveur livre les JS/CSS avec un cache de 10 ans ;
+#    on versionne donc chaque référence locale à chaque assemblage. ──
+ASSET_V=$(git rev-parse --short HEAD 2>/dev/null || date +%s)
+find "$OUT" -name '*.html' -print0 | xargs -0 perl -pi -e \
+  's/(src|href)="([^":]+\.(?:js|css))"/$1="$2?v='"$ASSET_V"'"/g'
+
+echo "Site assemblé dans $OUT/ (base : ${BASE:-/}, assets v$ASSET_V)"
