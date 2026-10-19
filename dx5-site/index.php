@@ -40,6 +40,22 @@ $heroHeadline = trim((string) ($home['headline'] ?? ''))
     ?: 'Le signal vient d\'Haïti, déchiffrez l\'énigme.';
 $intensity = (string) ($home['intensity'] ?? 'high');
 
+// TEXTES DE LA PAGE — pilotés par la scène « home » (settings), avec replis.
+// Le dashboard est la source unique : rien d'éditorial n'est codé en dur.
+$hs = is_array($home['settings'] ?? null) ? $home['settings'] : [];
+$txt = static fn (string $key, string $default): string => trim((string) ($hs[$key] ?? '')) ?: $default;
+
+$kicker = $txt('kicker', 'DX-5 THE NIGMA — HIP-HOP / RAP · ÉCRITURE');
+$blocksKicker = $txt('blocks_kicker', 'UNE ÉNIGME, 3 CLÉS');
+$blocks = (isset($hs['blocks']) && is_array($hs['blocks']) && $hs['blocks'] !== []) ? $hs['blocks'] : [
+    ['title' => 'Le signal', 'text' => 'Un extrait, un compte à rebours. La fréquence s\'installe, l\'énigme commence.'],
+    ['title' => 'Le déchiffrement', 'text' => 'Les titres se déverrouillent un à un, chacun avec son extrait, jusqu\'au jour J.'],
+    ['title' => 'La révélation', 'text' => 'L\'album complet, en écoute et en vente — d\'Haïti au reste du monde.'],
+];
+$newsletterNote = $txt('newsletter_note', 'Soyez prévenu·e à la seconde où l\'énigme se déverrouille. Aucun spam.');
+$footerKicker = $txt('footer_kicker', 'BOOKING & PRESSE');
+$footerReassurance = $txt('footer_reassurance', 'Réponse sous 24 h · Port-de-Paix — Sofia');
+
 // Réseaux : settings.socials (si renseignés) sinon liens de profil de l'API.
 $socials = is_array($settings['socials'] ?? null) ? $settings['socials'] : [];
 
@@ -111,7 +127,7 @@ $eventDate = static function (array $ev) use ($e): string {
 <main>
 <!-- ═══ 1 · LE SIGNAL (accroche + compte à rebours) — pilotés Dashboard ═══ -->
 <section class="hero" id="signal">
-  <p class="kicker">DX-5 THE NIGMA — HIP-HOP / RAP · ÉCRITURE</p>
+  <p class="kicker"><?= $e($kicker) ?></p>
   <h1 class="hero-title"><?= nl2br($e($heroHeadline)) ?></h1>
 
   <?php if ($teaser !== null):
@@ -146,18 +162,24 @@ $eventDate = static function (array $ev) use ($e): string {
     <input type="email" id="email" name="email" placeholder="votre e-mail" required autocomplete="email">
     <button type="submit">Capter le signal</button>
   </form>
-  <p class="signal-note" id="signalNote" role="status">Soyez prévenu·e à la seconde où l'énigme se déverrouille. Aucun spam.</p>
+  <p class="signal-note" id="signalNote" role="status"><?= $e($newsletterNote) ?></p>
 </section>
 
-<!-- ═══ 2 · LES 3 CLÉS ═══ -->
+<!-- ═══ 2 · BLOCS DE CONTENU (les « clés ») — pilotés Dashboard ═══ -->
+<?php if ($blocks !== []): ?>
 <section class="keys">
-  <p class="kicker center">UNE ÉNIGME, 3 CLÉS</p>
+  <p class="kicker center"><?= $e($blocksKicker) ?></p>
   <div class="keys-grid">
-    <article class="key"><span class="key-meta">CLÉ 01</span><h3>Le signal</h3><p>Un extrait, un compte à rebours. La fréquence s'installe, l'énigme commence.</p></article>
-    <article class="key"><span class="key-meta">CLÉ 02</span><h3>Le déchiffrement</h3><p>Les titres se déverrouillent un à un, chacun avec son extrait, jusqu'au jour J.</p></article>
-    <article class="key"><span class="key-meta">CLÉ 03</span><h3>La révélation</h3><p>L'album complet, en écoute et en vente — d'Haïti au reste du monde.</p></article>
+    <?php foreach (array_values($blocks) as $i => $b): ?>
+      <article class="key">
+        <span class="key-meta">CLÉ <?= str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) ?></span>
+        <h3><?= $e($b['title'] ?? '') ?></h3>
+        <p><?= $e($b['text'] ?? '') ?></p>
+      </article>
+    <?php endforeach; ?>
   </div>
 </section>
+<?php endif; ?>
 
 <!-- ═══ 3 · VETERAN (single publié) ═══ -->
 <?php if ($single !== null):
@@ -220,9 +242,9 @@ $eventDate = static function (array $ev) use ($e): string {
 </main>
 
 <footer class="foot">
-  <p class="foot-kicker">BOOKING &amp; PRESSE</p>
+  <p class="foot-kicker"><?= $e($footerKicker) ?></p>
   <a class="foot-mail" href="mailto:<?= $e($contactEmail) ?>"><?= $e($contactEmail) ?></a>
-  <p class="foot-reassure">Réponse sous 24 h · Port-de-Paix — Sofia</p>
+  <p class="foot-reassure"><?= $e($footerReassurance) ?></p>
   <p class="foot-bottom">© <?= date('Y') ?> <?= $e(strtoupper($brand)) ?> · Site propulsé par HBEXIUM</p>
 </footer>
 
