@@ -1,0 +1,5 @@
+# Secrets locaux (clé API) — jamais versionnés.
+lib/config.local.php
+
+# Cache des réponses API.
+cache/*.json

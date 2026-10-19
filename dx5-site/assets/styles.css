@@ -1,0 +1,228 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   DX-5 THE NIGMA — Teaser « L'Énigme »
+   Sombre, cinématographique, performant. Contenu d'abord, effets ensuite
+   (plan §6.5) : aucune dépendance externe, mouvement respectueux de
+   prefers-reduced-motion, sobre sur mobile.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #07080c;
+  --bg-soft: #0d0f16;
+  --ink: #f2f3f7;
+  --ash: #8a90a2;
+  --dim: #565c6e;
+  --line: rgba(255, 255, 255, 0.08);
+  --accent: #e8402f;          /* rouge « signal » */
+  --accent-soft: rgba(232, 64, 47, 0.14);
+  --glow: rgba(232, 64, 47, 0.45);
+  --mono: ui-monospace, "SF Mono", "Roboto Mono", Menlo, monospace;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background:
+    radial-gradient(1100px 600px at 50% -10%, rgba(232, 64, 47, 0.10), transparent 60%),
+    radial-gradient(900px 500px at 90% 110%, rgba(47, 90, 232, 0.08), transparent 55%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Trame pointillée subtile (signal). */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 0%, #000 35%, transparent 100%);
+}
+
+main, header, footer { position: relative; z-index: 1; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+}
+
+.degraded {
+  background: var(--accent-soft);
+  color: var(--ink);
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── Barre du haut ──────────────────────────────────────────────────── */
+.top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px clamp(18px, 5vw, 56px);
+}
+.wordmark { font-weight: 800; letter-spacing: 0.14em; font-size: 0.95rem; }
+.wordmark .dim { color: var(--dim); font-weight: 600; }
+.top-cta {
+  color: var(--ink); text-decoration: none; font-size: 0.78rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.top-cta:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+/* ── Mots-clés / kickers ────────────────────────────────────────────── */
+.kicker {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ash);
+}
+.kicker.center { text-align: center; }
+
+/* ── 1 · Hero / signal ──────────────────────────────────────────────── */
+.hero {
+  min-height: 86vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 40px clamp(18px, 5vw, 56px) 72px;
+  gap: 22px;
+}
+.hero-title {
+  font-size: clamp(2.3rem, 7vw, 5.4rem);
+  font-weight: 800; line-height: 1.02; letter-spacing: -0.02em;
+  max-width: 14ch;
+}
+.glitch { color: var(--accent); position: relative; }
+.hero-sub { color: var(--ash); font-size: clamp(0.95rem, 2vw, 1.15rem); max-width: 42ch; }
+.hero-sub strong { color: var(--ink); }
+
+/* Compte à rebours — la pièce maîtresse. */
+.countdown {
+  display: flex; align-items: flex-start; justify-content: center;
+  gap: clamp(8px, 2.5vw, 22px);
+  margin: 10px 0 6px;
+  font-variant-numeric: tabular-nums;
+}
+.cd-unit { display: flex; flex-direction: column; align-items: center; min-width: clamp(54px, 14vw, 96px); }
+.cd-num {
+  font-family: var(--mono); font-weight: 700;
+  font-size: clamp(2.2rem, 8vw, 4.4rem); line-height: 1;
+  color: var(--ink); text-shadow: 0 0 26px var(--glow);
+}
+.cd-lab { margin-top: 8px; font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+.cd-sep { font-size: clamp(1.6rem, 6vw, 3.2rem); color: var(--dim); line-height: 1.2; }
+
+/* Formulaire signal. */
+.signal-form {
+  display: flex; gap: 8px; width: min(440px, 92vw); margin-top: 8px;
+}
+.signal-form input {
+  flex: 1; background: var(--bg-soft); border: 1px solid var(--line);
+  border-radius: 999px; padding: 14px 20px; color: var(--ink);
+  font-size: 0.95rem; font-family: var(--sans);
+}
+.signal-form input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.signal-form button {
+  background: var(--accent); color: #fff; border: 0; border-radius: 999px;
+  padding: 14px 24px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+  white-space: nowrap; transition: transform 0.15s, filter 0.15s;
+}
+.signal-form button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.signal-form button:disabled { opacity: 0.6; cursor: wait; }
+.signal-note { font-size: 0.8rem; color: var(--dim); max-width: 40ch; }
+.signal-note.ok { color: #46d39a; }
+.signal-note.err { color: var(--accent); }
+
+/* ── 2 · Les 3 clés ─────────────────────────────────────────────────── */
+.keys { padding: 72px clamp(18px, 5vw, 56px); border-top: 1px solid var(--line); }
+.keys-grid {
+  display: grid; gap: 18px; margin-top: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  max-width: 1080px; margin-inline: auto;
+}
+.key {
+  background: linear-gradient(160deg, var(--bg-soft), rgba(13, 15, 22, 0.4));
+  border: 1px solid var(--line); border-radius: 18px; padding: 26px;
+}
+.key-meta { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--accent); }
+.key h3 { margin: 12px 0 8px; font-size: 1.25rem; }
+.key p { color: var(--ash); font-size: 0.92rem; }
+
+/* ── 3 · VETERAN ────────────────────────────────────────────────────── */
+.veteran {
+  display: grid; gap: 34px; align-items: center;
+  grid-template-columns: 1.3fr 1fr;
+  max-width: 1080px; margin: 0 auto; padding: 72px clamp(18px, 5vw, 56px);
+  border-top: 1px solid var(--line);
+}
+.veteran h2 { font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 800; letter-spacing: -0.01em; margin: 10px 0 14px; }
+.veteran-desc { color: var(--ash); max-width: 46ch; margin-bottom: 22px; }
+.veteran-cover img { width: 100%; border-radius: 16px; border: 1px solid var(--line); }
+.btn {
+  display: inline-block; background: transparent; color: var(--ink);
+  border: 1px solid var(--accent); border-radius: 999px; padding: 13px 26px;
+  text-decoration: none; font-weight: 700; font-size: 0.9rem;
+  transition: background 0.2s;
+}
+.btn:hover { background: var(--accent-soft); }
+
+/* ── 4 · Agenda ─────────────────────────────────────────────────────── */
+.agenda { max-width: 900px; margin: 0 auto; padding: 72px clamp(18px, 5vw, 56px); border-top: 1px solid var(--line); }
+.agenda-list { margin-top: 26px; display: flex; flex-direction: column; }
+.agenda-row {
+  display: grid; grid-template-columns: 110px 1fr auto auto; gap: 16px; align-items: center;
+  padding: 16px 4px; border-bottom: 1px solid var(--line);
+}
+.agenda-row.past { opacity: 0.5; }
+.agenda-date { font-family: var(--mono); font-size: 0.82rem; color: var(--accent); letter-spacing: 0.04em; }
+.agenda-title { font-weight: 600; }
+.agenda-place { color: var(--ash); font-size: 0.85rem; }
+.agenda-ticket { color: var(--ink); text-decoration: none; font-size: 0.82rem; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; white-space: nowrap; }
+.agenda-ticket:hover { border-color: var(--accent); }
+.agenda-ticket.dim { border-color: transparent; color: var(--dim); }
+@media (max-width: 640px) {
+  .agenda-row { grid-template-columns: 1fr auto; row-gap: 4px; }
+  .agenda-place { grid-column: 1 / -1; }
+}
+
+/* ── 5 · Plateformes ────────────────────────────────────────────────── */
+.platforms { padding: 64px clamp(18px, 5vw, 56px); border-top: 1px solid var(--line); text-align: center; }
+.platform-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 24px; }
+.platform-links a {
+  color: var(--ink); text-decoration: none; font-size: 0.88rem; letter-spacing: 0.04em;
+  border: 1px solid var(--line); border-radius: 999px; padding: 11px 22px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.platform-links a:hover { border-color: var(--accent); background: var(--accent-soft); }
+
+/* ── 5 · Pied de page ───────────────────────────────────────────────── */
+.foot { text-align: center; padding: 72px clamp(18px, 5vw, 56px) 56px; border-top: 1px solid var(--line); }
+.foot-kicker { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.22em; color: var(--ash); }
+.foot-mail {
+  display: inline-block; margin: 14px 0 8px; font-size: clamp(1.3rem, 4vw, 2.2rem);
+  font-weight: 800; color: var(--ink); text-decoration: none; letter-spacing: -0.01em;
+}
+.foot-mail:hover { color: var(--accent); }
+.foot-reassure { color: var(--ash); font-size: 0.85rem; }
+.foot-bottom { margin-top: 32px; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; color: var(--dim); }
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .veteran { grid-template-columns: 1fr; }
+  .veteran-cover { order: -1; max-width: 320px; margin-inline: auto; }
+  .signal-form { flex-direction: column; }
+  .signal-form button { width: 100%; }
+}
+
+/* ── Mouvement respectueux (plan §6.5) ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .cd-num { text-shadow: none; }
+  * { transition: none !important; animation: none !important; }
+}
