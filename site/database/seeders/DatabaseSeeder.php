@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
                 'live' => $lib['live'],
                 'album_announce' => [
                     'title' => 'L’album — 12 titres',
-                    'label' => 'DÉVERROUILLAGE TITRE PAR TITRE — NOVEMBRE 2026 · DATE EXACTE À CONFIRMER',
+                    'label' => 'DÉVERROUILLAGE TITRE PAR TITRE — NOVEMBRE 2026',
                     'count' => 12,
                 ],
             ],

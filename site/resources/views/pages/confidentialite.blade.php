@@ -10,12 +10,9 @@
     européenne, le RGPD s’applique.</p>
   </div>
 
-  <div class="banner">BROUILLON — À ENRICHIR EN PHASE 3 (VENTE EN LIGNE, PAIEMENTS, ESPACE PRO)</div>
-
   <h2>Qui est responsable ?</h2>
   <div class="prose"><p><strong>Félix DEBROSSE</strong> (« DX-5 The Nigma »), éditeur du site —
-  contact@dx5thenigma.com. Le traitement technique est assuré par <strong>HBEXIUM Consulting</strong>
-  (hébergement du site et du tableau de bord), agissant comme sous-traitant.</p></div>
+  contact@dx5thenigma.com. L’hébergement et la maintenance technique sont assurés par un prestataire agissant comme sous-traitant.</p></div>
 
   <h2>Ce que nous collectons, et pourquoi</h2>
   <div class="cards">
@@ -23,9 +20,9 @@
       <p>Votre e-mail et votre langue, pour les sorties et concerts. Conservés jusqu’à désinscription —
       chaque envoi contient un lien de désinscription immédiate.</p></div>
     <div class="card"><h3>Contact &amp; booking</h3><span class="mono ash">INTÉRÊT LÉGITIME</span>
-      <p>Nom, e-mail et message, pour vous répondre. <span class="notice">DURÉE : 24 MOIS, À CONFIRMER</span></p></div>
+      <p>Nom, e-mail et message, pour vous répondre. <span class="notice">DURÉE : 24 MOIS</span></p></div>
     <div class="card"><h3>Journaux techniques</h3><span class="mono ash">SÉCURITÉ</span>
-      <p>Données minimales de fonctionnement du serveur. <span class="notice">DURÉE : 12 MOIS, À CONFIRMER</span></p></div>
+      <p>Données minimales de fonctionnement du serveur. <span class="notice">DURÉE : 12 MOIS</span></p></div>
   </div>
 
   <h2>Ce que nous ne faisons pas</h2>
@@ -40,6 +37,6 @@
     <p>Accès, rectification, effacement, opposition, limitation, portabilité : écrivez à
     <a href="mailto:contact@dx5thenigma.com">contact@dx5thenigma.com</a>. Vous pouvez saisir
     l’autorité de contrôle compétente (CPDP en Bulgarie, CNIL en France).</p>
-    <p class="ash">Dernière mise à jour : <span class="notice">DATE DE MISE EN LIGNE</span></p>
+    <p class="ash">Dernière mise à jour : octobre 2026</p>
   </div>
 @endsection

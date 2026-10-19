@@ -1,7 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   DX-5 THE NIGMA — content.js (maquette « L’Énigme », HBEXIUM)
-   Visuels : placeholders sous licence libre (voir images/CREDITS.md),
-   à remplacer par les photos du client dès réception.
+   DX-5 THE NIGMA — contenu du site (accueil immersif)
    ═══════════════════════════════════════════════════════════ */
 
 window.SITE_CONTENT = {
@@ -12,7 +10,7 @@ window.SITE_CONTENT = {
     description: 'Site officiel de DX-5 The Nigma, rappeur et écrivain haïtien. Album 12 titres — novembre 2026.',
     kicker: 'DX-5 THE NIGMA — HIP-HOP / RAP · ÉCRITURE',
     copyright: '© 2026 DX-5 THE NIGMA — PORT-DE-PAIX · SOFIA',
-    signature: 'MAQUETTE HBEXIUM CONSULTING — CONCEPT « L’ÉNIGME »',
+    signature: 'L’ÉNIGME CONTINUE.',
     socials: [
       { label: 'TIKTOK ↗', url: 'https://www.tiktok.com/@dx5thenigma' },
       { label: 'YOUTUBE ↗', url: 'https://youtube.com/@dx-5thenigma' },

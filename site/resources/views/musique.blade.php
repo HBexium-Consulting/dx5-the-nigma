@@ -13,7 +13,7 @@
     <div class="block-head">
       <p class="mono kicker">EXTRAITS — 30 SECONDES</p>
       <h2 id="h-disco" data-scramble>Discographie</h2>
-      <p class="mono ash meta">{{ count($lib['tracks']) }} TITRES — SERVIS DEPUIS LA BASE LOCALE DU SITE</p>
+      <p class="mono ash meta">{{ count($lib['tracks']) }} TITRES — CATALOGUE OFFICIEL</p>
     </div>
     {{-- rendu serveur (référencement) ; le lecteur JS reprend la main ensuite --}}
     <ol class="tracks" id="trackList">

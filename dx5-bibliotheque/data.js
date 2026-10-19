@@ -1,10 +1,4 @@
-/* Bibliothèque DX-5 The Nigma — données du prototype.
-   Vidéos : contenus RÉELS de la chaîne YouTube de l'artiste (@dx-5thenigma).
-   Extraits audio : 30 s RÉELLES, coupées dans les titres publiés par
-   l'artiste sur sa chaîne officielle (fondu entrée/sortie). Les masters
-   officiels du client les remplaceront pour la version finale.
-   Dans le site final, tout ceci vient du Dashboard HBEXIUM
-   (entités tracks.preview_media_id, streaming_links, unlock_at). */
+/* DX-5 The Nigma — bibliothèque : titres, extraits et vidéos. */
 
 window.LIB = {
 

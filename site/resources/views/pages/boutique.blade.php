@@ -14,15 +14,15 @@
     <div class="card"><h3>L’album — 12 titres</h3><span class="mono gold">NOVEMBRE 2026</span>
       <p>Téléchargement haute qualité. <span class="notice">PRÉCOMMANDE À VENIR</span></p></div>
     <div class="card"><h3>Titres à l’unité</h3><span class="mono ash">NUMÉRIQUE</span>
-      <p>Chaque clé de l’énigme, séparément. <span class="notice">PRIX À DÉFINIR</span></p></div>
+      <p>Chaque clé de l’énigme, séparément. <span class="notice">BIENTÔT</span></p></div>
     <div class="card"><h3>Produits dérivés</h3><span class="mono ash">PHYSIQUE — PLUS TARD</span>
-      <p>Aucun produit défini à ce jour. <span class="notice">LISTE &amp; PRIX À RECEVOIR DU CLIENT</span></p></div>
+      <p><span class="notice">LISTE &amp; PRIX SUR DEMANDE</span></p></div>
   </div>
 
   <h2>Paiements prévus</h2>
   <div class="prose">
     <p>Carte bancaire (Stripe) pour l’international, puis <strong>MonCash</strong> et
     <strong>NatCash</strong> via la passerelle Kobara pour Haïti. PayPal à l’étude.
-    <span class="notice">ACTIVÉS EN PHASE 3 — COMPTES MARCHANDS DU CLIENT REQUIS</span></p>
+    <span class="notice">OUVERTURE PROCHAINE</span></p>
   </div>
 @endsection

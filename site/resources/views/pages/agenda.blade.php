@@ -5,7 +5,7 @@
   <div class="page-head">
     <span class="mono kicker">AGENDA</span>
     <h1>Les <em>dates.</em></h1>
-    <p class="lead">Concerts, festivals, rencontres — publiés par l'artiste depuis son tableau de bord.</p>
+    <p class="lead">Concerts, festivals, rencontres.</p>
   </div>
 
   <h2>Prochaines dates</h2>

@@ -20,6 +20,7 @@ cp -R dx5-bibliotheque/. "$OUT/bibliotheque/"
 rm -f "$OUT/bibliotheque/README.md"
 cp -R dx5-pages/. "$OUT/"
 find "$OUT" -name .DS_Store -delete
+rm -f "$OUT/images/CREDITS.md"   # notes internes, jamais en public
 touch "$OUT/.nojekyll"
 
 if [ -n "$BASE" ]; then

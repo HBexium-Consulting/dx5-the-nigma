@@ -17,5 +17,5 @@
   </div>
 
   <p style="margin-top:28px"><button class="btn" disabled>SOUTENIR — BIENTÔT</button></p>
-  <p class="form-note" style="margin-top:12px">MODULE ACTIVÉ EN PHASE 3 (CAMPAGNE « SOUTENIR L’ARTISTE » DU DASHBOARD). MONTANTS INDICATIFS, À VALIDER AVEC L’ARTISTE.</p>
+  <p class="form-note" style="margin-top:12px">OUVERTURE PROCHAINE — MERCI POUR VOTRE PATIENCE.</p>
 @endsection

@@ -249,8 +249,8 @@
   </header>
 
   <script>
-    window.LIB = @json($lib);          /* lecteur persistant : extraits + intégral */
-    window.SITE_CONTENT = @json($content); /* scène « home », éditée depuis le Dashboard */
+    window.LIB = @json($lib);
+    window.SITE_CONTENT = @json($content);
   </script>
   <script src="/assets/hbx-player.js"></script>
   <script src="/js/content-inject.js"></script>
