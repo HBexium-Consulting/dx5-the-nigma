@@ -74,7 +74,7 @@ class SiteController extends Controller
                 'feat' => $t->featuring,
                 'src' => $t->preview_path,
                 'yt' => $t->youtube_id,
-                'badge' => $t->release->release_date?->gt(now()->subMonths(2)) ? 'NOUVEAU' : null,
+                'badge' => $t->position === 1 && $t->release->release_date?->gt(now()->subMonths(2)) ? 'NOUVEAU' : null,
             ]))->all(),
             'clips' => $library['clips'] ?? [],
             'live' => $library['live'] ?? [],
