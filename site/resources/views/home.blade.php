@@ -75,6 +75,21 @@
   #nw3 { color: #f4efef; }                        /* « 3 clés. » */
   .final-text .pill { color: #f4efef; }           /* « brut. » */
 
+  /* ── « Trois mots » sur mobile/tablette étroite : le train horizontal géant
+     déborde (lettres étalées sur ~600px). On empile les 3 mots, centrés, sans
+     dispersion ni défilement horizontal — lisible et propre. ── */
+  @media (max-width: 820px) {
+    .s-motto .pin { display: grid; place-items: center; }
+    .s-motto .motto-track {
+      position: static; transform: none !important;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; white-space: normal; width: 100%; padding: 0 22px; top: auto; left: auto;
+    }
+    .s-motto .mw { opacity: 1 !important; font-size: clamp(44px, 12vw, 72px); line-height: 1.04; }
+    .s-motto .mw .sc { transform: none !important; }
+    .s-motto .motto-hint { display: none; }
+  }
+
   /* ── wordmark central (DX-5 THE NIGMA) agrandi sur l'accueil ── */
   .hero-kicker {
     font-size: clamp(16px, 2.6vw, 30px) !important;
