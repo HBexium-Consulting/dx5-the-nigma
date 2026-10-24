@@ -26,7 +26,7 @@
         <a class="mono m-only" href="{{ route($route) }}">{{ $label }}</a>
       @endforeach
       <a class="mono" href="{{ route('boutique') }}">BOUTIQUE</a>
-      <a class="mono" href="{{ route('soutenir') }}">SOUTENIR</a>
+      <a class="mono" href="{{ route('soutenir') }}">LE CERCLE</a>
       <a class="mono" href="{{ route('actualites') }}">ACTUALITÉS</a>
     </div>
   </span>
@@ -42,7 +42,7 @@
 
   <footer class="foot">
     <nav class="foot-links mono" aria-label="Pied de page">
-      <a href="/">ACCUEIL</a><a href="{{ route('boutique') }}">BOUTIQUE</a><a href="{{ route('soutenir') }}">SOUTENIR</a><a href="{{ route('actualites') }}">ACTUALITÉS</a><a href="{{ route('mentions-legales') }}">MENTIONS LÉGALES</a><a href="{{ route('confidentialite') }}">CONFIDENTIALITÉ</a>
+      <a href="/">ACCUEIL</a><a href="{{ route('boutique') }}">BOUTIQUE</a><a href="{{ route('soutenir') }}">LE CERCLE</a><a href="{{ route('actualites') }}">ACTUALITÉS</a><a href="{{ route('mentions-legales') }}">MENTIONS LÉGALES</a><a href="{{ route('confidentialite') }}">CONFIDENTIALITÉ</a>
     </nav>
     <nav class="foot-links mono" aria-label="Réseaux">
       <a href="https://www.tiktok.com/@dx5thenigma" target="_blank" rel="noopener">TIKTOK ↗</a>

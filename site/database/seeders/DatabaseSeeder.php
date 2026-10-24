@@ -109,5 +109,18 @@ class DatabaseSeeder extends Seeder
             'status' => 'past',
             'published_at' => now()->subYears(2),
         ]);
+
+        foreach ([
+            ['coin-du-chef-2021', 'Festivité de fin d’année — Coin du Chef', '2021-12-18 20:00:00', 'Pétion-Ville', 'Haïti'],
+            ['festival-st-pierre-2015', 'Festival Saint-Pierre', '2015-06-29 19:00:00', 'Pétion-Ville', 'Haïti'],
+            ['festival-nippes-2014', 'Festival de Nippes', '2014-08-15 19:00:00', 'Nippes', 'Haïti'],
+            ['festival-rap-pap-2009', 'Festival Rap avec Barikad Crew', '2009-05-01 18:00:00', 'Port-de-Paix', 'Haïti'],
+        ] as [$slug, $title, $at, $city, $country]) {
+            Event::updateOrCreate(['slug' => $slug], [
+                'uuid' => (string) Str::uuid(), 'title' => $title, 'starts_at' => $at,
+                'timezone' => 'America/Port-au-Prince', 'city' => $city, 'country' => $country,
+                'status' => 'past', 'published_at' => now()->subYears(2),
+            ]);
+        }
     }
 }

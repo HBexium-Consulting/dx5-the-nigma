@@ -1,4 +1,4 @@
-/* Injection du contenu (moteur du template) — window.SITE_CONTENT est rendu par Blade. */
+/* Injection du contenu (moteur du template). */
 /* INJECTION — NE PAS MODIFIER (remplit le DOM avant app.js)
    ═══════════════════════════════════════════════════════════ */
 (() => {
@@ -12,8 +12,6 @@
   if (md) md.setAttribute('content', C.brand.description);
 
   // chrome
-  set('.loader-wordmark', C.brand.name);
-  set('.dock-wordmark', C.brand.name);
   set('.dock-link[href="#travaux"]', C.nav.proof);
   set('.dock-link[href="#explorer"]', C.nav.universes);
   set('.dock-cta', C.nav.cta);

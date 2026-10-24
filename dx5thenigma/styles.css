@@ -31,14 +31,18 @@
   --ease-inout: cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-/* ═══ THÈME DARK — activé par <html data-theme="dark"> ═══ */
+/* ═══ THÈME DARK — NOIR & ROUGE (couleurs du logo DX-5) ═══ */
 html[data-theme="dark"] {
-  --ink-rgb: 242, 241, 236;
-  --bone: #141311;
-  --ink: #f2f1ec;
-  --ash: #8f938f;
-  --white: #201f1c;
+  --ink-rgb: 245, 240, 240;
+  --bone: #0a0708;               /* fond : noir profond */
+  --ink: #f4efef;                /* texte principal : blanc cassé (lisible sur noir) */
+  --ash: #9a8d8e;               /* texte secondaire */
+  --white: #160f10;              /* surfaces élevées : noir chaud */
   --ink-faint: rgba(var(--ink-rgb), 0.16);
+
+  /* accent = ROUGE du logo */
+  --lime: #d8231f;
+  --lime-ink: #ffffff;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }

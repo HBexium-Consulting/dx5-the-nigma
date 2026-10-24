@@ -44,24 +44,23 @@ window.SITE_CONTENT = {
   positioning: 'Rap et écriture, d’Haïti au monde.',
 
   manifesto: {
-    text: 'Authentique, créatif, engagé : DX-5 The Nigma écrit depuis 2007, bien avant de rapper. Sous chaque morceau, un manuscrit ; sous le manuscrit, une énigme. Ici on ne lit pas sa biographie : on la [[déverrouille]].'
+    text: 'Depuis 2007, DX-5 The Nigma forge le Rap-Cine : le rap moderne greffé sur le tambour racine du vodou haïtien. Sous chaque morceau, un manuscrit ; sous le manuscrit, une énigme. Ici on ne lit pas sa biographie : on la [[déverrouille]].'
   },
 
   proof: {
     layout: 'masonry',
     kicker: 'LE DOSSIER',
     title: 'Pièces à conviction',
-    sub: 'Huit fragments du parcours, classés comme des pièces d’archive.',
+    sub: 'Fragments du parcours classés comme des pièces d’archive.',
     meta: 'ARCHIVES — 2007 → 2026',
     projects: [
       { img: 'images/p-01.jpg', title: 'Le trophée', meta: 'PIÈCE 01 — LAURÉAT NATIONAL, 2016' },
       { img: 'images/p-02.jpg', title: 'Sofia, invité d’honneur', meta: 'PIÈCE 02 — ESFAM / AUF, 2024' },
       { img: 'images/p-03.jpg', title: 'Sessions de nuit', meta: 'PIÈCE 03 — STUDIO' },
-      { img: 'images/p-04.jpg', title: 'Port-de-Paix', meta: 'PIÈCE 04 — ORIGINES, 2007' },
-      { img: 'images/p-05.jpg', title: 'Sur scène', meta: 'PIÈCE 05 — LIVE' },
-      { img: 'images/p-06.jpg', title: 'Les carnets', meta: 'PIÈCE 06 — ÉCRITURE' },
-      { img: 'images/p-07.jpg', title: 'Le public', meta: 'PIÈCE 07 — 14 PAYS' },
-      { img: 'images/p-08.jpg', title: 'L’album', meta: 'PIÈCE 08 — 12 TITRES, NOV. 2026' }
+      { img: 'images/p-05.jpg', title: 'Sur scène', meta: 'PIÈCE 04 — LIVE' },
+      { img: 'images/p-06.jpg', title: 'Les carnets', meta: 'PIÈCE 05 — ÉCRITURE' },
+      { img: 'images/p-07.jpg', title: 'Le public', meta: 'PIÈCE 06 — 14 PAYS' },
+      { img: 'images/p-08.jpg', title: 'L’album', meta: 'PIÈCE 07 — 12 TITRES, NOV. 2026' }
     ],
     features: []
   },
@@ -131,8 +130,6 @@ window.SITE_CONTENT = {
   if (md) md.setAttribute('content', C.brand.description);
 
   // chrome
-  set('.loader-wordmark', C.brand.name);
-  set('.dock-wordmark', C.brand.name);
   set('.dock-link[href="#travaux"]', C.nav.proof);
   set('.dock-link[href="#explorer"]', C.nav.universes);
   set('.dock-cta', C.nav.cta);

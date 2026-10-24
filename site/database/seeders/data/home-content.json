@@ -51,13 +51,13 @@
  },
  "positioning": "Rap et écriture, d’Haïti au monde.",
  "manifesto": {
-  "text": "Authentique, créatif, engagé : DX-5 The Nigma écrit depuis 2007, bien avant de rapper. Sous chaque morceau, un manuscrit ; sous le manuscrit, une énigme. Ici on ne lit pas sa biographie : on la [[déverrouille]]."
+  "text": "Depuis 2007, DX-5 The Nigma forge le Rap-Cine : le rap moderne greffé sur le tambour racine du vodou haïtien. Sous chaque morceau, un manuscrit ; sous le manuscrit, une énigme. Ici on ne lit pas sa biographie : on la [[déverrouille]]."
  },
  "proof": {
   "layout": "masonry",
   "kicker": "LE DOSSIER",
   "title": "Pièces à conviction",
-  "sub": "Huit fragments du parcours, classés comme des pièces d’archive.",
+  "sub": "Fragments du parcours classés comme des pièces d’archive.",
   "meta": "ARCHIVES — 2007 → 2026",
   "projects": [
    {
@@ -76,29 +76,24 @@
     "meta": "PIÈCE 03 — STUDIO"
    },
    {
-    "img": "images/p-04.jpg",
-    "title": "Port-de-Paix",
-    "meta": "PIÈCE 04 — ORIGINES, 2007"
-   },
-   {
     "img": "images/p-05.jpg",
     "title": "Sur scène",
-    "meta": "PIÈCE 05 — LIVE"
+    "meta": "PIÈCE 04 — LIVE"
    },
    {
     "img": "images/p-06.jpg",
     "title": "Les carnets",
-    "meta": "PIÈCE 06 — ÉCRITURE"
+    "meta": "PIÈCE 05 — ÉCRITURE"
    },
    {
     "img": "images/p-07.jpg",
     "title": "Le public",
-    "meta": "PIÈCE 07 — 14 PAYS"
+    "meta": "PIÈCE 06 — 14 PAYS"
    },
    {
     "img": "images/p-08.jpg",
     "title": "L’album",
-    "meta": "PIÈCE 08 — 12 TITRES, NOV. 2026"
+    "meta": "PIÈCE 07 — 12 TITRES, NOV. 2026"
    }
   ],
   "features": []

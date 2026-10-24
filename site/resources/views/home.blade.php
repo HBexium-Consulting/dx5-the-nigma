@@ -40,6 +40,27 @@
     .footer-mail { font-size: clamp(17px, 7vw, 34px); }
     .footer-name { font-size: clamp(26px, 11.2vw, 60px); }
   }
+
+  /* ── « Trois mots, un code » : fond BLEU ROI, textes en noir (demande client) ── */
+  --bleu-roi: #1a3fd6;
+  .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #1a3fd6 50.3%); }
+  .band .from-lime { background: linear-gradient(to bottom right, #1a3fd6 49.7%, transparent 50.3%); }
+  .s-motto .pin { background: #1a3fd6; }
+  .s-motto .motto-kicker, .s-motto .mw, .s-motto .motto-hint { color: #0a0708; }
+
+  /* ── wordmark central (DX-5 THE NIGMA) agrandi sur l'accueil ── */
+  .hero-kicker {
+    font-size: clamp(16px, 2.6vw, 30px) !important;
+    letter-spacing: 0.08em; color: var(--lime);
+    font-weight: 500; margin-bottom: 22px;
+  }
+
+  /* ── LOGO officiel DX-5 : il vole du loader jusqu'au dock (passation) ── */
+  img.brand-logo { border-radius: 0; width: auto; display: block; }
+  .loader-wordmark .brand-logo { height: clamp(46px, 8vw, 96px); }
+  .dock-wordmark { display: inline-flex; align-items: center; }
+  .dock-wordmark .brand-logo { height: 30px; }
+  @media (max-width: 760px) { .dock-wordmark .brand-logo { height: 26px; } }
   </style>
 </head>
 <body>
@@ -47,7 +68,7 @@
   <!-- ══════════ PRELOADER ══════════ -->
   <div class="loader" id="loader" aria-hidden="true">
     <div class="loader-inner">
-      <p class="loader-wordmark">Élise Aubert</p>
+      <p class="loader-wordmark"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></p>
       <span class="loader-rule"><i id="loaderBar"></i></span>
     </div>
   </div>
@@ -99,6 +120,32 @@
       </div>
     </section>
 
+    <!-- ─── SCÈNE 5 · « UN PROJET, 3 ÉTAPES » → LE PROCESSUS IMMERSIF ─── -->
+    <section class="scene s-night" id="explorer" data-pin="5">
+      <div class="pin">
+
+        <div class="night-line" id="nightLine">
+          <span class="hl nw" id="nw1">Un</span>
+          <span class="hl nw" id="nw2">projet,</span>
+          <span class="grow" id="grow2"><img src="https://picsum.photos/id/431/1800/1200" alt="Un café pendant un brief"></span>
+          <span class="hl nw" id="nw3">3 étapes.</span>
+        </div>
+
+        <!-- compteur monumental : le numéro d'étape défile comme un odomètre -->
+        <div class="bignum" id="bigNum" aria-hidden="true"><span class="bignum-fixed">0</span><span class="bignum-roll"><span id="bigRoll"></span></span></div>
+
+        <!-- contenu de l'étape, à gauche -->
+        <div class="psteps" id="psteps"></div>
+
+        <p class="steps-cta" id="stepsCta">
+          <a href="#contact" data-nav id="stepsCtaLink">Réserver une séance →<svg class="cta-oval" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path id="ctaOval" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></a>
+        </p>
+
+        <!-- rideau de lames : essuie le plein écran SANS jamais dézoomer -->
+        <div class="wipe" id="nightWipe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+      </div>
+    </section>
     <!-- ─── SCÈNE 3 · SÉLECTION (panneau blanc, masonry parallaxe) ─── -->
     <section class="collection" id="travaux">
       <header class="coll-head">
@@ -124,32 +171,6 @@
       <div class="diag from-lime" aria-hidden="true"></div>
     </div>
 
-    <!-- ─── SCÈNE 5 · « UN PROJET, 3 ÉTAPES » → LE PROCESSUS IMMERSIF ─── -->
-    <section class="scene s-night" id="explorer" data-pin="9">
-      <div class="pin">
-
-        <div class="night-line" id="nightLine">
-          <span class="hl nw" id="nw1">Un</span>
-          <span class="hl nw" id="nw2">projet,</span>
-          <span class="grow" id="grow2"><img src="https://picsum.photos/id/431/1800/1200" alt="Un café pendant un brief"></span>
-          <span class="hl nw" id="nw3">3 étapes.</span>
-        </div>
-
-        <!-- compteur monumental : le numéro d'étape défile comme un odomètre -->
-        <div class="bignum" id="bigNum" aria-hidden="true"><span class="bignum-fixed">0</span><span class="bignum-roll"><span id="bigRoll"></span></span></div>
-
-        <!-- contenu de l'étape, à gauche -->
-        <div class="psteps" id="psteps"></div>
-
-        <p class="steps-cta" id="stepsCta">
-          <a href="#contact" data-nav id="stepsCtaLink">Réserver une séance →<svg class="cta-oval" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path id="ctaOval" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></a>
-        </p>
-
-        <!-- rideau de lames : essuie le plein écran SANS jamais dézoomer -->
-        <div class="wipe" id="nightWipe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-
-      </div>
-    </section>
 
     <!-- ─── 8 · PREUVE SOCIALE — citation en rideau, guillemets géants ─── -->
     <section class="scene s-quote" id="temoignage" data-pin="3">
@@ -225,10 +246,10 @@
   <!-- ══════════ CHROME FIXE — barre flottante en haut ══════════ -->
 
   <header class="dock" id="dock">
-    <a class="dock-wordmark" href="#hero" data-nav>Élise Aubert</a>
+    <a class="dock-wordmark" href="#hero" data-nav aria-label="DX-5 The Nigma"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></a>
     <nav class="dock-nav" aria-label="Navigation principale">
-      <a class="dock-link mono" href="#travaux" data-nav>TRAVAUX</a>
       <a class="dock-link mono" href="#explorer" data-nav data-landing="0.8">SÉRIES</a>
+      <a class="dock-link mono" href="#travaux" data-nav>TRAVAUX</a>
       <a class="dock-link mono" href="/musique">BIBLIOTHÈQUE</a>
     </nav>
     <span class="dock-sub">

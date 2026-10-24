@@ -227,3 +227,29 @@ html.js .rv.in { opacity: 1; transform: none; }
   .wordmark { font-size: 15px; }
   .nav-cta { padding: 7px 10px; }
 }
+
+
+/* ══════════ PALETTE NOIR & ROUGE — pages is-pg (demande client) ══════════
+   La bibliothèque (is-bib) conserve sa charte « Énigme » bleu/or. */
+html.is-pg {
+  --bg: #0a0708;
+  --surface: #160f10;
+  --surface-2: #1e1415;
+  --line: rgba(216, 35, 31, 0.18);
+  --ink: #f4efef;
+  --ash: #9a8d8e;
+  --blue: #e23b36;     /* « matière » / liens → rouge */
+  --gold: #d8231f;     /* « signal rare » → rouge (noir & rouge) */
+  --red: #ff5a4f;      /* alerte, rouge vif distinct */
+}
+html.is-pg body {
+  background:
+    radial-gradient(900px 480px at 78% -8%, rgba(216, 35, 31, 0.10), transparent 60%),
+    radial-gradient(700px 420px at 12% 14%, rgba(216, 35, 31, 0.05), transparent 65%),
+    var(--bg);
+}
+
+/* logo officiel dans l'entête partagé */
+.wordmark { display: inline-flex; align-items: center; }
+.wordmark .brand-logo { height: 26px; width: auto; display: block; border-radius: 0; }
+@media (max-width: 760px) { .wordmark .brand-logo { height: 23px; } }
