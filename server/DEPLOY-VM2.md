@@ -10,7 +10,8 @@ par le site.
 | Élément | Emplacement |
 |---|---|
 | Runtime | `/opt/node24/bin/node` (Node 24, isolé — ne touche pas au Node système) |
-| Application | `/opt/dx5-app/` = `server/` + `dx5thenigma/`, `dx5-pages/`, `dx5-bibliotheque/` |
+| Code serveur | `/opt/dx5-app/server/` (user `hbexium2`) |
+| Sources front | `/home/dx5thenigma/dx5-src/{dx5thenigma,dx5-pages,dx5-bibliotheque}` — écrites par le déployeur jailé, lues par le service (`FRONT_ROOT`) |
 | Config secrète | `/opt/dx5-app/server/.env` (clé API, port, DB) — `chmod 600`, user `hbexium2` |
 | Base de données | `/opt/dx5-app/server/data/dx5.sqlite` (`node:sqlite`, sans dépendance native) |
 | Service | `systemd` → `dx5.service` (port **3100**, `Restart=always`) |
@@ -21,7 +22,11 @@ par le site.
 
 `git push` sur `main` → GitHub Actions :
 1. assemble `_site` → docroot `/home/dx5thenigma/.../public_html` (**repli statique**) ;
-2. rsync des sources front → `/opt/dx5-app/{dx5thenigma,dx5-pages,dx5-bibliotheque}`.
+2. rsync des sources front → `/home/dx5thenigma/dx5-src/` (lu par le service).
+
+> Le déployeur SSH `dx5thenigma` est **chrooté** sur son `$HOME` : il écrit dans
+> `/home/dx5thenigma/…` (pas `/opt`). Le service tourne sous `hbexium2` et lit
+> ces sources via `FRONT_ROOT`.
 
 Le service lit le HTML **à chaque requête** : une mise à jour de contenu est prise
 en compte **sans redémarrage**. `@fastify/static` envoie des ETag → les assets

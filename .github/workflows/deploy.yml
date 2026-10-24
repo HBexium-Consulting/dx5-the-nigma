@@ -44,6 +44,6 @@ jobs:
           printf '%s\n' "${{ secrets.DX_THE_NIGMA }}" > /tmp/k
           RSH="ssh -i /tmp/k -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20"
           for d in dx5thenigma dx5-pages dx5-bibliotheque; do
-            rsync -az --delete -e "$RSH" "$d/" "dx5thenigma@40.75.19.27:/opt/dx5-app/$d/"
+            rsync -az --delete -e "$RSH" "$d/" "dx5thenigma@40.75.19.27:/home/dx5thenigma/dx5-src/$d/"
           done
           rm -f /tmp/k
