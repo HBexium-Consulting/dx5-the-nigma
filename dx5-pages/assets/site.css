@@ -202,8 +202,8 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--blue); outl
 }
 
 html.js .rv {
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1), transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0; transform: translateY(30px) scale(0.985);
+  transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1), transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
 }
 html.js .rv.in { opacity: 1; transform: none; }
 

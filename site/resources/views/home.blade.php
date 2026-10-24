@@ -63,7 +63,9 @@
   @media (max-width: 760px) { .dock-wordmark .brand-logo { height: 26px; } }
 
   /* ══════════ ACCUEIL · HORLOGE ══════════ */
-  .clock-hero { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 48px; }
+  .clock-hero { position: relative; min-height: 100svh; }
+  .clock-stage { min-height: 100svh; display: grid; place-items: center; overflow: hidden; padding: 90px 16px 40px; }
+  .clock { will-change: transform, opacity; transform-origin: center center; }
   .clock { position: relative; width: min(80vmin, 660px); aspect-ratio: 1; }
   .ch-ph {
     position: absolute; width: 16.5%; aspect-ratio: 1; transform: translate(-50%, -50%);
@@ -117,6 +119,7 @@
 
     <!-- ─── ACCUEIL · HORLOGE (12 photos + texte central rotatif) ─── -->
     <section id="hero" class="clock-hero">
+      <div class="clock-stage">
       <div class="clock" role="img" aria-label="DX-5 The Nigma">
         <figure class="ch-ph" style="left:50.00%;top:7.00%"><img src="images/clock-01.jpg" alt="" loading="lazy"></figure>
         <figure class="ch-ph" style="left:71.50%;top:12.76%"><img src="images/clock-02.jpg" alt="" loading="lazy"></figure>
@@ -138,6 +141,7 @@
           <img class="brand-logo brand-logo-xl" src="logo.png" alt="DX-5 The Nigma">
           <p class="clock-accroche">Le signal vient d’Haïti,<br>déchiffrez l’énigme.</p>
         </div>
+      </div>
       </div>
     </section>
 
@@ -356,6 +360,29 @@
       scrollTo({ top: el.getBoundingClientRect().top + scrollY + landing, behavior: 'auto' });
     }, 1400);
   });
+
+  /* Hero HORLOGE immersif au scroll : l'horloge tourne, zoome et s'estompe,
+     les photos dérivent vers les bords, le logo central grandit. Indépendant
+     du moteur canonique (app.js). */
+  (() => {
+    const hero = document.getElementById('hero');
+    const clock = hero && hero.querySelector('.clock');
+    const center = hero && hero.querySelector('.clock-center');
+    if (!hero || !clock) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let ticking = false;
+    function update() {
+      ticking = false;
+      const p = Math.min(1, Math.max(0, scrollY / (innerHeight * 0.9)));
+      // le centre (logo + texte) GRANDIT en scrollant ; les photos s'écartent et s'estompent
+      clock.style.transform = 'rotate(' + (p * 18).toFixed(2) + 'deg) scale(' + (1 + p * 1.9).toFixed(3) + ')';
+      clock.style.opacity = (1 - Math.max(0, (p - 0.55) / 0.45)).toFixed(3);
+      if (center) center.style.transform = 'translate(-50%, -50%) scale(' + (1 + p * 0.7).toFixed(3) + ')';
+    }
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener('resize', update, { passive: true });
+    update();
+  })();
 
   /* Sous-menu MENU ▾ : ouverture, clic hors zone, Échap */
   (() => {
