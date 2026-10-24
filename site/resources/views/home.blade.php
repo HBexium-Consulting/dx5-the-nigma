@@ -115,7 +115,7 @@
   .clock-ring { position: absolute; width: 142%; aspect-ratio: 1; animation: ringspin 30s linear infinite; }
   .clock-ring text { fill: var(--lime); font-family: var(--mono); font-size: 4.6px; letter-spacing: 2.4px; }
   .brand-logo-xl { width: 100%; height: auto; position: relative; z-index: 2; filter: drop-shadow(0 6px 26px rgba(216, 35, 31, 0.35)); }
-  .clock-accroche { margin-top: 16px; font-size: clamp(13px, 1.5vw, 18px); color: var(--ink); line-height: 1.3; }
+  .clock-accroche { margin-top: 16px; font-size: clamp(13px, 1.5vw, 18px); line-height: 1.3; }
   @keyframes ringspin { to { transform: rotate(360deg); } }
   @media (max-width: 560px) {
     .clock { width: 94vmin; }
