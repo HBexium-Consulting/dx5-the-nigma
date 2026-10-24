@@ -6,7 +6,10 @@ export type DB = DatabaseSync;
  *  deleted_at = suppression douce ; published_at/unlock_at = embargo (§4.6). */
 export function openDb(path: string): DB {
   const db = new DatabaseSync(path);
-  db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
+  // WAL + busy_timeout : le service (lecture) et le cron de réconciliation
+  // (écriture) partagent la base ; busy_timeout évite les collisions (SQLITE_BUSY)
+  // au lieu d'échouer brutalement. synchronous=NORMAL : sûr en WAL.
+  db.exec('PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 8000; PRAGMA synchronous = NORMAL; PRAGMA foreign_keys = ON;');
   db.exec(`
     CREATE TABLE IF NOT EXISTS releases (
       id INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT UNIQUE NOT NULL, slug TEXT UNIQUE NOT NULL,
