@@ -63,8 +63,8 @@
   @media (max-width: 760px) { .dock-wordmark .brand-logo { height: 26px; } }
 
   /* ══════════ ACCUEIL · HORLOGE ══════════ */
-  .clock-hero { position: relative; min-height: 100svh; }
-  .clock-stage { min-height: 100svh; display: grid; place-items: center; overflow: hidden; padding: 90px 16px 40px; }
+  .legacy-pasteboard { display: none; }   /* ancien pasteboard : requis par le moteur, invisible */
+  .clock-mount { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; padding: 90px 16px 40px; }
   .clock { will-change: transform, opacity; transform-origin: center center; }
   .clock { position: relative; width: min(80vmin, 660px); aspect-ratio: 1; }
   .ch-ph {
@@ -118,68 +118,55 @@
   <!-- ══════════ CONTENU ══════════ -->
   <main class="smooth" id="smooth">
 
-    <!-- ─── ACCUEIL · HORLOGE (12 photos + texte central rotatif) ─── -->
-    <section id="hero" class="clock-hero">
-      <div class="clock-stage">
-      <div class="clock" role="img" aria-label="DX-5 The Nigma">
-        <figure class="ch-ph" style="left:50.00%;top:7.00%"><img src="images/clock-01.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:71.50%;top:12.76%"><img src="images/clock-02.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:87.24%;top:28.50%"><img src="images/clock-03.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:93.00%;top:50.00%"><img src="images/clock-04.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:87.24%;top:71.50%"><img src="images/clock-05.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:71.50%;top:87.24%"><img src="images/clock-06.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:50.00%;top:93.00%"><img src="images/clock-07.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:28.50%;top:87.24%"><img src="images/clock-08.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:12.76%;top:71.50%"><img src="images/clock-09.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:7.00%;top:50.00%"><img src="images/clock-10.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:12.76%;top:28.50%"><img src="images/clock-11.jpg" alt="" loading="lazy"></figure>
-        <figure class="ch-ph" style="left:28.50%;top:12.76%"><img src="images/clock-12.jpg" alt="" loading="lazy"></figure>
-        <div class="clock-center">
-          <svg class="clock-ring" viewBox="0 0 100 100" aria-hidden="true">
-            <defs><path id="ringPath" d="M50,50 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
-            <text><textPath href="#ringPath" startOffset="0">DX-5 THE NIGMA · RAP-CINE · D’HAÏTI AU MONDE · DÉCHIFFREZ L’ÉNIGME · </textPath></text>
-          </svg>
-          <img class="brand-logo brand-logo-xl" src="logo.png" alt="DX-5 The Nigma">
-          <p class="clock-accroche">Le signal vient d’Haïti,<br>déchiffrez l’énigme.</p>
-        </div>
-      </div>
-      </div>
-    </section>
-
-    <!-- souche technique de l’ancien hero (référencée par le moteur, invisible) -->
-    <section class="hero-legacy" aria-hidden="true" hidden>
+    <!-- ─── ACCUEIL · HORLOGE — scène ÉPINGLÉE du moteur (scrub immersif) ─── -->
+    <section class="scene s-hero" id="hero" data-pin="3">
       <div class="pin">
-
-        <div class="floaters" aria-hidden="true">
-          <figure class="fl" style="--x:-4%;  --y:13%; --w:196px" data-d="0.55"><img src="https://picsum.photos/id/823/360/480" alt=""></figure>
-          <figure class="fl" style="--x:21%;   --y:3%; --w:142px" data-d="0.90"><img src="https://picsum.photos/id/978/280/360" alt=""></figure>
-          <figure class="fl" style="--x:40%;  --y:-8%; --w:232px" data-d="0.40"><img src="https://picsum.photos/id/319/340/240" alt=""></figure>
-          <figure class="fl" style="--x:63%;  --y:7%; --w:126px" data-d="0.75"><img src="https://picsum.photos/id/660/300/400" alt=""></figure>
-          <figure class="fl" style="--x:85%;  --y:1%; --w:208px" data-d="1.00"><img src="https://picsum.photos/id/1062/280/220" alt=""></figure>
-          <figure class="fl" style="--x:-2%;  --y:45%; --w:116px" data-d="0.50"><img src="https://picsum.photos/id/553/360/260" alt=""></figure>
-          <figure class="fl" style="--x:94%;  --y:37%; --w:172px" data-d="0.70"><img src="https://picsum.photos/id/804/320/420" alt=""></figure>
-          <figure class="fl" style="--x:13%;  --y:71%; --w:248px" data-d="0.35"><img src="https://picsum.photos/id/64/280/360" alt=""></figure>
-          <figure class="fl" style="--x:44%;  --y:81%; --w:134px" data-d="0.85"><img src="https://picsum.photos/id/177/300/400" alt=""></figure>
-          <figure class="fl" style="--x:73%;  --y:64%; --w:188px" data-d="0.60"><img src="https://picsum.photos/id/21/380/270" alt=""></figure>
+        <div class="legacy-pasteboard" aria-hidden="true">
+          <div class="floaters">
+            <figure class="fl" style="--x:-4%;  --y:13%; --w:196px" data-d="0.55"><img src="images/fl-01.jpg" alt=""></figure>
+            <figure class="fl" style="--x:21%;   --y:3%; --w:142px" data-d="0.90"><img src="images/fl-02.jpg" alt=""></figure>
+            <figure class="fl" style="--x:40%;  --y:-8%; --w:232px" data-d="0.40"><img src="images/fl-03.jpg" alt=""></figure>
+            <figure class="fl" style="--x:63%;  --y:7%; --w:126px" data-d="0.75"><img src="images/fl-04.jpg" alt=""></figure>
+            <figure class="fl" style="--x:85%;  --y:1%; --w:208px" data-d="1.00"><img src="images/fl-05.jpg" alt=""></figure>
+            <figure class="fl" style="--x:-2%;  --y:45%; --w:116px" data-d="0.50"><img src="images/fl-06.jpg" alt=""></figure>
+            <figure class="fl" style="--x:94%;  --y:37%; --w:172px" data-d="0.70"><img src="images/fl-07.jpg" alt=""></figure>
+            <figure class="fl" style="--x:13%;  --y:71%; --w:248px" data-d="0.35"><img src="images/fl-08.jpg" alt=""></figure>
+            <figure class="fl" style="--x:44%;  --y:81%; --w:134px" data-d="0.85"><img src="images/fl-09.jpg" alt=""></figure>
+            <figure class="fl" style="--x:73%;  --y:64%; --w:188px" data-d="0.60"><img src="images/fl-10.jpg" alt=""></figure>
+          </div>
+          <div class="hero-copy">
+            <p class="hero-kicker mono" id="heroKicker">DX-5</p>
+            <h1 class="hero-title">
+              <span class="hero-line1" id="heroLine1">—</span>
+              <span class="hero-line2" id="heroLine2"><span class="hl">—</span><span class="grow" id="grow1"><img src="images/hero.jpg" alt=""></span><span class="hl">—</span></span>
+            </h1>
+          </div>
+          <div class="spot" id="spot"><h2 class="spot-intro" id="spotIntro"><span>—</span></h2></div>
         </div>
-
-        <div class="hero-copy">
-          <p class="hero-kicker mono" id="heroKicker">ÉLISE AUBERT — PHOTOGRAPHE, PARIS</p>
-          <h1 class="hero-title">
-            <span class="hero-line1" id="heroLine1">Des photographies honnêtes,</span>
-            <span class="hero-line2" id="heroLine2">
-              <span class="hl">pour des gens</span>
-              <span class="grow" id="grow1"><img src="https://picsum.photos/id/375/1800/1200" alt="Silhouette dans un champ de fleurs au crépuscule"></span>
-              <span class="hl">vrais.</span>
-            </span>
-          </h1>
+        <div class="clock-mount">
+          <div class="clock" role="img" aria-label="DX-5 The Nigma">
+            <figure class="ch-ph" style="left:50.00%;top:7.00%"><img src="images/clock-01.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:71.50%;top:12.76%"><img src="images/clock-02.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:87.24%;top:28.50%"><img src="images/clock-03.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:93.00%;top:50.00%"><img src="images/clock-04.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:87.24%;top:71.50%"><img src="images/clock-05.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:71.50%;top:87.24%"><img src="images/clock-06.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:50.00%;top:93.00%"><img src="images/clock-07.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:28.50%;top:87.24%"><img src="images/clock-08.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:12.76%;top:71.50%"><img src="images/clock-09.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:7.00%;top:50.00%"><img src="images/clock-10.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:12.76%;top:28.50%"><img src="images/clock-11.jpg" alt="" loading="lazy"></figure>
+            <figure class="ch-ph" style="left:28.50%;top:12.76%"><img src="images/clock-12.jpg" alt="" loading="lazy"></figure>
+            <div class="clock-center">
+              <svg class="clock-ring" viewBox="0 0 100 100" aria-hidden="true">
+                <defs><path id="ringPath" d="M50,50 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
+                <text><textPath href="#ringPath" startOffset="0">DX-5 THE NIGMA · RAP-CINE · D’HAÏTI AU MONDE · DÉCHIFFREZ L’ÉNIGME · </textPath></text>
+              </svg>
+              <img class="brand-logo brand-logo-xl" src="logo.png" alt="DX-5 The Nigma">
+              <p class="clock-accroche">Le signal vient d’Haïti,<br>déchiffrez l’énigme.</p>
+            </div>
+          </div>
         </div>
-
-        <!-- calque plein écran : titre blanc sur l'image -->
-        <div class="spot" id="spot" aria-hidden="true">
-          <h2 class="spot-intro" id="spotIntro"><span>Portrait,</span> <span>mode,</span> <span>documentaire</span> <span>—</span> <span>à</span> <span>Paris.</span></h2>
-        </div>
-
       </div>
     </section>
 
@@ -391,7 +378,7 @@
     let ticking = false;
     function update() {
       ticking = false;
-      const p = Math.min(1, Math.max(0, scrollY / (innerHeight * 0.95)));
+      const p = Math.min(1, Math.max(0, scrollY / (innerHeight * 2)));  // scrub de la scène épinglée (pin 3 → 2 écrans)
       if (p <= 0) {
         photos.forEach((el) => { el.style.transform = ''; el.style.opacity = ''; });
         if (center) center.style.transform = '';
