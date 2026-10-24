@@ -1,0 +1,82 @@
+import type { DB } from '../db.ts';
+import { hbxGet } from './client.ts';
+
+/** Lit une entité via l'API et l'écrit en base locale (§4.3). Correspondance
+ *  par uuid, jamais par id. 404 → suppression douce (contenu supprimé/module off). */
+export async function pullEntity(db: DB, entity: string, uuid: string): Promise<void> {
+  const path = entity === 'release' ? `releases/${uuid}`
+    : entity === 'event' ? `events/${uuid}`
+    : entity === 'scene' ? `scenes/${uuid}` : null;
+  if (!path) return;
+
+  const res = await hbxGet(path);
+  if (res.status === 404) { softDelete(db, entity, uuid); return; }
+  if (!res.ok) throw new Error(`HBX ${res.status} sur ${path}`);
+  const json: any = await res.json();
+  const d = json.data ?? json;
+
+  if (entity === 'release') upsertRelease(db, d);
+  else if (entity === 'event') upsertEvent(db, d);
+  else if (entity === 'scene') upsertScene(db, d);
+}
+
+export function softDelete(db: DB, entity: string, uuid: string): void {
+  const now = new Date().toISOString();
+  if (entity === 'release') db.prepare('UPDATE releases SET deleted_at = ? WHERE uuid = ?').run(now, uuid);
+  else if (entity === 'event') db.prepare('UPDATE events SET deleted_at = ? WHERE uuid = ?').run(now, uuid);
+  else if (entity === 'scene') db.prepare('DELETE FROM scenes WHERE uuid = ?').run(uuid);
+}
+
+function upsertRelease(db: DB, d: any): void {
+  db.prepare(`
+    INSERT INTO releases (uuid, slug, type, title, subtitle, description, cover_path, release_date, published_at, status, credits, deleted_at, updated_at)
+    VALUES (@uuid,@slug,@type,@title,@subtitle,@description,@cover,@release_date,@published_at,@status,@credits,NULL,@updated)
+    ON CONFLICT(uuid) DO UPDATE SET slug=@slug,type=@type,title=@title,subtitle=@subtitle,description=@description,
+      cover_path=@cover,release_date=@release_date,published_at=@published_at,status=@status,credits=@credits,deleted_at=NULL,updated_at=@updated
+  `).run({
+    uuid: d.uuid, slug: d.slug, type: d.type ?? 'album', title: d.title, subtitle: d.subtitle ?? null,
+    description: d.description ?? null, cover: d.cover_url ?? d.cover_path ?? null,
+    release_date: d.release_date ?? null, published_at: d.published_at ?? null, status: d.status ?? 'draft',
+    credits: d.credits ? JSON.stringify(d.credits) : null, updated: new Date().toISOString(),
+  });
+  const rel = db.prepare('SELECT id FROM releases WHERE uuid = ?').get(d.uuid) as any;
+  for (const t of d.tracks ?? []) {
+    db.prepare(`
+      INSERT INTO tracks (uuid, release_id, position, title, slug, duration_seconds, featuring, lyrics, preview_path, youtube_id, unlock_at, deleted_at)
+      VALUES (@uuid,@rel,@position,@title,@slug,@dur,@feat,@lyrics,@preview,@yt,@unlock,NULL)
+      ON CONFLICT(uuid) DO UPDATE SET release_id=@rel,position=@position,title=@title,slug=@slug,duration_seconds=@dur,
+        featuring=@feat,lyrics=@lyrics,preview_path=@preview,youtube_id=@yt,unlock_at=@unlock,deleted_at=NULL
+    `).run({
+      uuid: t.uuid, rel: rel.id, position: t.position ?? 1, title: t.title, slug: t.slug ?? null,
+      dur: t.duration_seconds ?? null, feat: t.featuring ?? null, lyrics: t.lyrics ?? null,
+      preview: t.preview_url ?? t.preview_path ?? null, yt: t.youtube_id ?? null, unlock: t.unlock_at ?? null,
+    });
+  }
+}
+
+function upsertEvent(db: DB, d: any): void {
+  db.prepare(`
+    INSERT INTO events (uuid, slug, title, description, starts_at, ends_at, timezone, venue_name, city, country, status, ticket_mode, ticket_url, cover_path, published_at, deleted_at)
+    VALUES (@uuid,@slug,@title,@description,@starts,@ends,@tz,@venue,@city,@country,@status,@tmode,@turl,@cover,@published,NULL)
+    ON CONFLICT(uuid) DO UPDATE SET slug=@slug,title=@title,description=@description,starts_at=@starts,ends_at=@ends,
+      timezone=@tz,venue_name=@venue,city=@city,country=@country,status=@status,ticket_mode=@tmode,ticket_url=@turl,
+      cover_path=@cover,published_at=@published,deleted_at=NULL
+  `).run({
+    uuid: d.uuid, slug: d.slug, title: d.title, description: d.description ?? null, starts: d.starts_at,
+    ends: d.ends_at ?? null, tz: d.timezone ?? 'UTC', venue: d.venue_name ?? null, city: d.city ?? null,
+    country: d.country ?? null, status: d.status ?? 'scheduled', tmode: d.ticket_mode ?? 'none',
+    turl: d.ticket_url ?? null, cover: d.cover_url ?? null, published: d.published_at ?? null,
+  });
+}
+
+function upsertScene(db: DB, d: any): void {
+  db.prepare(`
+    INSERT INTO scenes (uuid, key, palette, intensity, hero_path, ambient_path, headline, settings)
+    VALUES (@uuid,@key,@palette,@intensity,@hero,@ambient,@headline,@settings)
+    ON CONFLICT(key) DO UPDATE SET palette=@palette,intensity=@intensity,hero_path=@hero,ambient_path=@ambient,headline=@headline,settings=@settings
+  `).run({
+    uuid: d.uuid, key: d.key, palette: d.palette ? JSON.stringify(d.palette) : null,
+    intensity: d.intensity ?? 'medium', hero: d.hero_url ?? null, ambient: d.ambient_url ?? null,
+    headline: d.headline ?? null, settings: d.settings ? JSON.stringify(d.settings) : null,
+  });
+}
