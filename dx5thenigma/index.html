@@ -53,24 +53,37 @@
   .s-motto .motto-kicker, .s-motto .motto-hint { color: #8da0bf; }
   .s-motto .mw { color: #e23b36; }
 
-  /* ── fonds noirs : les écritures display passent en ROUGE (cohérence logo) ──
-     Les textes de lecture (descriptions, citations) restent clairs pour la lisibilité. */
-  .clock-accroche { color: #e23b36; }
-  .fill-text .fc.on { color: #e23b36; }          /* manifeste : l'encrage se fait en rouge */
-  .box-svg path { stroke: #d8231f; }              /* l'ovale tracé autour de « déverrouille » */
+  /* ── fonds noirs : écritures en BLANC, mots-clés en ROUGE (cohérence logo) ── */
+  .fill-text .fc.on { color: #f4efef; }           /* manifeste : corps en blanc */
+  .fill-text .fc.red.on { color: #e23b36; }       /* mots-clés en rouge (DX-5, Rap-Cine, manuscrit, énigme) */
+  .box-svg path { stroke: #d8231f; }
   .night-line .hl { color: #e23b36; }             /* « Une énigme, 3 clés » */
-  .psteps h3 { color: #e23b36; }                  /* Le signal / Le déchiffrement / La révélation */
+  .psteps h3 { color: #e23b36; }
   .steps-cta a { color: #e23b36; }
   .cta-oval path { stroke: #d8231f; }
-  .final-text .fs { color: #e23b36; }             /* Pas de posture / formule / filtre */
+  .final-text .fs { color: #e23b36; }             /* phrases « Pas de… » en rouge */
+  .final-text .fs .kw { color: #f4efef; }         /* posture / formule / filtre en blanc */
   .pill-svg path { stroke: #d8231f; }
-  .q-glyph { color: #d8231f; }                    /* le guillemet géant */
-  .q-fig { color: #e23b36; }                      /* le chiffre « 14 pays » */
-  .footer-mail { color: #e23b36; }
-  .footer-mail-text::after { background: #e23b36; }
+  .q-glyph { color: #d8231f; }
+  .q-text .hot { color: #e23b36; }                /* « une cérémonie officielle en concert » */
+  .q-fig { color: #e23b36; }
+  .footer-mail { color: #f4efef; }                /* e-mail du pied de page en blanc */
+  .footer-mail-text::after { background: #f4efef; }
 
-  /* mots-clés en BLANC au cœur des textes rouges (contraste esthétique) */
-  .clock-accroche .kw { color: #f4efef; }
+  /* « LE DOSSIER » : rouge et un peu plus grand */
+  .coll-head > p.mono.ash:first-child { color: #e23b36; font-size: 15px; letter-spacing: 0.2em; }
+
+  /* motto : Authentique + Engagé en blanc, Créatif en rouge */
+  .s-motto .mw:nth-child(1), .s-motto .mw:nth-child(3) { color: #f4efef; }
+  .s-motto .mw:nth-child(2) { color: #e23b36; }
+
+  /* guillemet de fermeture, en bas à gauche du témoignage */
+  .q-stack { position: relative; }
+  .q-glyph-close { position: absolute; left: 0; bottom: -0.2em; transform: rotate(180deg); line-height: 0.6; }
+
+  /* accroche de l'horloge : texte blanc, mot-clé « l'énigme » en rouge */
+  .clock-accroche { color: #f4efef; }
+  .clock-accroche .kw { color: #e23b36; }
   .fill-text .boxed .fc.on { color: #f4efef; }    /* « déverrouille » dans l'ovale */
   #nw3 { color: #f4efef; }                        /* « 3 clés. » */
   .final-text .pill { color: #f4efef; }           /* « brut. » */
@@ -283,6 +296,7 @@
       <div class="pin">
         <div class="q-stack">
           <span class="q-glyph" aria-hidden="true">“</span>
+          <span class="q-glyph q-glyph-close" aria-hidden="true">“</span>
           <blockquote class="q-block">
             <p class="q-text" id="quoteText"></p>
           </blockquote>
@@ -448,6 +462,25 @@
     addEventListener('resize', update, { passive: true });
     update();
   })();
+
+  /* Manifeste : colorer en rouge les mots-clés (DX-5 The Nigma, Rap-Cine,
+     manuscrit, énigme). Le texte est découpé en .fc (un par caractère) : on
+     reconstruit la chaîne, on repère chaque mot-clé et on marque ses .fc. */
+  addEventListener('load', () => setTimeout(() => {
+    const fill = document.getElementById('fillText');
+    if (!fill) return;
+    const spans = [...fill.querySelectorAll('.fc')];
+    let text = '', map = [];
+    spans.forEach((sp) => { const t = sp.textContent || ''; for (let k = 0; k < t.length; k++) map.push(sp); text += t; });
+    const low = text.toLowerCase();  // les espaces ne sont pas dans les .fc : on compare sans espaces
+    ['dx-5 the nigma', 'rap-cine', 'manuscrit', 'énigme'].map((k) => k.replace(/\s/g, '')).forEach((kw) => {
+      let from = 0, i;
+      while ((i = low.indexOf(kw, from)) !== -1) {
+        for (let j = i; j < i + kw.length; j++) if (map[j]) map[j].classList.add('red');
+        from = i + kw.length;
+      }
+    });
+  }, 300));
 
   /* Sous-menu MENU ▾ : ouverture, clic hors zone, Échap */
   (() => {

@@ -96,7 +96,7 @@ window.SITE_CONTENT = {
   },
 
   objections: {
-    items: ['Pas de posture.', 'Pas de formule.', 'Pas de filtre.'],
+    items: ['Pas de <span class="kw">posture</span>.', 'Pas de <span class="kw">formule</span>.', 'Pas de <span class="kw">filtre</span>.'],
     finale: 'Juste le texte,',
     pill: 'brut.'
   },
@@ -207,11 +207,11 @@ window.SITE_CONTENT = {
   set('#figPre', figM ? figM[1] : '');
   set('#figVal', figM ? figM[2] : '');
   set('#figUnit', C.testimonial.unit || '');
-  set('#quoteText', C.testimonial.quote);
+  { const qt = $('#quoteText'); if (qt) qt.innerHTML = C.testimonial.quote.replace('une cérémonie officielle en concert', '<span class="hot">une cérémonie officielle en concert</span>'); }
   set('#quoteAuthor', C.testimonial.author);
 
   // 9 · objections
-  C.objections.items.forEach((t, i) => set('#fs' + (i + 1), t));
+  C.objections.items.forEach((t, i) => { const el = $('#fs' + (i + 1)); if (el) el.innerHTML = t; });
   const fs4 = $('#fs4');
   if (fs4) {
     fs4.innerHTML = `${C.objections.finale} <span class="pill" id="pillPhrase">${C.objections.pill}<svg class="pill-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="pillPath" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></span>`;
