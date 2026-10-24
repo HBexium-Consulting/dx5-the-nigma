@@ -69,6 +69,12 @@
   .footer-mail { color: #e23b36; }
   .footer-mail-text::after { background: #e23b36; }
 
+  /* mots-clés en BLANC au cœur des textes rouges (contraste esthétique) */
+  .clock-accroche .kw { color: #f4efef; }
+  .fill-text .boxed .fc.on { color: #f4efef; }    /* « déverrouille » dans l'ovale */
+  #nw3 { color: #f4efef; }                        /* « 3 clés. » */
+  .final-text .pill { color: #f4efef; }           /* « brut. » */
+
   /* ── wordmark central (DX-5 THE NIGMA) agrandi sur l'accueil ── */
   .hero-kicker {
     font-size: clamp(16px, 2.6vw, 30px) !important;
@@ -191,7 +197,7 @@
                 <text><textPath href="#ringPath" startOffset="0">DX-5 THE NIGMA · RAP-CINE · D’HAÏTI AU MONDE · DÉCHIFFREZ L’ÉNIGME · </textPath></text>
               </svg>
               <img class="brand-logo brand-logo-xl" src="logo.png" alt="DX-5 The Nigma">
-              <p class="clock-accroche">Le signal vient d’Haïti,<br>déchiffrez l’énigme.</p>
+              <p class="clock-accroche">Le signal vient d’Haïti,<br>déchiffrez <span class="kw">l’énigme.</span></p>
             </div>
           </div>
         </div>
