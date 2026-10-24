@@ -42,7 +42,6 @@
   }
 
   /* ── « Trois mots, un code » : fond BLEU ROI, textes en noir (demande client) ── */
-  --bleu-roi: #1a3fd6;
   .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #1a3fd6 50.3%); }
   .band .from-lime { background: linear-gradient(to bottom right, #1a3fd6 49.7%, transparent 50.3%); }
   .s-motto .pin { background: #1a3fd6; }
@@ -63,6 +62,13 @@
   @media (max-width: 760px) { .dock-wordmark .brand-logo { height: 26px; } }
 
   /* ══════════ ACCUEIL · HORLOGE ══════════ */
+  /* Hauteurs des scènes PRÉ-FIXÉES (= data-pin × 100vh) : le moteur mesure les
+     positions dans l'ordre de SON code, pas du DOM — sans ce pré-calage, déplacer
+     une scène fausse la mesure de la suivante (écrans noirs). Il re-pose ensuite
+     les mêmes hauteurs en px : zéro impact visuel. */
+  .s-hero { height: 300vh; } .s-fill { height: 350vh; } .s-motto { height: 400vh; }
+  .s-night { height: 900vh; } .s-quote { height: 300vh; } .s-final { height: 260vh; }
+
   .legacy-pasteboard { display: none; }   /* ancien pasteboard : requis par le moteur, invisible */
   .clock-mount { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; padding: 90px 16px 40px; }
   .clock { will-change: transform, opacity; transform-origin: center center; }
@@ -71,12 +77,12 @@
     position: absolute; width: 16.5%; aspect-ratio: 1; transform: translate(-50%, -50%);
     border-radius: 4px; overflow: hidden; border: 1px solid rgba(216, 35, 31, 0.4);
     box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55); background: #160f10;
-    opacity: 0; animation: chIn 0.6s var(--ease-out) forwards;
+    will-change: transform, opacity;
+    /* AUCUNE animation sur la figure : le scrub pilote son transform/opacity inline */
   }
-  .ch-ph { will-change: transform, opacity; }
-  .ch-ph img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(0.15) contrast(1.05); }
-  .clock .ch-ph:nth-child(odd) { animation-delay: 0.05s; }
-  @keyframes chIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+  .ch-ph img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(0.15) contrast(1.05); animation: chIn 0.6s var(--ease-out) both; }
+  .clock .ch-ph:nth-child(odd) img { animation-delay: 0.05s; }
+  @keyframes chIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
   .clock-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 54%; display: grid; place-items: center; text-align: center; z-index: 3; }
   .clock-ring { position: absolute; width: 142%; aspect-ratio: 1; animation: ringspin 30s linear infinite; }
   .clock-ring text { fill: var(--lime); font-family: var(--mono); font-size: 4.6px; letter-spacing: 2.4px; }
