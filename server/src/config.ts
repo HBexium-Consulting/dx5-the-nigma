@@ -7,6 +7,8 @@ export const config = {
     key: process.env.HBX_API_KEY ?? '',
     webhookSecret: process.env.HBX_WEBHOOK_SECRET ?? '',
   },
-  // racine des fichiers front (le dépôt), servis tels quels
-  frontRoot: new URL('../../', import.meta.url).pathname,
+  // racine des fichiers front (le dépôt), servis tels quels — surchargeable en prod
+  frontRoot: process.env.FRONT_ROOT
+    ? process.env.FRONT_ROOT.replace(/\/?$/, '/')
+    : new URL('../../', import.meta.url).pathname,
 };

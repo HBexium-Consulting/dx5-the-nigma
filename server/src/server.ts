@@ -6,7 +6,7 @@ import { config } from './config.ts';
 import { registerWebhook } from './routes/webhook.ts';
 import { registerForms } from './routes/forms.ts';
 import { renderHome } from './render.ts';
-import { publishedReleaseBySlug, allTracks, isUnlocked, libraryPayload } from './embargo.ts';
+import { libraryPayload } from './embargo.ts';
 
 const db = openDb(config.dbPath);
 const app = Fastify({ logger: true, bodyLimit: 1_048_576 });
@@ -30,19 +30,17 @@ app.get('/js/content-inject.js', (_req, reply) => {
 });
 
 app.get('/', (_req, reply) => reply.type('text/html').send(renderHome(db)));
-app.get('/musique', (_req, reply) =>
+
+// bibliothèque : HTML avec la librairie injectée (base, embargo respecté)
+app.get('/bibliotheque/', (_req, reply) =>
   reply.type('text/html').send(injectLib(F + 'dx5-bibliotheque/index.html')));
 
-// embargo : la page d'une sortie non publiée renvoie 404 (§4.6)
-app.get('/musique/:slug', (req, reply) => {
-  const rel = publishedReleaseBySlug(db, (req.params as any).slug);
-  if (!rel) return reply.code(404).type('text/html').send('<h1>404</h1>');
-  const tracks = allTracks(db, rel.id).map((t) => ({ ...t, unlocked: isUnlocked(t) }));
-  return reply.type('text/html').send(releaseHtml(rel, tracks));
-});
-
-for (const slug of ['a-propos', 'agenda', 'ecrits', 'pro', 'contact', 'boutique', 'soutenir', 'actualites', 'mentions-legales', 'confidentialite'])
-  app.get('/' + slug, (_req, reply) => reply.type('text/html').send(injectLib(F + `dx5-pages/${slug}/index.html`)));
+// pages intérieures : /agenda/, /a-propos/, … (librairie injectée pour le lecteur)
+for (const slug of ['a-propos', 'agenda', 'ecrits', 'pro', 'contact', 'boutique', 'soutenir', 'actualites', 'suivre', 'mentions-legales', 'confidentialite']) {
+  const handler = (_req: any, reply: any) => reply.type('text/html').send(injectLib(F + `dx5-pages/${slug}/index.html`));
+  app.get('/' + slug + '/', handler);
+  app.get('/' + slug, (_req, reply) => reply.redirect('/' + slug + '/'));
+}
 
 registerForms(app, db);
 registerWebhook(app, db);
@@ -55,11 +53,6 @@ function injectLib(path: string): string {
   const lib = JSON.stringify(libraryPayload(db)).replace(/</g, '\\u003c');
   return html.replace('<script src="/bibliotheque/data.js"></script>', `<script>window.LIB=${lib};</script>`);
 }
-function releaseHtml(rel: any, tracks: any[]): string {
-  const li = tracks.map((t) => `<li>${t.unlocked ? esc(t.title) : '▓▓▓▓▓▓'}${t.featuring ? ' — ' + esc(t.featuring) : ''}</li>`).join('');
-  return `<!doctype html><meta charset="utf-8"><title>${esc(rel.title)} — DX-5 The Nigma</title><h1>${esc(rel.title)}</h1><ol>${li}</ol>`;
-}
-const esc = (s: string) => String(s).replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]!));
 
 const port = config.port;
 app.listen({ port, host: '0.0.0.0' }).then(() => app.log.info(`DX-5 sur :${port}`));

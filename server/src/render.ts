@@ -14,7 +14,7 @@ export function renderHome(db: DB): string {
 
   html = html.replace('<title>Template Site Immersif</title>', `<title>${esc(title)}</title>`);
   html = html.replace('content="Site généré depuis le template Site Immersif."', `content="${esc(desc)}"`);
-  html = html.replace('href="bibliotheque/"', 'href="/musique"');
+  html = html.replace('href="bibliotheque/"', 'href="/bibliotheque/"');
   html = html.replace(
     `  <script src="/bibliotheque/data.js"></script>\n  <script src="/assets/hbx-player.js"></script>\n  <script src="content.js"></script>`,
     `  <script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>\n` +

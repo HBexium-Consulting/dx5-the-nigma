@@ -4,6 +4,7 @@ import { hbxGet } from './client.ts';
 /** Lit une entité via l'API et l'écrit en base locale (§4.3). Correspondance
  *  par uuid, jamais par id. 404 → suppression douce (contenu supprimé/module off). */
 export async function pullEntity(db: DB, entity: string, uuid: string): Promise<void> {
+  if (entity === 'scene') return;  // scènes gérées par le site (Dashboard vide) — non synchronisées
   const path = entity === 'release' ? `releases/${uuid}`
     : entity === 'event' ? `events/${uuid}`
     : entity === 'scene' ? `scenes/${uuid}` : null;
@@ -34,6 +35,8 @@ function ytFromLinks(links: any[]): string | null {
 }
 
 function upsertRelease(db: DB, d: any): void {
+  const bySlug = db.prepare('SELECT uuid FROM releases WHERE slug = ?').get(d.slug) as any;
+  if (bySlug && bySlug.uuid !== d.uuid) return;  // slug déjà tenu par du contenu seedé : on préserve
   db.prepare(`
     INSERT INTO releases (uuid, slug, type, title, subtitle, description, cover_path, release_date, published_at, status, credits, deleted_at, updated_at)
     VALUES (@uuid,@slug,@type,@title,@subtitle,@description,@cover,@release_date,@published_at,@status,@credits,NULL,@updated)

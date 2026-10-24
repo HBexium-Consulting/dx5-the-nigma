@@ -5,14 +5,14 @@ import type { DB } from './db.ts';
  *  nul ou passé. AUCUNE route publique ne doit contourner ces deux fonctions. */
 export function publishedReleases(db: DB): any[] {
   return db.prepare(
-    `SELECT * FROM releases WHERE deleted_at IS NULL AND published_at IS NOT NULL
-     AND published_at <= ? ORDER BY release_date DESC`
+    `SELECT * FROM releases WHERE deleted_at IS NULL AND status = 'published'
+     AND published_at IS NOT NULL AND published_at <= ? ORDER BY release_date DESC`
   ).all(new Date().toISOString());
 }
 
 export function publishedReleaseBySlug(db: DB, slug: string): any | undefined {
   return db.prepare(
-    `SELECT * FROM releases WHERE slug = ? AND deleted_at IS NULL
+    `SELECT * FROM releases WHERE slug = ? AND deleted_at IS NULL AND status = 'published'
      AND published_at IS NOT NULL AND published_at <= ?`
   ).get(slug, new Date().toISOString());
 }
@@ -49,8 +49,10 @@ export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any
       });
     }
   }
+  const seen = new Set<string>();
+  const unique = tracks.filter((t) => { const k = (t.n || '').toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
   const lib = sceneSettings(db, 'library');
-  return { tracks, clips: lib?.clips ?? [], live: lib?.live ?? [] };
+  return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [] };
 }
 
 export function sceneSettings(db: DB, key: string): any | null {
