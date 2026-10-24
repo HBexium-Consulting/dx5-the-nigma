@@ -47,3 +47,12 @@ export async function runCommand(db: DB, event: string): Promise<void> {
   if (event === 'site.sync.full') await syncFull(db);
   // site.cache.purge / maintenance : gérés au niveau serveur/déploiement
 }
+
+// Entrée CLI (cron) : `node src/hbx/reconcile.ts --run`
+if (process.argv.includes('--run')) {
+  const { openDb } = await import('../db.ts');
+  const { config } = await import('../config.ts');
+  const db = openDb(config.dbPath);
+  await reconcile(db);
+  console.log(`reconcile ✓ ${new Date().toISOString()}`);
+}

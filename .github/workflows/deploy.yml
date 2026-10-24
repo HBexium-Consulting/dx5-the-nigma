@@ -23,6 +23,9 @@ jobs:
           ssh -i /tmp/k -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=accept-new \
             dx5thenigma@40.75.19.27 'echo CONNEXION OK — $(whoami)@$(hostname); ls /home/dx5thenigma/web/dx5thenigma.com/public_html | head -6' \
             || { echo "— échec en tant que dx5thenigma, détail verbeux : —"; ssh -i /tmp/k -vv -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=accept-new dx5thenigma@40.75.19.27 true 2>&1 | grep -E "Authenticating|Offering|debug1: Trying|denied|Connection|identity" | tail -12; }
+      # 1) Repli statique : le site assemblé va dans le docroot. nginx proxifie
+      #    vers le service connecté, mais ce docroot reste le filet de secours
+      #    (rétabli instantanément en rebasculant le template proxy sur « default »).
       - uses: burnett01/rsync-deployments@7.0.1
         with:
           switches: -avzr --delete
@@ -32,3 +35,15 @@ jobs:
           remote_port: 22
           remote_user: dx5thenigma
           remote_key: ${{ secrets.DX_THE_NIGMA }}
+      # 2) Site vivant : les sources front vont au service connecté (/opt/dx5-app).
+      #    Le service lit le HTML à chaque requête (pas de redémarrage pour le
+      #    contenu) et injecte la bibliothèque depuis la base (Dashboard).
+      - name: Déployer les sources vers le service connecté
+        run: |
+          umask 077
+          printf '%s\n' "${{ secrets.DX_THE_NIGMA }}" > /tmp/k
+          RSH="ssh -i /tmp/k -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20"
+          for d in dx5thenigma dx5-pages dx5-bibliotheque; do
+            rsync -az --delete -e "$RSH" "$d/" "dx5thenigma@40.75.19.27:/opt/dx5-app/$d/"
+          done
+          rm -f /tmp/k

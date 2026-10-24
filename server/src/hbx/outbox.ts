@@ -29,3 +29,12 @@ export async function outboxFlush(db: DB): Promise<number> {
   }
   return rows.length;
 }
+
+// Entrée CLI (cron) : `node src/hbx/outbox.ts --flush`
+if (process.argv.includes('--flush')) {
+  const { openDb } = await import('../db.ts');
+  const { config } = await import('../config.ts');
+  const db = openDb(config.dbPath);
+  const n = await outboxFlush(db);
+  console.log(`outbox flush ✓ (${n})`);
+}
