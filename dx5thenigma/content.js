@@ -79,7 +79,7 @@ window.SITE_CONTENT = {
     introB: 'énigme,',
     introC: '3 clés.',
     cta: 'Être prévenu →',
-    image: 'images/process.jpg',
+    image: 'images/enigme-3cles.jpg',
     items: [
       { name: 'Le signal', meta: 'CLÉ — 01', desc: 'Un extrait, un compte à rebours. La fréquence s’installe, l’énigme commence.' },
       { name: 'Le déchiffrement', meta: 'CLÉ — 02', desc: 'Les douze titres se déverrouillent un à un, chacun avec son extrait, jusqu’au jour J.' },
@@ -224,7 +224,7 @@ window.SITE_CONTENT = {
   if (mail) { mail.href = 'mailto:' + C.contact.email; mail.querySelector('.footer-mail-text').textContent = C.contact.email; }
   set('.footer-reassurance', C.contact.reassurance);
   const fname = $('#footerName');
-  if (fname) { fname.textContent = C.brand.name; fname.setAttribute('aria-label', C.brand.name); }
+  if (fname) { fname.setAttribute('aria-label', C.brand.name); }  // nom géant = logo animé (markup)
   const bottom = $$('.footer-bottom > p');
   if (bottom.length === 3) {
     bottom[0].textContent = C.brand.copyright;

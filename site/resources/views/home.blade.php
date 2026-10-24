@@ -61,6 +61,45 @@
   .dock-wordmark { display: inline-flex; align-items: center; }
   .dock-wordmark .brand-logo { height: 30px; }
   @media (max-width: 760px) { .dock-wordmark .brand-logo { height: 26px; } }
+
+  /* ══════════ ACCUEIL · HORLOGE ══════════ */
+  .clock-hero { min-height: 100svh; display: grid; place-items: center; padding: 96px 16px 48px; }
+  .clock { position: relative; width: min(80vmin, 660px); aspect-ratio: 1; }
+  .ch-ph {
+    position: absolute; width: 16.5%; aspect-ratio: 1; transform: translate(-50%, -50%);
+    border-radius: 4px; overflow: hidden; border: 1px solid rgba(216, 35, 31, 0.4);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55); background: #160f10;
+    opacity: 0; animation: chIn 0.6s var(--ease-out) forwards;
+  }
+  .ch-ph img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(0.15) contrast(1.05); }
+  .clock .ch-ph:nth-child(odd) { animation-delay: 0.05s; }
+  @keyframes chIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+  .clock-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 54%; display: grid; place-items: center; text-align: center; z-index: 3; }
+  .clock-ring { position: absolute; width: 142%; aspect-ratio: 1; animation: ringspin 30s linear infinite; }
+  .clock-ring text { fill: var(--lime); font-family: var(--mono); font-size: 4.6px; letter-spacing: 2.4px; }
+  .brand-logo-xl { width: 100%; height: auto; position: relative; z-index: 2; filter: drop-shadow(0 6px 26px rgba(216, 35, 31, 0.35)); }
+  .clock-accroche { margin-top: 16px; font-size: clamp(13px, 1.5vw, 18px); color: var(--ink); line-height: 1.3; }
+  @keyframes ringspin { to { transform: rotate(360deg); } }
+  @media (max-width: 560px) {
+    .clock { width: 94vmin; }
+    .ch-ph { width: 18%; }
+    .clock-ring text { font-size: 4px; letter-spacing: 1.6px; }
+  }
+
+  /* ══════════ PIED DE PAGE · LOGO ANIMÉ EN CONTINU ══════════ */
+  .footer-name[hidden] { display: none; }
+  .footer-logo { display: block; margin: 6vh auto 0; width: min(78%, 640px); }
+  .footer-logo img { width: 100%; height: auto; border-radius: 0; animation: logoPulse 3.6s ease-in-out infinite; transform-origin: center; }
+  @keyframes logoPulse {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(216, 35, 31, 0)); transform: scale(1); }
+    50% { filter: drop-shadow(0 0 26px rgba(216, 35, 31, 0.6)); transform: scale(1.018); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clock-ring { animation: none; }
+    .ch-ph { animation: none; opacity: 1; }
+    .footer-logo img { animation: none; }
+  }
   </style>
 </head>
 <body>
@@ -76,8 +115,34 @@
   <!-- ══════════ CONTENU ══════════ -->
   <main class="smooth" id="smooth">
 
-    <!-- ─── SCÈNE 1 · PASTEBOARD → ZOOM TEXTE → SÉRIE EN LUMIÈRE ─── -->
-    <section class="scene s-hero" id="hero" data-pin="5">
+    <!-- ─── ACCUEIL · HORLOGE (12 photos + texte central rotatif) ─── -->
+    <section id="hero" class="clock-hero">
+      <div class="clock" role="img" aria-label="DX-5 The Nigma">
+        <figure class="ch-ph" style="left:50.00%;top:7.00%"><img src="images/clock-01.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:71.50%;top:12.76%"><img src="images/clock-02.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:87.24%;top:28.50%"><img src="images/clock-03.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:93.00%;top:50.00%"><img src="images/clock-04.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:87.24%;top:71.50%"><img src="images/clock-05.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:71.50%;top:87.24%"><img src="images/clock-06.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:50.00%;top:93.00%"><img src="images/clock-07.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:28.50%;top:87.24%"><img src="images/clock-08.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:12.76%;top:71.50%"><img src="images/clock-09.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:7.00%;top:50.00%"><img src="images/clock-10.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:12.76%;top:28.50%"><img src="images/clock-11.jpg" alt="" loading="lazy"></figure>
+        <figure class="ch-ph" style="left:28.50%;top:12.76%"><img src="images/clock-12.jpg" alt="" loading="lazy"></figure>
+        <div class="clock-center">
+          <svg class="clock-ring" viewBox="0 0 100 100" aria-hidden="true">
+            <defs><path id="ringPath" d="M50,50 m-39,0 a39,39 0 1,1 78,0 a39,39 0 1,1 -78,0"/></defs>
+            <text><textPath href="#ringPath" startOffset="0">DX-5 THE NIGMA · RAP-CINE · D’HAÏTI AU MONDE · DÉCHIFFREZ L’ÉNIGME · </textPath></text>
+          </svg>
+          <img class="brand-logo brand-logo-xl" src="logo.png" alt="DX-5 The Nigma">
+          <p class="clock-accroche">Le signal vient d’Haïti,<br>déchiffrez l’énigme.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- souche technique de l’ancien hero (référencée par le moteur, invisible) -->
+    <section class="hero-legacy" aria-hidden="true" hidden>
       <div class="pin">
 
         <div class="floaters" aria-hidden="true">
@@ -233,7 +298,8 @@
       <p class="footer-kicker mono ash reveal">UN PROJET, UNE IMAGE EN TÊTE ?</p>
       <a class="footer-mail reveal" href="mailto:bonjour@eliseaubert.fr"><span class="footer-mail-text">bonjour@eliseaubert.fr</span></a>
       <p class="footer-reassurance mono ash reveal">RÉPONSE SOUS 24 H — DEVIS GRATUIT, SANS ENGAGEMENT</p>
-      <h2 class="footer-name" id="footerName" aria-label="Élise Aubert">Élise Aubert</h2>
+      <a class="footer-logo" href="#hero" data-nav aria-label="DX-5 The Nigma"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></a>
+      <h2 class="footer-name" id="footerName" aria-label="DX-5 The Nigma" hidden></h2>
       <div class="footer-bottom">
         <p class="mono ash">© 2026 — PARIS, FRANCE</p>
         <p class="mono"><a href="https://www.instagram.com/elise.aubert" target="_blank" rel="noopener">INSTAGRAM ↗</a>&nbsp;&nbsp;&nbsp;<a href="https://www.behance.net/eliseaubert" target="_blank" rel="noopener">BEHANCE ↗</a></p>

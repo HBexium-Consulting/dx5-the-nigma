@@ -106,7 +106,7 @@
   if (mail) { mail.href = 'mailto:' + C.contact.email; mail.querySelector('.footer-mail-text').textContent = C.contact.email; }
   set('.footer-reassurance', C.contact.reassurance);
   const fname = $('#footerName');
-  if (fname) { fname.textContent = C.brand.name; fname.setAttribute('aria-label', C.brand.name); }
+  if (fname) { fname.setAttribute('aria-label', C.brand.name); }  // nom géant = logo animé (markup)
   const bottom = $$('.footer-bottom > p');
   if (bottom.length === 3) {
     bottom[0].textContent = C.brand.copyright;
