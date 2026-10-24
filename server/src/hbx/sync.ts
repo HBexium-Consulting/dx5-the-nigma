@@ -5,20 +5,42 @@ import { hbxGet } from './client.ts';
  *  par uuid, jamais par id. 404 → suppression douce (contenu supprimé/module off). */
 export async function pullEntity(db: DB, entity: string, uuid: string): Promise<void> {
   if (entity === 'scene') return;  // scènes gérées par le site (Dashboard vide) — non synchronisées
-  const path = entity === 'release' ? `releases/${uuid}`
-    : entity === 'event' ? `events/${uuid}`
-    : entity === 'scene' ? `scenes/${uuid}` : null;
-  if (!path) return;
+  if (entity === 'release') { await pullRelease(db, uuid); return; }
+  if (entity !== 'event') return;
 
-  const res = await hbxGet(path);
+  const res = await hbxGet(`events/${uuid}`);
   if (res.status === 404) { softDelete(db, entity, uuid); return; }
-  if (!res.ok) throw new Error(`HBX ${res.status} sur ${path}`);
+  if (!res.ok) throw new Error(`HBX ${res.status} sur events/${uuid}`);
   const json: any = await res.json();
-  const d = json.data ?? json;
+  upsertEvent(db, json.data ?? json);
+}
 
-  if (entity === 'release') upsertRelease(db, d);
-  else if (entity === 'event') upsertEvent(db, d);
-  else if (entity === 'scene') upsertScene(db, d);
+/** Une sortie sous embargo a son DÉTAIL masqué (404) mais reste présente dans la
+ *  LISTE sous forme de teaser (titre, cover, date de déverrouillage). On garde
+ *  donc le teaser au lieu de supprimer — c'est ce qui alimente le compte à rebours. */
+async function pullRelease(db: DB, uuid: string): Promise<void> {
+  const res = await hbxGet(`releases/${uuid}`);
+  if (res.ok) { upsertRelease(db, (await (res.json() as Promise<any>)).data ?? {}); return; }
+  if (res.status === 404) {
+    const teaser = await releaseFromList(uuid);
+    if (teaser) upsertRelease(db, teaser);        // sortie programmée (embargo) → on garde le teaser
+    else softDelete(db, 'release', uuid);          // réellement supprimée côté Dashboard
+    return;
+  }
+  throw new Error(`HBX ${res.status} sur releases/${uuid}`);
+}
+
+/** Retrouve une sortie dans la liste paginée (le détail peut être masqué). */
+async function releaseFromList(uuid: string): Promise<any | null> {
+  for (let page = 1; page <= 20; page++) {
+    const res = await hbxGet('releases', { page: String(page), per_page: '100' });
+    if (!res.ok) return null;
+    const j: any = await res.json();
+    const found = (j.data ?? []).find((r: any) => r.uuid === uuid);
+    if (found) return found;
+    if (!(j.links?.next ?? j.next_page_url)) return null;
+  }
+  return null;
 }
 
 export function softDelete(db: DB, entity: string, uuid: string): void {

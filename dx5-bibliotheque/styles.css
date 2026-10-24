@@ -170,3 +170,31 @@ html.is-bib body {
   .t-play { width: 40px; height: 40px; }
   .t-full { padding: 5px 8px; font-size: 9px; letter-spacing: 0.06em; }
 }
+
+/* ── Sorties programmées (teasers + compte à rebours), pilotées par le Dashboard ── */
+.upcoming { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.up-card {
+  display: flex; gap: 16px; align-items: stretch;
+  background: rgba(10, 15, 26, 0.5); border: 1px solid rgba(232, 199, 106, 0.22);
+  border-radius: 14px; padding: 14px; transition: border-color 0.25s;
+}
+.up-card:hover { border-color: rgba(232, 199, 106, 0.5); }
+.up-cover {
+  position: relative; flex: 0 0 104px; width: 104px; height: 104px;
+  border-radius: 10px; overflow: hidden; background: #0c1016;
+  display: flex; align-items: center; justify-content: center;
+}
+.up-cover img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.35) contrast(1.05); }
+.up-noart { font-size: 34px; color: rgba(232, 199, 106, 0.4); }
+.up-lock { position: absolute; right: 7px; bottom: 6px; font-size: 14px; filter: drop-shadow(0 1px 2px #000); }
+.up-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.up-body h3 { font-size: 19px; font-weight: 800; line-height: 1.12; letter-spacing: -0.01em; }
+.up-count { display: flex; gap: 10px; margin-top: 4px; }
+.up-count .cc { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+.up-count .cc b { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--gold, #e8c76a); }
+.up-count .cc i { font-style: normal; font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; color: var(--ash); margin-top: 3px; }
+.up-live { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: #4cc2ff; }
+.up-when { font-size: 10px; margin-top: auto; }
+html.is-pg .up-card { border-color: rgba(216, 35, 31, 0.26); }
+html.is-pg .up-count .cc b { color: #e23b36; }
+@media (max-width: 520px) { .up-card { flex-direction: column; } .up-cover { width: 100%; flex-basis: 150px; height: 150px; } }

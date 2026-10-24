@@ -23,19 +23,44 @@
       '</li>').join('');
     if (window.HBX) window.HBX.paint();
 
-    /* ── l'album chiffré ── */
-    const vault = document.getElementById('vault');
-    const cipher = () => Array.from({ length: 9 }, () => GLYPHS[(Math.random() * GLYPHS.length) | 0]).join('');
-    vault.innerHTML = Array.from({ length: 12 }, (_, i) =>
-      `<li class="vcell"><span class="v-key">CLÉ ${String(i + 1).padStart(2, '0')}</span>` +
-      `<div class="v-code" aria-hidden="true">${cipher()}</div></li>`).join('');
-    clearInterval(window.__vaultIv);
-    if (!reduced) {
-      const cells = [...vault.querySelectorAll('.v-code')];
-      window.__vaultIv = setInterval(() => {
-        if (document.hidden || !document.contains(vault)) return;
-        cells[(Math.random() * cells.length) | 0].textContent = cipher();
-      }, 260);
+    /* ── sorties programmées (teasers + compte à rebours), pilotées par le Dashboard ── */
+    const section = document.getElementById('album');
+    const up = document.getElementById('upcoming');
+    const list2 = window.LIB.upcoming || [];
+    clearInterval(window.__countIv);
+    if (!up) { /* rien */ }
+    else if (!list2.length) {
+      section.hidden = true;
+      up.innerHTML = '';
+    } else {
+      section.hidden = false;
+      const fmtDate = (iso) => { try { return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); } catch { return ''; } };
+      const typeLabel = (t) => ({ single: 'SINGLE', album: 'ALBUM', ep: 'EP', mixtape: 'MIXTAPE' }[t] || 'SORTIE');
+      up.innerHTML = list2.map((r, i) =>
+        '<article class="up-card">' +
+        '<div class="up-cover">' +
+        (r.cover ? `<img src="${r.cover}" alt="${r.title}" loading="lazy">` : '<span class="up-noart" aria-hidden="true">◇</span>') +
+        '<span class="up-lock" aria-hidden="true">🔒</span></div>' +
+        '<div class="up-body">' +
+        `<span class="mono kicker gold">${typeLabel(r.type)} — À VENIR</span>` +
+        `<h3><span data-scramble>${r.title}</span></h3>` +
+        `<div class="up-count" data-date="${r.date}" role="timer" aria-live="off"></div>` +
+        `<span class="mono ash up-when">DÉVERROUILLAGE LE ${fmtDate(r.date).toUpperCase()}</span>` +
+        '</div></article>').join('');
+
+      const tick = () => {
+        if (document.hidden || !document.contains(up)) return;
+        up.querySelectorAll('.up-count').forEach((el) => {
+          const diff = new Date(el.dataset.date).getTime() - Date.now();
+          if (diff <= 0) { el.innerHTML = '<span class="up-live">DISPONIBLE MAINTENANT</span>'; return; }
+          const d = Math.floor(diff / 864e5), h = Math.floor(diff / 36e5) % 24,
+            m = Math.floor(diff / 6e4) % 60, s = Math.floor(diff / 1e3) % 60;
+          const cell = (v, l) => `<span class="cc"><b>${String(v).padStart(2, '0')}</b><i>${l}</i></span>`;
+          el.innerHTML = cell(d, 'JOURS') + cell(h, 'H') + cell(m, 'MIN') + cell(s, 'SEC');
+        });
+      };
+      tick();
+      if (!reduced) window.__countIv = setInterval(tick, 1000);
     }
 
     /* ── vidéothèque (façades locales, iframe au clic — géré par HBX) ── */

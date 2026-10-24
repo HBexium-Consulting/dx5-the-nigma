@@ -10,6 +10,15 @@ export function publishedReleases(db: DB): any[] {
   ).all(new Date().toISOString());
 }
 
+/** Sorties PROGRAMMÉES : published_at dans le futur. Elles existent pour le site
+ *  sous forme de teaser (compte à rebours jusqu'au déverrouillage), sans contenu. */
+export function upcomingReleases(db: DB): any[] {
+  return db.prepare(
+    `SELECT * FROM releases WHERE deleted_at IS NULL AND published_at IS NOT NULL
+     AND published_at > ? ORDER BY published_at ASC`
+  ).all(new Date().toISOString());
+}
+
 export function publishedReleaseBySlug(db: DB, slug: string): any | undefined {
   return db.prepare(
     `SELECT * FROM releases WHERE slug = ? AND deleted_at IS NULL AND status = 'published'
@@ -35,7 +44,7 @@ export const isUnlocked = (t: any): boolean =>
   !t.unlock_at || new Date(t.unlock_at).getTime() <= Date.now();
 
 /** Données du lecteur persistant : extraits des titres publiés ET déverrouillés. */
-export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any[] } {
+export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any[]; upcoming: any[] } {
   const tracks: any[] = [];
   for (const rel of publishedReleases(db)) {
     for (const t of unlockedTracks(db, rel.id)) {
@@ -52,7 +61,11 @@ export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any
   const seen = new Set<string>();
   const unique = tracks.filter((t) => { const k = (t.n || '').toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
   const lib = sceneSettings(db, 'library');
-  return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [] };
+  const upcoming = upcomingReleases(db).map((r) => ({
+    title: r.title, type: r.type ?? 'release', cover: r.cover_path ?? null,
+    date: r.published_at, releaseDate: r.release_date ?? null,
+  }));
+  return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [], upcoming };
 }
 
 export function sceneSettings(db: DB, key: string): any | null {

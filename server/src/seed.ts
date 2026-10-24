@@ -36,11 +36,8 @@ export function seed(dbPath = config.dbPath): void {
      VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(uuid) DO NOTHING`
   ).run(randomUUID(), cat, i + 1, t.n, t.n.toLowerCase().replace(/[^a-z0-9]+/g, '-'), t.feat || null, t.src ?? null, t.yt ?? null));
 
-  const alb = relId('album-2026', { type: 'album', title: 'Album 2026', desc: null,
-    rd: '2026-11-15', pub: '2026-11-15T00:00:00.000Z', status: 'scheduled' });
-  for (let n = 1; n <= 12; n++) db.prepare(
-    'INSERT INTO tracks (uuid, release_id, position, title, slug, unlock_at) VALUES (?,?,?,?,?,?) ON CONFLICT(uuid) DO NOTHING'
-  ).run(randomUUID(), alb, n, `Clé ${n}`, `cle-${n}`, '2026-11-15T00:00:00.000Z');
+  // Les sorties PROGRAMMÉES (teasers + compte à rebours) viennent désormais du
+  // Dashboard (sync) — plus d'album codé en dur ici.
 
   const ev = (slug: string, r: any) => db.prepare(`INSERT INTO events (uuid, slug, title, description, starts_at, timezone, venue_name, city, country, status, published_at)
     VALUES (@uuid,@slug,@title,@desc,@starts,@tz,@venue,@city,@country,'past',@pub) ON CONFLICT(slug) DO NOTHING`)
