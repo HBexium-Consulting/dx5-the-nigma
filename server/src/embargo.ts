@@ -72,3 +72,12 @@ export function sceneSettings(db: DB, key: string): any | null {
   const row = db.prepare('SELECT settings FROM scenes WHERE key = ?').get(key) as any;
   return row?.settings ? JSON.parse(row.settings) : null;
 }
+
+/** Médias d'une scène pilotés par la médiathèque du Dashboard : image hero et
+ *  galerie (si fournie). Sert à rendre les images du site éditables côté Dashboard. */
+export function sceneMedia(db: DB, key: string): { hero: string | null; gallery: string[] } {
+  const row = db.prepare('SELECT hero_path, settings FROM scenes WHERE key = ?').get(key) as any;
+  let gallery: string[] = [];
+  try { const s = row?.settings ? JSON.parse(row.settings) : {}; if (Array.isArray(s.gallery)) gallery = s.gallery.filter(Boolean); } catch { /* ignore */ }
+  return { hero: row?.hero_path ?? null, gallery };
+}

@@ -4,8 +4,8 @@ import { hbxGet } from './client.ts';
 /** Lit une entité via l'API et l'écrit en base locale (§4.3). Correspondance
  *  par uuid, jamais par id. 404 → suppression douce (contenu supprimé/module off). */
 export async function pullEntity(db: DB, entity: string, uuid: string): Promise<void> {
-  if (entity === 'scene') return;  // scènes gérées par le site (Dashboard vide) — non synchronisées
   if (entity === 'release') { await pullRelease(db, uuid); return; }
+  if (entity === 'scene') { await pullScene(db, uuid); return; }
   if (entity !== 'event') return;
 
   const res = await hbxGet(`events/${uuid}`);
@@ -13,6 +13,19 @@ export async function pullEntity(db: DB, entity: string, uuid: string): Promise<
   if (!res.ok) throw new Error(`HBX ${res.status} sur events/${uuid}`);
   const json: any = await res.json();
   upsertEvent(db, json.data ?? json);
+}
+
+/** Le DÉTAIL des scènes est masqué (404) : hero + settings ne vivent que dans la
+ *  LISTE. On y retrouve la scène et on met à jour (par clé) — sans supprimer. */
+async function pullScene(db: DB, uuid: string): Promise<void> {
+  for (let page = 1; page <= 5; page++) {
+    const res = await hbxGet('scenes', { page: String(page), per_page: '100' });
+    if (!res.ok) return;
+    const j: any = await res.json();
+    const found = (j.data ?? []).find((s: any) => s.uuid === uuid);
+    if (found) { upsertScene(db, found); return; }
+    if (!(j.links?.next ?? j.next_page_url)) return;
+  }
 }
 
 /** Une sortie sous embargo a son DÉTAIL masqué (404) mais reste présente dans la
@@ -101,13 +114,25 @@ function upsertEvent(db: DB, d: any): void {
 }
 
 function upsertScene(db: DB, d: any): void {
+  // On synchronise l'IMAGE (hero) et les métadonnées, mais on PRÉSERVE les
+  // settings existants (contenu éditorial riche seedé côté site). Le Dashboard
+  // ne porte qu'un sous-ensemble du contenu : on ne l'écrase pas.
+  const hero = d.hero?.url ?? d.hero_url ?? null;
+  const gallery = Array.isArray(d.gallery) ? d.gallery.map((g: any) => g?.url ?? g).filter(Boolean)
+    : Array.isArray(d.settings?.gallery) ? d.settings.gallery.map((g: any) => g?.url ?? g).filter(Boolean)
+    : null;
   db.prepare(`
     INSERT INTO scenes (uuid, key, palette, intensity, hero_path, ambient_path, headline, settings)
     VALUES (@uuid,@key,@palette,@intensity,@hero,@ambient,@headline,@settings)
-    ON CONFLICT(key) DO UPDATE SET palette=@palette,intensity=@intensity,hero_path=@hero,ambient_path=@ambient,headline=@headline,settings=@settings
+    ON CONFLICT(key) DO UPDATE SET hero_path=@hero, headline=COALESCE(@headline, headline),
+      settings=CASE WHEN @gallery IS NOT NULL
+        THEN json_set(COALESCE(settings,'{}'), '$.gallery', json(@gallery))
+        ELSE settings END
   `).run({
     uuid: d.uuid, key: d.key, palette: d.palette ? JSON.stringify(d.palette) : null,
-    intensity: d.intensity ?? 'medium', hero: d.hero_url ?? null, ambient: d.ambient_url ?? null,
-    headline: d.headline ?? null, settings: d.settings ? JSON.stringify(d.settings) : null,
+    intensity: d.intensity ?? 'medium', hero, ambient: d.ambient_url ?? d.ambient_audio?.url ?? null,
+    headline: d.headline ?? null,
+    settings: JSON.stringify(gallery ? { gallery } : (d.settings ?? {})),
+    gallery: gallery ? JSON.stringify(gallery) : null,
   });
 }
