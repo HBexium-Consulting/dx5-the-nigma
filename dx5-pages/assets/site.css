@@ -253,3 +253,12 @@ html.is-pg body {
 .wordmark { display: inline-flex; align-items: center; }
 .wordmark .brand-logo { height: 26px; width: auto; display: block; border-radius: 0; }
 @media (max-width: 760px) { .wordmark .brand-logo { height: 23px; } }
+
+/* ── logo mieux détaché : halo sombre + léger fondu dans le coin de l'entête ── */
+.wordmark .brand-logo { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); }
+.top { position: fixed; }
+.top::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 220px; height: 100%;
+  background: radial-gradient(130px 90px at 36px 50%, rgba(0, 0, 0, 0.55), transparent 72%);
+  border-radius: 12px 0 0 12px; pointer-events: none; z-index: -1;
+}
