@@ -27,6 +27,12 @@ export function softDelete(db: DB, entity: string, uuid: string): void {
   else if (entity === 'scene') db.prepare('DELETE FROM scenes WHERE uuid = ?').run(uuid);
 }
 
+function ytFromLinks(links: any[]): string | null {
+  const yt = (links ?? []).find((l) => (l.platform ?? '').toLowerCase() === 'youtube');
+  const m = yt?.url?.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+  return m ? m[1] : null;  // seulement si l'URL cible une vidéo (sinon chaîne → null)
+}
+
 function upsertRelease(db: DB, d: any): void {
   db.prepare(`
     INSERT INTO releases (uuid, slug, type, title, subtitle, description, cover_path, release_date, published_at, status, credits, deleted_at, updated_at)
@@ -35,7 +41,7 @@ function upsertRelease(db: DB, d: any): void {
       cover_path=@cover,release_date=@release_date,published_at=@published_at,status=@status,credits=@credits,deleted_at=NULL,updated_at=@updated
   `).run({
     uuid: d.uuid, slug: d.slug, type: d.type ?? 'album', title: d.title, subtitle: d.subtitle ?? null,
-    description: d.description ?? null, cover: d.cover_url ?? d.cover_path ?? null,
+    description: d.description ?? null, cover: d.cover?.url ?? d.cover_url ?? d.cover_path ?? null,
     release_date: d.release_date ?? null, published_at: d.published_at ?? null, status: d.status ?? 'draft',
     credits: d.credits ? JSON.stringify(d.credits) : null, updated: new Date().toISOString(),
   });
@@ -49,7 +55,7 @@ function upsertRelease(db: DB, d: any): void {
     `).run({
       uuid: t.uuid, rel: rel.id, position: t.position ?? 1, title: t.title, slug: t.slug ?? null,
       dur: t.duration_seconds ?? null, feat: t.featuring ?? null, lyrics: t.lyrics ?? null,
-      preview: t.preview_url ?? t.preview_path ?? null, yt: t.youtube_id ?? null, unlock: t.unlock_at ?? null,
+      preview: t.preview?.url ?? t.preview ?? null, yt: t.youtube_id ?? ytFromLinks(t.streaming_links) ?? null, unlock: t.unlock_at ?? null,
     });
   }
 }
@@ -65,7 +71,7 @@ function upsertEvent(db: DB, d: any): void {
     uuid: d.uuid, slug: d.slug, title: d.title, description: d.description ?? null, starts: d.starts_at,
     ends: d.ends_at ?? null, tz: d.timezone ?? 'UTC', venue: d.venue_name ?? null, city: d.city ?? null,
     country: d.country ?? null, status: d.status ?? 'scheduled', tmode: d.ticket_mode ?? 'none',
-    turl: d.ticket_url ?? null, cover: d.cover_url ?? null, published: d.published_at ?? null,
+    turl: d.ticket_url ?? null, cover: d.cover?.url ?? d.cover_url ?? null, published: d.published_at ?? null,
   });
 }
 
