@@ -37,15 +37,16 @@
       const fmtDate = (iso) => { try { return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); } catch { return ''; } };
       const typeLabel = (t) => ({ single: 'SINGLE', album: 'ALBUM', ep: 'EP', mixtape: 'MIXTAPE' }[t] || 'SORTIE');
       up.innerHTML = list2.map((r, i) =>
-        '<article class="up-card">' +
+        `<article class="up-card">` +
         '<div class="up-cover">' +
         (r.cover ? `<img src="${r.cover}" alt="${r.title}" loading="lazy">` : '<span class="up-noart" aria-hidden="true">◇</span>') +
         '<span class="up-lock" aria-hidden="true">🔒</span></div>' +
         '<div class="up-body">' +
-        `<span class="mono kicker gold">${typeLabel(r.type)} — À VENIR</span>` +
+        `<span class="mono kicker">${typeLabel(r.type)} — À VENIR</span>` +
         `<h3><span data-scramble>${r.title}</span></h3>` +
         `<div class="up-count" data-date="${r.date}" role="timer" aria-live="off"></div>` +
         `<span class="mono ash up-when">DÉVERROUILLAGE LE ${fmtDate(r.date).toUpperCase()}</span>` +
+        (r.slug ? `<a class="up-more mono" href="/a-venir/${r.slug}">VOIR PLUS →</a>` : '') +
         '</div></article>').join('');
 
       const tick = () => {

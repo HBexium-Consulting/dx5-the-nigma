@@ -191,10 +191,40 @@ html.is-bib body {
 .up-body h3 { font-size: 19px; font-weight: 800; line-height: 1.12; letter-spacing: -0.01em; }
 .up-count { display: flex; gap: 10px; margin-top: 4px; }
 .up-count .cc { display: flex; flex-direction: column; align-items: center; line-height: 1; }
-.up-count .cc b { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--gold, #e8c76a); }
+.up-count .cc b { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: #e23b36; }
 .up-count .cc i { font-style: normal; font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; color: var(--ash); margin-top: 3px; }
-.up-live { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: #4cc2ff; }
-.up-when { font-size: 10px; margin-top: auto; }
-html.is-pg .up-card { border-color: rgba(216, 35, 31, 0.26); }
-html.is-pg .up-count .cc b { color: #e23b36; }
+.up-live { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: #e23b36; }
+.up-when { font-size: 10px; }
+.up-more { display: inline-block; margin-top: 4px; font-size: 11px; letter-spacing: 0.1em; color: #e23b36; text-decoration: none; border-bottom: 1px solid rgba(226, 59, 54, 0.5); padding-bottom: 1px; width: fit-content; transition: color 0.2s, border-color 0.2s; }
+.up-more:hover { color: #f4efef; border-color: #f4efef; }
+.up-card { border-color: rgba(216, 35, 31, 0.26); }
 @media (max-width: 520px) { .up-card { flex-direction: column; } .up-cover { width: 100%; flex-basis: 150px; height: 150px; } }
+
+/* ── Page « à venir » (teaser détaillé : compte à rebours ROUGE + projet) ── */
+.th-hero { position: relative; min-height: 78vh; display: flex; align-items: flex-end; padding: 150px 22px 54px; overflow: hidden; }
+.th-bg { position: absolute; inset: 0; background-size: cover; background-position: center; filter: grayscale(0.4) brightness(0.4) contrast(1.05); transform: scale(1.06); z-index: -2; }
+.th-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,7,8,0.55) 0%, rgba(10,7,8,0.8) 60%, var(--bg) 100%); }
+.th-bg--none { background: radial-gradient(800px 420px at 70% 10%, rgba(216,35,31,0.14), transparent 60%), var(--bg); filter: none; }
+.th-hero-in { position: relative; max-width: 880px; margin: 0 auto; width: 100%; display: flex; gap: 28px; align-items: flex-end; flex-wrap: wrap; }
+.th-back { display: inline-block; margin-bottom: 14px; color: var(--ash); text-decoration: none; letter-spacing: 0.12em; font-size: 11px; }
+.th-back:hover { color: #e23b36; }
+.th-art { position: relative; flex: 0 0 180px; width: 180px; height: 180px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.6); background: #0c0a0b; display: flex; align-items: center; justify-content: center; }
+.th-art img { width: 100%; height: 100%; object-fit: cover; }
+.th-art--none span:first-child { font-size: 54px; color: rgba(216,35,31,0.4); }
+.th-lock { position: absolute; right: 9px; bottom: 8px; font-size: 18px; filter: drop-shadow(0 1px 3px #000); }
+.th-head { flex: 1 1 320px; min-width: 0; }
+.th-head h1 { font-size: clamp(32px, 6vw, 58px); line-height: 1.02; font-weight: 800; letter-spacing: -0.02em; margin: 8px 0 18px; }
+.th-count { display: flex; gap: 16px; flex-wrap: wrap; }
+.th-count .cc { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+.th-count .cc b { font-size: clamp(30px, 6vw, 46px); font-weight: 800; font-variant-numeric: tabular-nums; color: #e23b36; text-shadow: 0 2px 20px rgba(226,59,54,0.4); }
+.th-count .cc i { font-style: normal; font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--ash); margin-top: 6px; }
+.th-live { font-family: var(--mono); letter-spacing: 0.12em; color: #e23b36; font-size: 20px; }
+.th-when { display: block; margin-top: 14px; font-size: 11px; letter-spacing: 0.12em; }
+.th-info { max-width: 880px; margin: 0 auto; padding: 20px 22px 70px; }
+.th-block { margin-bottom: 40px; }
+.th-block h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; margin-bottom: 14px; }
+.th-meta dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 18px 24px; border-top: 1px solid var(--line); padding-top: 22px; margin-bottom: 40px; }
+.th-meta dt { font-size: 10px; letter-spacing: 0.14em; margin-bottom: 6px; }
+.th-meta dd { font-size: 17px; font-weight: 700; }
+.th-meta .hot { color: #e23b36; }
+.th-note p { margin-bottom: 18px; }

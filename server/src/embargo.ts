@@ -62,8 +62,8 @@ export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any
   const unique = tracks.filter((t) => { const k = (t.n || '').toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
   const lib = sceneSettings(db, 'library');
   const upcoming = upcomingReleases(db).map((r) => ({
-    title: r.title, type: r.type ?? 'release', cover: r.cover_path ?? null,
-    date: r.published_at, releaseDate: r.release_date ?? null,
+    title: r.title, slug: r.slug, type: r.type ?? 'release', cover: r.cover_path ?? null,
+    date: r.published_at, releaseDate: r.release_date ?? null, description: r.description ?? null,
   }));
   return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [], upcoming };
 }

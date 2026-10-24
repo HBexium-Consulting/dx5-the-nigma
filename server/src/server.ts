@@ -6,6 +6,7 @@ import { config } from './config.ts';
 import { registerWebhook } from './routes/webhook.ts';
 import { registerForms } from './routes/forms.ts';
 import { renderHome } from './render.ts';
+import { renderTeaser, teaserBySlug } from './teaser.ts';
 import { libraryPayload } from './embargo.ts';
 
 const db = openDb(config.dbPath);
@@ -34,6 +35,13 @@ app.get('/', (_req, reply) => reply.type('text/html').send(renderHome(db)));
 // bibliothèque : HTML avec la librairie injectée (base, embargo respecté)
 app.get('/bibliotheque/', (_req, reply) =>
   reply.type('text/html').send(injectLib(F + 'dx5-bibliotheque/index.html')));
+
+// page « à venir » d'une sortie programmée (teaser + compte à rebours rouge)
+app.get('/a-venir/:slug', (req, reply) => {
+  const rel = teaserBySlug(db, (req.params as any).slug);
+  if (!rel) return reply.code(404).type('text/html').send('<h1>404</h1>');
+  return reply.type('text/html').send(renderTeaser(rel));
+});
 
 // pages intérieures : /agenda/, /a-propos/, … (librairie injectée pour le lecteur)
 for (const slug of ['a-propos', 'agenda', 'ecrits', 'pro', 'contact', 'boutique', 'soutenir', 'actualites', 'suivre', 'mentions-legales', 'confidentialite']) {
