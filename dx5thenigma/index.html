@@ -41,11 +41,33 @@
     .footer-name { font-size: clamp(26px, 11.2vw, 60px); }
   }
 
-  /* ── « Trois mots, un code » : fond BLEU ROI, textes en noir (demande client) ── */
-  .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #1a3fd6 50.3%); }
-  .band .from-lime { background: linear-gradient(to bottom right, #1a3fd6 49.7%, transparent 50.3%); }
-  .s-motto .pin { background: #1a3fd6; }
-  .s-motto .motto-kicker, .s-motto .mw, .s-motto .motto-hint { color: #0a0708; }
+  /* ── « Trois mots, un code » : fond nuit FONDU noir/bleu, comme la bibliothèque ── */
+  .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #070b14 50.3%); }
+  .band .from-lime { background: linear-gradient(to bottom right, #070b14 49.7%, transparent 50.3%); }
+  .s-motto .pin {
+    background:
+      radial-gradient(900px 480px at 78% 12%, rgba(76, 194, 255, 0.12), transparent 60%),
+      radial-gradient(700px 420px at 14% 86%, rgba(76, 194, 255, 0.07), transparent 65%),
+      #070b14;
+  }
+  .s-motto .motto-kicker, .s-motto .motto-hint { color: #8da0bf; }
+  .s-motto .mw { color: #e23b36; }
+
+  /* ── fonds noirs : les écritures display passent en ROUGE (cohérence logo) ──
+     Les textes de lecture (descriptions, citations) restent clairs pour la lisibilité. */
+  .clock-accroche { color: #e23b36; }
+  .fill-text .fc.on { color: #e23b36; }          /* manifeste : l'encrage se fait en rouge */
+  .box-svg path { stroke: #d8231f; }              /* l'ovale tracé autour de « déverrouille » */
+  .night-line .hl { color: #e23b36; }             /* « Une énigme, 3 clés » */
+  .psteps h3 { color: #e23b36; }                  /* Le signal / Le déchiffrement / La révélation */
+  .steps-cta a { color: #e23b36; }
+  .cta-oval path { stroke: #d8231f; }
+  .final-text .fs { color: #e23b36; }             /* Pas de posture / formule / filtre */
+  .pill-svg path { stroke: #d8231f; }
+  .q-glyph { color: #d8231f; }                    /* le guillemet géant */
+  .q-fig { color: #e23b36; }                      /* le chiffre « 14 pays » */
+  .footer-mail { color: #e23b36; }
+  .footer-mail-text::after { background: #e23b36; }
 
   /* ── wordmark central (DX-5 THE NIGMA) agrandi sur l'accueil ── */
   .hero-kicker {
