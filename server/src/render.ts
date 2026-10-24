@@ -18,7 +18,12 @@ export function renderHome(db: DB): string {
 
   // Images pilotées par la médiathèque du Dashboard (repli sur les images locales).
   const media = sceneMedia(db, 'home');
-  if (media.hero) html = html.replaceAll('src="images/hero.jpg"', `src="${esc(media.hero)}"`);
+  if (media.hero) {
+    html = html.replaceAll('src="images/hero.jpg"', `src="${esc(media.hero)}"`);
+    // content-inject.js repose l'image centrale depuis SITE_CONTENT.hook.image :
+    // on surcharge donc aussi le contenu injecté, sinon le JS annule le remplacement.
+    if (content.hook) content.hook = { ...content.hook, image: media.hero };
+  }
   if (media.gallery.length) {
     let i = 0;
     html = html.replace(/src="images\/clock-\d+\.jpg"/g, () => `src="${esc(media.gallery[i++ % media.gallery.length])}"`);
