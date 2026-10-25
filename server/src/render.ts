@@ -30,7 +30,9 @@ export function renderHome(db: DB): string {
   const media = sceneMedia(db, 'home');
   if (media.hero) html = html.split('images/hero.jpg').join(media.hero);
   if (media.gallery.length) {
-    const G = media.gallery;
+    // On borne le nombre d'images chargées (horloge = 12 visuels + variété) pour
+    // ne pas saturer le serveur média quand la galerie auto est grande.
+    const G = media.gallery.slice(0, 18);
     let ci = 0;
     html = html.replace(/images\/clock-\d+\.jpg/g, () => G[ci++ % G.length]);  // horloge : 12 visuels distincts
     let gi = 0;
