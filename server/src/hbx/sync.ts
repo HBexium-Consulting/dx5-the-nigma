@@ -127,25 +127,21 @@ function upsertEvent(db: DB, d: any): void {
 }
 
 function upsertScene(db: DB, d: any): void {
-  // On synchronise l'IMAGE (hero) et les métadonnées, mais on PRÉSERVE les
-  // settings existants (contenu éditorial riche seedé côté site). Le Dashboard
-  // ne porte qu'un sous-ensemble du contenu : on ne l'écrase pas.
+  // La scène du Dashboard est la SOURCE des champs éditables + de l'image hero +
+  // de la galerie. On stocke ses settings tels quels (le site a sa base craftée
+  // en repli) ; la galerie est résolue en URLs (ce que lit le rendu).
   const hero = d.hero?.url ?? d.hero_url ?? null;
-  const gallery = Array.isArray(d.gallery) ? d.gallery.map((g: any) => g?.url ?? g).filter(Boolean)
-    : Array.isArray(d.settings?.gallery) ? d.settings.gallery.map((g: any) => g?.url ?? g).filter(Boolean)
-    : null;
+  const gallery = Array.isArray(d.gallery) ? d.gallery.map((g: any) => g?.url ?? g).filter(Boolean) : [];
+  const settings: Record<string, unknown> = { ...(d.settings ?? {}) };
+  if (gallery.length) settings.gallery = gallery; else delete settings.gallery;
   db.prepare(`
     INSERT INTO scenes (uuid, key, palette, intensity, hero_path, ambient_path, headline, settings)
     VALUES (@uuid,@key,@palette,@intensity,@hero,@ambient,@headline,@settings)
     ON CONFLICT(key) DO UPDATE SET hero_path=@hero, headline=COALESCE(@headline, headline),
-      settings=CASE WHEN @gallery IS NOT NULL
-        THEN json_set(COALESCE(settings,'{}'), '$.gallery', json(@gallery))
-        ELSE settings END
+      palette=@palette, intensity=@intensity, settings=@settings
   `).run({
     uuid: d.uuid, key: d.key, palette: d.palette ? JSON.stringify(d.palette) : null,
     intensity: d.intensity ?? 'medium', hero, ambient: d.ambient_url ?? d.ambient_audio?.url ?? null,
-    headline: d.headline ?? null,
-    settings: JSON.stringify(gallery ? { gallery } : (d.settings ?? {})),
-    gallery: gallery ? JSON.stringify(gallery) : null,
+    headline: d.headline ?? null, settings: JSON.stringify(settings),
   });
 }

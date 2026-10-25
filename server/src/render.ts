@@ -5,9 +5,33 @@ import { libraryPayload, sceneSettings, sceneMedia } from './embargo.ts';
 
 /** Rend l'accueil immersif en INJECTANT les données depuis la base (comme le
  *  faisait la vue serveur) : SEO réglé, contenu piloté par le Dashboard. */
+/** Applique les champs ÉDITABLES de la scène `home` (API Dashboard) par-dessus le
+ *  contenu crafté de base. Ainsi tout ce que le Dashboard expose devient pilotable,
+ *  et ce qu'il n'expose pas garde sa valeur de base (rien ne casse). */
+function applyHomeOverrides(base: any, d: any): any {
+  const c = structuredClone(base);
+  const str = (v: unknown) => typeof v === 'string' && v.trim() !== '';
+  c.brand ??= {}; c.contact ??= {}; c.universes ??= {};
+  if (str(d.kicker)) c.brand.kicker = d.kicker;
+  if (str(d.copyright)) c.brand.copyright = d.copyright;
+  if (str(d.signature)) c.brand.signature = d.signature;
+  if (str(d.contact_email)) c.contact.email = d.contact_email;
+  if (str(d.footer_kicker)) c.contact.kicker = d.footer_kicker;
+  if (str(d.footer_reassurance)) c.contact.reassurance = d.footer_reassurance;
+  if (Array.isArray(d.blocks) && d.blocks.length && Array.isArray(c.universes.items)) {
+    c.universes.items = c.universes.items.map((it: any, i: number) => {
+      const b = d.blocks[i];
+      return b ? { ...it, name: str(b.title) ? b.title : it.name, desc: str(b.text) ? b.text : it.desc } : it;
+    });
+  }
+  return c;
+}
+
 export function renderHome(db: DB): string {
   let html = readFileSync(config.frontRoot + 'dx5thenigma/index.html', 'utf8');
-  const content = sceneSettings(db, 'home') ?? {};
+  // Base = contenu crafté (fichier) ; surcharge = champs éditables de la scène API.
+  const base = JSON.parse(readFileSync(new URL('../data/home-content.json', import.meta.url), 'utf8'));
+  const content = applyHomeOverrides(base, sceneSettings(db, 'home') ?? {});
   const lib = libraryPayload(db);
   const title = content?.brand?.title ?? 'DX-5 The Nigma';
   const desc = content?.brand?.description ?? '';
