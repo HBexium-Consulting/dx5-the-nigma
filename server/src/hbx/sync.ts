@@ -15,6 +15,19 @@ export async function pullEntity(db: DB, entity: string, uuid: string): Promise<
   upsertEvent(db, json.data ?? json);
 }
 
+/** Rafraîchit TOUTES les scènes depuis la liste. Les galeries dépendent de la
+ *  médiathèque (une image supprimée/ajoutée n'émet pas de « changement de scène »)
+ *  — on re-tire donc l'état complet des scènes à chaque réconciliation. */
+export async function refreshScenes(db: DB): Promise<void> {
+  for (let page = 1; page <= 5; page++) {
+    const res = await hbxGet('scenes', { page: String(page), per_page: '100' });
+    if (!res.ok) return;
+    const j: any = await res.json();
+    for (const sc of j.data ?? []) upsertScene(db, sc);
+    if (!(j.links?.next ?? j.next_page_url)) return;
+  }
+}
+
 /** Le DÉTAIL des scènes est masqué (404) : hero + settings ne vivent que dans la
  *  LISTE. On y retrouve la scène et on met à jour (par clé) — sans supprimer. */
 async function pullScene(db: DB, uuid: string): Promise<void> {
