@@ -16,23 +16,29 @@ export function renderHome(db: DB): string {
   html = html.replace('content="Site généré depuis le template Site Immersif."', `content="${esc(desc)}"`);
   html = html.replace('href="bibliotheque/"', 'href="/bibliotheque/"');
 
-  // Images pilotées par la médiathèque du Dashboard (repli sur les images locales).
-  const media = sceneMedia(db, 'home');
-  if (media.hero) {
-    html = html.replaceAll('src="images/hero.jpg"', `src="${esc(media.hero)}"`);
-    // content-inject.js repose l'image centrale depuis SITE_CONTENT.hook.image :
-    // on surcharge donc aussi le contenu injecté, sinon le JS annule le remplacement.
-    if (content.hook) content.hook = { ...content.hook, image: media.hero };
-  }
-  if (media.gallery.length) {
-    let i = 0;
-    html = html.replace(/src="images\/clock-\d+\.jpg"/g, () => `src="${esc(media.gallery[i++ % media.gallery.length])}"`);
-  }
+  // Injection du contenu (SITE_CONTENT) AVANT le remplacement des images : ainsi
+  // le JSON embarqué est aussi balayé, et content-inject.js pose des URLs Dashboard.
   html = html.replace(
     `  <script src="/bibliotheque/data.js"></script>\n  <script src="/assets/hbx-player.js"></script>\n  <script src="content.js"></script>`,
     `  <script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>\n` +
     `  <script src="/assets/hbx-player.js"></script>\n  <script src="/js/content-inject.js"></script>`
   );
+
+  // ── Images 100 % pilotées par la médiathèque du Dashboard ──
+  // hero : image centrale ; gallery[] : TOUTES les autres photos de l'accueil
+  // (horloge, floaters, pièces, trail, placeholders picsum). Repli local si vide.
+  const media = sceneMedia(db, 'home');
+  if (media.hero) html = html.split('images/hero.jpg').join(media.hero);
+  if (media.gallery.length) {
+    const G = media.gallery;
+    let ci = 0;
+    html = html.replace(/images\/clock-\d+\.jpg/g, () => G[ci++ % G.length]);  // horloge : 12 visuels distincts
+    let gi = 0;
+    html = html.replace(
+      /https?:\/\/picsum\.photos\/[^"'()\s\\]+|images\/(?:fl|p|t)-\d+\.jpg|images\/enigme-3cles\.jpg/g,
+      () => G[gi++ % G.length],
+    );
+  }
   return html;
 }
 
