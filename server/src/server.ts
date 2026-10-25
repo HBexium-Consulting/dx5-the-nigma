@@ -8,6 +8,8 @@ import { registerForms } from './routes/forms.ts';
 import { renderHome } from './render.ts';
 import { renderTeaser, teaserBySlug } from './teaser.ts';
 import { libraryPayload } from './embargo.ts';
+import { reconcile } from './hbx/reconcile.ts';
+import { outboxFlush } from './hbx/outbox.ts';
 
 const db = openDb(config.dbPath);
 const app = Fastify({ logger: true, bodyLimit: 1_048_576 });
@@ -63,4 +65,16 @@ function injectLib(path: string): string {
 }
 
 const port = config.port;
-app.listen({ port, host: '0.0.0.0' }).then(() => app.log.info(`DX-5 sur :${port}`));
+app.listen({ port, host: '0.0.0.0' }).then(() => {
+  app.log.info(`DX-5 sur :${port}`);
+  // Synchro quasi-instantanée : le service lui-même interroge le Dashboard
+  // (changements + scènes/galeries) à intervalle court. UNE SEULE connexion à la
+  // base (le service) → aucune contention concurrente (plus de crons séparés).
+  const RECONCILE_MS = Number(process.env.RECONCILE_MS ?? 5000);
+  const loop = (fn: () => Promise<unknown>, ms: number, tag: string) => {
+    const tick = () => fn().catch((e) => app.log.error({ err: String(e) }, tag)).finally(() => setTimeout(tick, ms));
+    setTimeout(tick, ms);
+  };
+  loop(() => reconcile(db), RECONCILE_MS, 'reconcile');   // changements + galeries ~5 s
+  loop(() => outboxFlush(db), 60_000, 'outbox');          // file sortante (formulaires) ~60 s
+});
