@@ -75,9 +75,19 @@ export function sceneSettings(db: DB, key: string): any | null {
 
 /** Médias d'une scène pilotés par la médiathèque du Dashboard : image hero et
  *  galerie (si fournie). Sert à rendre les images du site éditables côté Dashboard. */
-export function sceneMedia(db: DB, key: string): { hero: string | null; gallery: string[] } {
+export function sceneMedia(db: DB, key: string): { hero: string | null; gallery: string[]; zones: Record<string, string[]> } {
   const row = db.prepare('SELECT hero_path, settings FROM scenes WHERE key = ?').get(key) as any;
   let gallery: string[] = [];
-  try { const s = row?.settings ? JSON.parse(row.settings) : {}; if (Array.isArray(s.gallery)) gallery = s.gallery.filter(Boolean); } catch { /* ignore */ }
-  return { hero: row?.hero_path ?? null, gallery };
+  const zones: Record<string, string[]> = {};
+  try {
+    const s = row?.settings ? JSON.parse(row.settings) : {};
+    if (Array.isArray(s.gallery)) gallery = s.gallery.filter(Boolean);
+    // Zones par section (hero, le-dossier, …) : URLs déjà versionnées par le Dashboard.
+    if (s.zones && typeof s.zones === 'object' && !Array.isArray(s.zones)) {
+      for (const [k, v] of Object.entries(s.zones)) {
+        if (Array.isArray(v)) zones[k] = (v as unknown[]).filter((u): u is string => typeof u === 'string' && u !== '');
+      }
+    }
+  } catch { /* ignore */ }
+  return { hero: row?.hero_path ?? null, gallery, zones };
 }
