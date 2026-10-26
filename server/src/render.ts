@@ -33,6 +33,14 @@ export function renderHome(db: DB): string {
   const base = JSON.parse(readFileSync(new URL('../data/home-content.json', import.meta.url), 'utf8'));
   const content = applyHomeOverrides(base, sceneSettings(db, 'home') ?? {});
   const lib = libraryPayload(db);
+
+  // ── Placement des images PAR SECTION (zones du Dashboard) ──
+  // Chaque image rangée sous une section de la médiathèque va dans SA zone du
+  // site : « hero » → l'horloge, « le dossier » → les pièces, etc. Fin du
+  // placement positionnel qui décalait « héros du site » ≠ « hero du Dashboard ».
+  const media = sceneMedia(db, 'home');
+  applyZones(content, media);
+
   const title = content?.brand?.title ?? 'DX-5 The Nigma';
   const desc = content?.brand?.description ?? '';
 
@@ -48,14 +56,12 @@ export function renderHome(db: DB): string {
     `  <script src="/assets/hbx-player.js"></script>\n  <script src="/js/content-inject.js"></script>`
   );
 
-  // ── Images 100 % pilotées par la médiathèque du Dashboard ──
-  // hero : image centrale ; gallery[] : TOUTES les autres photos de l'accueil
-  // (horloge, floaters, pièces, trail, placeholders picsum). Repli local si vide.
-  const media = sceneMedia(db, 'home');
+  // ── Repli positionnel (galerie à plat) ──
+  // Pour les images ENCORE locales : markup brut et champs non couverts par une
+  // zone. Les URLs Dashboard posées par applyZones ne correspondent pas à
+  // `images/…` → elles ne sont JAMAIS écrasées ici.
   if (media.hero) html = html.split('images/hero.jpg').join(media.hero);
   if (media.gallery.length) {
-    // On borne le nombre d'images chargées (horloge = 12 visuels + variété) pour
-    // ne pas saturer le serveur média quand la galerie auto est grande.
     const G = media.gallery.slice(0, 18);
     let ci = 0;
     html = html.replace(/images\/clock-\d+\.jpg/g, () => G[ci++ % G.length]);  // horloge : 12 visuels distincts
@@ -66,6 +72,40 @@ export function renderHome(db: DB): string {
     );
   }
   return html;
+}
+
+/** Place les images PAR SECTION (zones du Dashboard) dans le modèle de contenu.
+ *  content-inject.js lit ensuite ces champs pour poser chaque image à sa place.
+ *  Repli silencieux si une zone est absente : le comportement de base est gardé. */
+function applyZones(content: any, media: { hero: string | null; zones: Record<string, string[]> }): void {
+  const Z = media.zones || {};
+  const basename = (u: string): string => {
+    try { return new URL(u).pathname.split('/').pop() || u; } catch { return (u.split('?')[0].split('/').pop()) || u; }
+  };
+
+  // HÉROS : image centrale = hero dédié de la scène ; floaters (l'horloge) =
+  // le RESTE de la section « hero », sans doublonner l'image centrale.
+  const hero = Array.isArray(Z.hero) ? Z.hero : [];
+  content.hook ??= {};
+  if (media.hero) content.hook.image = media.hero;
+  else if (hero[0]) content.hook.image = hero[0];
+  const centralBase = content.hook.image ? basename(content.hook.image) : null;
+  const floaters = hero.filter((u) => basename(u) !== centralBase);
+  if (floaters.length) content.hook.floaters = floaters.slice(0, 12);
+
+  // LE DOSSIER — pièces à conviction : images par section, titres/meta gardés.
+  const dossier = Z['le-dossier-pieces-a-conviction'] || [];
+  if (dossier.length && Array.isArray(content.proof?.projects)) {
+    content.proof.projects = content.proof.projects.map((p: any, i: number) => (dossier[i] ? { ...p, img: dossier[i] } : p));
+  }
+
+  // UNE ÉNIGME, 3 CLÉS : visuel de la section processus.
+  const enigme = Z['une-enigme-3-cles'] || [];
+  if (enigme[0]) { content.universes ??= {}; content.universes.image = enigme[0]; }
+
+  // GRANDE DÉRIVE (« Pas de posture… ») : traîne de bas de page.
+  const drift = Z['pas-de-posture-pas-de-formule-pas-de-filtre-juste-le-text'] || [];
+  if (drift.length) content.trail = drift;
 }
 
 const esc = (s: string) => s.replace(/"/g, '&quot;');

@@ -134,6 +134,11 @@ function upsertScene(db: DB, d: any): void {
   const gallery = Array.isArray(d.gallery) ? d.gallery.map((g: any) => g?.url ?? g).filter(Boolean) : [];
   const settings: Record<string, unknown> = { ...(d.settings ?? {}) };
   if (gallery.length) settings.gallery = gallery; else delete settings.gallery;
+  // Zones = images groupées par SECTION du site (API /v1/scenes). Permet de
+  // placer chaque image dans SA zone (hero, le dossier, …) au lieu d'un ordre
+  // positionnel — « rangé sous une section au Dashboard » = « affiché là ».
+  const zones = d.zones && typeof d.zones === 'object' && !Array.isArray(d.zones) ? d.zones : null;
+  if (zones) settings.zones = zones; else delete settings.zones;
   db.prepare(`
     INSERT INTO scenes (uuid, key, palette, intensity, hero_path, ambient_path, headline, settings)
     VALUES (@uuid,@key,@palette,@intensity,@hero,@ambient,@headline,@settings)
