@@ -93,10 +93,11 @@ function applyZones(content: any, media: { hero: string | null; zones: Record<st
   const floaters = hero.filter((u) => basename(u) !== centralBase);
   if (floaters.length) content.hook.floaters = floaters.slice(0, 12);
 
-  // LE DOSSIER — pièces à conviction : images par section, titres/meta gardés.
+  // LE DOSSIER — pièces à conviction : UNE carte par image de la section (pas de
+  // remplissage : on ne duplique pas une image d'une autre zone pour compléter).
   const dossier = Z['le-dossier-pieces-a-conviction'] || [];
   if (dossier.length && Array.isArray(content.proof?.projects)) {
-    content.proof.projects = content.proof.projects.map((p: any, i: number) => (dossier[i] ? { ...p, img: dossier[i] } : p));
+    content.proof.projects = dossier.map((img, i) => ({ ...(content.proof.projects[i] ?? content.proof.projects[0] ?? {}), img }));
   }
 
   // UNE ÉNIGME, 3 CLÉS : visuel de la section processus.
