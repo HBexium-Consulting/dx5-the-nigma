@@ -6,6 +6,9 @@ import { hbxGet } from './client.ts';
 export async function pullEntity(db: DB, entity: string, uuid: string): Promise<void> {
   if (entity === 'release') { await pullRelease(db, uuid); return; }
   if (entity === 'scene') { await pullScene(db, uuid); return; }
+  // Vidéos : l'API ne publie que la LISTE (pas de détail par uuid). Un
+  // changement quelconque (ajout/retrait/dépublication) → on re-tire l'ensemble.
+  if (entity === 'video') { await refreshVideos(db); return; }
   if (entity !== 'event') return;
 
   const res = await hbxGet(`events/${uuid}`);
@@ -26,6 +29,39 @@ export async function refreshScenes(db: DB): Promise<void> {
     for (const sc of j.data ?? []) upsertScene(db, sc);
     if (!(j.links?.next ?? j.next_page_url)) return;
   }
+}
+
+/** Rafraîchit TOUTES les vidéos publiées depuis la liste /v1/videos, puis retire
+ *  localement celles qui n'y sont plus (dépubliées/supprimées/réordonnées). 404 =
+ *  module désactivé → on ne touche à rien. */
+export async function refreshVideos(db: DB): Promise<void> {
+  const seen: string[] = [];
+  for (let page = 1; page <= 5; page++) {
+    const res = await hbxGet('videos', { page: String(page), per_page: '100' });
+    if (res.status === 404) return; // module « Vidéos » inactif : état local préservé
+    if (!res.ok) return;
+    const j: any = await res.json();
+    for (const v of j.data ?? []) { upsertVideo(db, v); seen.push(v.uuid); }
+    if (!(j.links?.next ?? j.next_page_url)) break;
+  }
+  if (seen.length) {
+    const placeholders = seen.map(() => '?').join(',');
+    db.prepare(`DELETE FROM videos WHERE uuid NOT IN (${placeholders})`).run(...seen);
+  } else {
+    db.prepare('DELETE FROM videos').run(); // aucune vidéo publiée
+  }
+}
+
+function upsertVideo(db: DB, d: any): void {
+  db.prepare(`
+    INSERT INTO videos (uuid, title, youtube_id, youtube_url, description, thumbnail_url, position, deleted_at)
+    VALUES (@uuid,@title,@yt,@url,@desc,@thumb,@position,NULL)
+    ON CONFLICT(uuid) DO UPDATE SET title=@title, youtube_id=@yt, youtube_url=@url,
+      description=@desc, thumbnail_url=@thumb, position=@position, deleted_at=NULL
+  `).run({
+    uuid: d.uuid, title: d.title, yt: d.youtube_id ?? null, url: d.youtube_url ?? null,
+    desc: d.description ?? null, thumb: d.thumbnail_url ?? null, position: d.position ?? 0,
+  });
 }
 
 /** Le DÉTAIL des scènes est masqué (404) : hero + settings ne vivent que dans la
@@ -74,6 +110,7 @@ export function softDelete(db: DB, entity: string, uuid: string): void {
   if (entity === 'release') db.prepare('UPDATE releases SET deleted_at = ? WHERE uuid = ?').run(now, uuid);
   else if (entity === 'event') db.prepare('UPDATE events SET deleted_at = ? WHERE uuid = ?').run(now, uuid);
   else if (entity === 'scene') db.prepare('DELETE FROM scenes WHERE uuid = ?').run(uuid);
+  else if (entity === 'video') db.prepare('DELETE FROM videos WHERE uuid = ?').run(uuid);
 }
 
 function ytFromLinks(links: any[]): string | null {

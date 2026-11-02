@@ -44,7 +44,7 @@ export const isUnlocked = (t: any): boolean =>
   !t.unlock_at || new Date(t.unlock_at).getTime() <= Date.now();
 
 /** Données du lecteur persistant : extraits des titres publiés ET déverrouillés. */
-export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any[]; upcoming: any[] } {
+export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any[]; upcoming: any[]; videos: any[] } {
   const tracks: any[] = [];
   for (const rel of publishedReleases(db)) {
     for (const t of unlockedTracks(db, rel.id)) {
@@ -65,7 +65,15 @@ export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any
     title: r.title, slug: r.slug, type: r.type ?? 'release', cover: r.cover_path ?? null,
     date: r.published_at, releaseDate: r.release_date ?? null, description: r.description ?? null,
   }));
-  return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [], upcoming };
+  // Vidéos YouTube (module Vidéos du Dashboard) : le front les embarque en iframe
+  // (la lecture compte comme une vue YouTube). Lecture seule, ordre `position`.
+  const videos = db.prepare(
+    'SELECT title, youtube_id, youtube_url, description, thumbnail_url FROM videos WHERE deleted_at IS NULL ORDER BY position ASC, id ASC'
+  ).all().map((v: any) => ({
+    title: v.title, yt: v.youtube_id, url: v.youtube_url,
+    description: v.description ?? undefined, thumb: v.thumbnail_url ?? undefined,
+  }));
+  return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [], upcoming, videos };
 }
 
 export function sceneSettings(db: DB, key: string): any | null {

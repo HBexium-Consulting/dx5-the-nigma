@@ -38,6 +38,11 @@ export function openDb(path: string): DB {
       palette TEXT, intensity TEXT DEFAULT 'medium', hero_path TEXT, ambient_path TEXT,
       headline TEXT, settings TEXT
     );
+    CREATE TABLE IF NOT EXISTS videos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT UNIQUE NOT NULL, title TEXT NOT NULL,
+      youtube_id TEXT, youtube_url TEXT, description TEXT, thumbnail_url TEXT,
+      position INTEGER DEFAULT 0, deleted_at TEXT
+    );
     CREATE TABLE IF NOT EXISTS newsletter_subscribers (
       id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL, locale TEXT, source TEXT,
       confirmed_at TEXT, unsubscribed_at TEXT, token TEXT NOT NULL, created_at TEXT

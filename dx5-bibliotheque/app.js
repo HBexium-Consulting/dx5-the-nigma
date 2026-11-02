@@ -65,6 +65,7 @@
     }
 
     /* ── vidéothèque (façades locales, iframe au clic — géré par HBX) ── */
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const facade = (v) =>
       '<div class="vid">' +
       `<button class="facade" data-id="${v.id}" aria-label="Lire la vidéo : ${v.t}">` +
@@ -72,7 +73,20 @@
       (v.badge ? `<span class="f-badge ${v.badge === 'LIVE' ? 'red-b' : 'gold-b'}">${v.badge}</span>` : '') +
       '<span class="f-play" aria-hidden="true">▶</span></button>' +
       `<span class="v-title">${v.t}</span><span class="v-meta">${v.meta}</span></div>`;
-    document.getElementById('clipGrid').innerHTML = window.LIB.clips.map(facade).join('');
-    document.getElementById('liveGrid').innerHTML = window.LIB.live.map(facade).join('');
+    // Vidéos pilotées par le Dashboard (module « Vidéos ») : miniature YouTube,
+    // lecture via l'API YouTube (data-id = youtube_id → compte comme une vue YT).
+    const facadeYt = (v) =>
+      '<div class="vid">' +
+      `<button class="facade" data-id="${esc(v.yt)}" aria-label="Lire la vidéo : ${esc(v.title)}">` +
+      `<img src="${esc(v.thumb || ('https://img.youtube.com/vi/' + v.yt + '/hqdefault.jpg'))}" alt="" loading="lazy" width="480" height="270">` +
+      '<span class="f-play" aria-hidden="true">▶</span></button>' +
+      `<span class="v-title">${esc(v.title)}</span><span class="v-meta">${esc(v.description || '')}</span></div>`;
+    // Les clips officiels viennent du module « Vidéos » du Dashboard s'il en a ;
+    // sinon on retombe sur les clips curatés via les réglages de scène (legacy).
+    const dashVideos = (window.LIB.videos || []).filter((v) => v && v.yt);
+    document.getElementById('clipGrid').innerHTML = dashVideos.length
+      ? dashVideos.map(facadeYt).join('')
+      : (window.LIB.clips || []).map(facade).join('');
+    document.getElementById('liveGrid').innerHTML = (window.LIB.live || []).map(facade).join('');
   };
 })();
