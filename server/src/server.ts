@@ -7,8 +7,9 @@ import { registerWebhook } from './routes/webhook.ts';
 import { registerForms } from './routes/forms.ts';
 import { renderHome } from './render.ts';
 import { renderTeaser, teaserBySlug } from './teaser.ts';
-import { libraryPayload } from './embargo.ts';
+import { libraryPayload, pageOverrides } from './embargo.ts';
 import { reconcile } from './hbx/reconcile.ts';
+import { refreshPages } from './hbx/sync.ts';
 import { outboxFlush } from './hbx/outbox.ts';
 
 const db = openDb(config.dbPath);
@@ -47,7 +48,7 @@ app.get('/a-venir/:slug', (req, reply) => {
 
 // pages intérieures : /agenda/, /a-propos/, … (librairie injectée pour le lecteur)
 for (const slug of ['a-propos', 'agenda', 'ecrits', 'pro', 'contact', 'boutique', 'soutenir', 'actualites', 'suivre', 'mentions-legales', 'confidentialite']) {
-  const handler = (_req: any, reply: any) => reply.type('text/html').send(injectLib(F + `dx5-pages/${slug}/index.html`));
+  const handler = (_req: any, reply: any) => reply.type('text/html').send(injectPage(slug, F + `dx5-pages/${slug}/index.html`));
   app.get('/' + slug + '/', handler);
   app.get('/' + slug, (_req, reply) => reply.redirect('/' + slug + '/'));
 }
@@ -64,6 +65,16 @@ function injectLib(path: string): string {
   return html.replace('<script src="/bibliotheque/data.js"></script>', `<script>window.LIB=${lib};</script>`);
 }
 
+// Page intérieure : HTML d'origine (design INCHANGÉ) + injection des overrides du
+// Dashboard (window.PAGE_CONTENT) + le script qui les pose sur les éléments
+// marqués data-hbx. Sans override → page strictement identique à l'origine.
+function injectPage(slug: string, path: string): string {
+  const html = injectLib(path);
+  const pc = JSON.stringify(pageOverrides(db, slug)).replace(/</g, '\\u003c');
+  const tag = `<script>window.PAGE_CONTENT=${pc};</script>\n<script src="/assets/page-inject.js"></script>`;
+  return html.includes('</body>') ? html.replace('</body>', tag + '\n</body>') : html + tag;
+}
+
 const port = config.port;
 app.listen({ port, host: '0.0.0.0' }).then(() => {
   app.log.info(`DX-5 sur :${port}`);
@@ -77,4 +88,8 @@ app.listen({ port, host: '0.0.0.0' }).then(() => {
   };
   loop(() => reconcile(db), RECONCILE_MS, 'reconcile');   // changements + galeries ~5 s
   loop(() => outboxFlush(db), 60_000, 'outbox');          // file sortante (formulaires) ~60 s
+  // Overrides de contenu des pages (télécommande Dashboard) — rafraîchis souvent
+  // mais moins que les scènes (N+1 léger : liste + détail par page).
+  refreshPages(db).catch((e) => app.log.error({ err: String(e) }, 'pages:init'));
+  loop(() => refreshPages(db), 20_000, 'pages');
 });

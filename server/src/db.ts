@@ -66,6 +66,7 @@ export function openDb(path: string): DB {
       sent_at TEXT, created_at TEXT
     );
     CREATE TABLE IF NOT EXISTS hbx_sync_state (key TEXT PRIMARY KEY, value TEXT);
+    CREATE TABLE IF NOT EXISTS page_overrides (slug TEXT PRIMARY KEY, fields TEXT);
   `);
   return db;
 }

@@ -64,6 +64,34 @@ function upsertVideo(db: DB, d: any): void {
   });
 }
 
+/** Télécommande Dashboard → pages intérieures : tire les overrides {clé: valeur}
+ *  du bloc `site_content` de chaque page (/v1/pages) et les range par slug. Le
+ *  site les pose ensuite sur ses éléments marqués data-hbx (page-inject.js),
+ *  SANS toucher au design. 404 = module pages off → on ne touche à rien. */
+export async function refreshPages(db: DB): Promise<void> {
+  const list = await hbxGet('pages', { per_page: '100' });
+  if (list.status === 404) return;
+  if (!list.ok) return;
+  const lj: any = await list.json();
+  for (const row of lj.data ?? []) {
+    const slug = row?.slug;
+    if (!slug) continue;
+    const r = await hbxGet(`pages/${encodeURIComponent(slug)}`);
+    if (!r.ok) continue;
+    const d: any = (await r.json()).data ?? {};
+    const blocks: any[] = Array.isArray(d.blocks) ? d.blocks : [];
+    const sc = blocks.find((b) => (b?.type ?? '') === 'site_content');
+    const fields = sc?.settings?.fields ?? {};
+    const overrides: Record<string, string> = {};
+    for (const [k, f] of Object.entries(fields)) {
+      const v = (f as any)?.value;
+      if (typeof v === 'string' && v !== '') overrides[k] = v;
+    }
+    db.prepare('INSERT INTO page_overrides (slug, fields) VALUES (?,?) ON CONFLICT(slug) DO UPDATE SET fields=?')
+      .run(slug, JSON.stringify(overrides), JSON.stringify(overrides));
+  }
+}
+
 /** Le DÉTAIL des scènes est masqué (404) : hero + settings ne vivent que dans la
  *  LISTE. On y retrouve la scène et on met à jour (par clé) — sans supprimer. */
 async function pullScene(db: DB, uuid: string): Promise<void> {

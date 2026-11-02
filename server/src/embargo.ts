@@ -81,6 +81,18 @@ export function sceneSettings(db: DB, key: string): any | null {
   return row?.settings ? JSON.parse(row.settings) : null;
 }
 
+/** Télécommande Dashboard → page : overrides {clé: valeur} pour les éléments
+ *  marqués data-hbx d'une page. Vide = la page garde son contenu d'origine. */
+export function pageOverrides(db: DB, slug: string): Record<string, string> {
+  const row = db.prepare('SELECT fields FROM page_overrides WHERE slug = ?').get(slug) as any;
+  try {
+    const f = row?.fields ? JSON.parse(row.fields) : {};
+    return f && typeof f === 'object' && !Array.isArray(f) ? f : {};
+  } catch {
+    return {};
+  }
+}
+
 /** Médias d'une scène pilotés par la médiathèque du Dashboard : image hero et
  *  galerie (si fournie). Sert à rendre les images du site éditables côté Dashboard. */
 export function sceneMedia(db: DB, key: string): { hero: string | null; gallery: string[]; zones: Record<string, string[]> } {
