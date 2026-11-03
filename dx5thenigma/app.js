@@ -20,11 +20,17 @@
      risqué au doigt. Choix assumé ici — mobile et tablette ont droit aux
      mêmes scènes que le desktop. `touch` reste calculé : il sert à la
      traînée souris, qui n'a pas de sens sans curseur. */
-  /* Mobile / tactile / petit écran → SCROLL NATIF (pas de scroll virtuel ni de
-     lerp qui retarde au fling et donne l'impression d'écrans noirs). Le scrub
-     épinglé reste, mais piloté par le défilement natif = bien plus fluide. */
+  /* Mobile / petit écran : on GARDE le moteur immersif (le mode natif cassait les
+     éléments animés au scrub, ex. l'image « 3 clés » restait minuscule). On le
+     rend plus fluide autrement : le défilement suit le doigt de bien plus près
+     (lerp accéléré, moins de retard = moins de « rien ne bouge/écran noir ») et
+     les scènes sont fortement raccourcies (moins de défilement vide). */
   const smallScreen = Math.min(innerWidth, innerHeight) <= 820 || innerWidth <= 920;
-  const staticMode = reduced || touch || smallScreen;
+  /* Mobile → SCROLL NATIF (fluide, léger, compact). Les quelques éléments
+     purement décoratifs qui n'ont de sens qu'au scrub (images « qui grandissent »)
+     sont neutralisés par la classe body.static côté CSS. */
+  const staticMode = reduced || smallScreen;
+  const followK = smallScreen ? 0.24 : 0.085;
 
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
@@ -231,7 +237,7 @@
     scenes.forEach((s) => {
       // Mobile : scènes nettement plus courtes (la « nuit » passe de 900vh à ~380vh)
       // → beaucoup moins de défilement « vide » (plus de pages noires), plus léger.
-      const mult = staticMode ? Math.max(1.6, 1 + (s.mult - 1) * 0.4) : s.mult;
+      const mult = smallScreen ? Math.max(1.6, 1 + (s.mult - 1) * 0.4) : s.mult;
       s.root.style.height = mult * vh + 'px';
       s.start = docTop(s.root);
       s.len = (mult - 1) * vh;
@@ -580,7 +586,7 @@
   function frame() {
     if (!paused) {
       target = scrollY;
-      current = staticMode ? target : lerp(current, target, 0.085);
+      current = staticMode ? target : lerp(current, target, followK);
       if (Math.abs(current - target) < 0.05) current = target;
       mx = lerp(mx, mxT, 0.06);
       my = lerp(my, myT, 0.06);

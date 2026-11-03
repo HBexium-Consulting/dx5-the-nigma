@@ -124,6 +124,14 @@
      les mêmes hauteurs en px : zéro impact visuel. */
   .s-hero { height: 300vh; } .s-fill { height: 350vh; } .s-motto { height: 400vh; }
   .s-night { height: 900vh; } .s-quote { height: 300vh; } .s-final { height: 260vh; }
+  /* ── Mobile (scroll natif) : neutraliser les images décoratives « qui grandissent »
+     au scrub — sans le scrub elles resteraient des vignettes parasites inline.
+     Le titre « Une énigme, 3 clés. » garde un espace propre à leur place. ── */
+  body.static .grow { width: .34em !important; height: 1em !important; min-width: 0 !important;
+    margin: 0 .06em !important; padding: 0 !important; display: inline-block !important;
+    vertical-align: baseline !important; overflow: hidden !important; border-radius: 0 !important;
+    box-shadow: none !important; transform: none !important; }
+  body.static .grow img { display: none !important; }
 
   .legacy-pasteboard { display: none; }   /* ancien pasteboard : requis par le moteur, invisible */
   .clock-mount { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; padding: 90px 16px 40px; }
