@@ -251,8 +251,8 @@ html.is-pg body {
 
 /* logo officiel dans l'entête partagé */
 .wordmark { display: inline-flex; align-items: center; }
-.wordmark .brand-logo { height: 26px; width: auto; display: block; border-radius: 0; }
-@media (max-width: 760px) { .wordmark .brand-logo { height: 23px; } }
+.wordmark .brand-logo { height: 34px; width: auto; display: block; border-radius: 0; }
+@media (max-width: 760px) { .wordmark .brand-logo { height: 30px; } }
 
 /* ── logo mieux détaché : halo sombre + léger fondu dans le coin de l'entête ── */
 .wordmark .brand-logo { filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.85)); }
