@@ -20,7 +20,11 @@
      risqué au doigt. Choix assumé ici — mobile et tablette ont droit aux
      mêmes scènes que le desktop. `touch` reste calculé : il sert à la
      traînée souris, qui n'a pas de sens sans curseur. */
-  const staticMode = reduced;
+  /* Mobile / tactile / petit écran → SCROLL NATIF (pas de scroll virtuel ni de
+     lerp qui retarde au fling et donne l'impression d'écrans noirs). Le scrub
+     épinglé reste, mais piloté par le défilement natif = bien plus fluide. */
+  const smallScreen = Math.min(innerWidth, innerHeight) <= 820 || innerWidth <= 920;
+  const staticMode = reduced || touch || smallScreen;
 
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
@@ -225,9 +229,12 @@
   }
   function measureScenes() {
     scenes.forEach((s) => {
-      s.root.style.height = s.mult * vh + 'px';
+      // Mobile : scènes nettement plus courtes (la « nuit » passe de 900vh à ~380vh)
+      // → beaucoup moins de défilement « vide » (plus de pages noires), plus léger.
+      const mult = staticMode ? Math.max(1.6, 1 + (s.mult - 1) * 0.4) : s.mult;
+      s.root.style.height = mult * vh + 'px';
       s.start = docTop(s.root);
-      s.len = (s.mult - 1) * vh;
+      s.len = (mult - 1) * vh;
       s.lastP = -1;
     });
   }
