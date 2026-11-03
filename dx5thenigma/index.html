@@ -7,6 +7,8 @@
   <meta name="description" content="Site généré depuis le template Site Immersif.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://admin.dx5thenigma.com" crossorigin>
+  <link rel="preload" as="image" href="logo.png" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="/assets/hbx-player.css">
@@ -132,6 +134,10 @@
     vertical-align: baseline !important; overflow: hidden !important; border-radius: 0 !important;
     box-shadow: none !important; transform: none !important; }
   body.static .grow img { display: none !important; }
+  /* Mobile : fondu d'entrée fluide des sections (opacité seule). */
+  body.static .to-reveal { opacity: 0; transition: opacity .7s ease; will-change: opacity; }
+  body.static .to-reveal.seen { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { body.static .to-reveal { opacity: 1 !important; transition: none; } }
 
   .legacy-pasteboard { display: none; }   /* ancien pasteboard : requis par le moteur, invisible */
   .clock-mount { position: absolute; inset: 0; display: grid; place-items: center; z-index: 2; padding: 90px 16px 40px; }

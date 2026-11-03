@@ -141,7 +141,7 @@ window.SITE_CONTENT = {
   if (hls.length === 2) { hls[0].textContent = C.hook.line2a; hls[1].textContent = C.hook.line2b; }
   const g1 = $('#grow1 img');
   if (g1) { g1.src = C.hook.image; g1.alt = C.hook.imageAlt; }
-  $$('.floaters .fl img').forEach((img, i) => { if (C.hook.floaters[i]) img.src = C.hook.floaters[i]; });
+  $$('.floaters .fl img').forEach((img, i) => { if (C.hook.floaters[i]) { img.loading = 'lazy'; img.decoding = 'async'; img.src = C.hook.floaters[i]; } });
 
   // 2 · positionnement (un span par mot)
   const intro = $('#spotIntro');
@@ -168,7 +168,7 @@ window.SITE_CONTENT = {
   if (grid && C.proof.layout === 'bento') {
     grid.className = 'bento-grid';
     grid.innerHTML = C.proof.features.map((f) =>
-      `<figure class="card${f.size ? ' b-' + f.size : ''}"><div class="card-img"><img src="${f.illu}" alt="${f.title}"></div><figcaption>${f.title}<span class="mono">${f.meta}</span></figcaption></figure>`
+      `<figure class="card${f.size ? ' b-' + f.size : ''}"><div class="card-img"><img src="${f.illu}" alt="${f.title}" loading="lazy" decoding="async"></div><figcaption>${f.title}<span class="mono">${f.meta}</span></figcaption></figure>`
     ).join('');
   } else if (grid) {
     grid.className = 'coll-grid';
@@ -176,7 +176,7 @@ window.SITE_CONTENT = {
     grid.innerHTML = SPEEDS.map((s, ci) =>
       `<div class="col" data-pspeed="${s}">` +
       C.proof.projects.slice(ci * 2, ci * 2 + 2).map((p) =>
-        `<figure class="card"><div class="card-img"><img src="${p.img}" alt="${p.title} — ${p.meta}"></div><figcaption>${p.title}<span class="mono">${p.meta}</span></figcaption></figure>`
+        `<figure class="card"><div class="card-img"><img src="${p.img}" alt="${p.title} — ${p.meta}" loading="lazy" decoding="async"></div><figcaption>${p.title}<span class="mono">${p.meta}</span></figcaption></figure>`
       ).join('') + '</div>'
     ).join('');
   }
@@ -216,7 +216,7 @@ window.SITE_CONTENT = {
   if (fs4) {
     fs4.innerHTML = `${C.objections.finale} <span class="pill" id="pillPhrase">${C.objections.pill}<svg class="pill-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="pillPath" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></span>`;
   }
-  $$('#trail img').forEach((img, i) => { img.src = C.trail[i % C.trail.length]; });
+  $$('#trail img').forEach((img, i) => { img.loading = 'lazy'; img.decoding = 'async'; img.src = C.trail[i % C.trail.length]; });
 
   // 10 · conversion
   set('.footer-kicker', C.contact.kicker);

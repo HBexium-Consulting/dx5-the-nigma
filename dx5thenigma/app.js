@@ -650,6 +650,18 @@
     $$('img').forEach((img) => {
       if (!img.complete) img.addEventListener('load', () => { clearTimeout(mt); mt = setTimeout(measure, 120); }, { once: true });
     });
+
+    // Priorité d'affichage : le hero (emblème + horloge) passe devant.
+    $$('.clock-center img, .brand-logo, .ch-ph img').forEach((i) => { try { i.fetchPriority = 'high'; } catch { /* */ } i.decoding = 'async'; });
+
+    // Mobile : fondu d'entrée des sections (opacité seule → n'interfère pas avec
+    // les transforms du moteur). Transition fluide section par section.
+    if (smallScreen && !reduced && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((es) => {
+        es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); } });
+      }, { threshold: 0.06, rootMargin: '0px 0px -6% 0px' });
+      $$('.scene, .collection').forEach((s, i) => { if (i > 0) { s.classList.add('to-reveal'); io.observe(s); } });
+    }
   }
 
   if (!staticMode) document.body.classList.add('is-smooth');
