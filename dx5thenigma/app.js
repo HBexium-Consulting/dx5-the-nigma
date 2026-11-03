@@ -25,17 +25,23 @@
      rend plus fluide autrement : le défilement suit le doigt de bien plus près
      (lerp accéléré, moins de retard = moins de « rien ne bouge/écran noir ») et
      les scènes sont fortement raccourcies (moins de défilement vide). */
-  const smallScreen = Math.min(innerWidth, innerHeight) <= 820 || innerWidth <= 920;
-  /* Mobile → SCROLL NATIF (fluide, léger, compact). Les quelques éléments
-     purement décoratifs qui n'ont de sens qu'au scrub (images « qui grandissent »)
-     sont neutralisés par la classe body.static côté CSS. */
-  const staticMode = reduced || smallScreen;
-  const followK = smallScreen ? 0.24 : 0.085;
+  // Mobile = tactile OU largeur étroite. (On NE se base PAS sur la hauteur : un
+  // desktop à faible hauteur — 1280×768 — n'est pas un mobile.)
+  const smallScreen = touch || innerWidth <= 820;
+  /* reduced-motion → version PLATE (aucun scrub ; contenu posé à plat par le CSS
+     body.static). Mobile → « nativeScrub » : le scroll reste NATIF (fluide, léger,
+     pas de wrapper fixe ni de lerp qui traîne) MAIS le scrub des scènes JOUE — la
+     dispersion des photos du hero et les croissances d'images sont donc bien
+     présentes. Desktop → scroll virtuel lissé (lerp). */
+  const staticMode = reduced;
+  const nativeScrub = smallScreen && !reduced;
+  const followK = 0.085;
 
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
   const mix = (a, b, t) => a + (b - a) * t;
   const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+  const easeIn = (t) => t * t;
   const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const seg = (p, a, b, e) => { const t = clamp((p - a) / (b - a), 0, 1); return e ? e(t) : t; };
 
@@ -235,12 +241,18 @@
   }
   function measureScenes() {
     scenes.forEach((s) => {
-      // Mobile : scènes nettement plus courtes (la « nuit » passe de 900vh à ~380vh)
-      // → beaucoup moins de défilement « vide » (plus de pages noires), plus léger.
-      const mult = smallScreen ? Math.max(1.6, 1 + (s.mult - 1) * 0.4) : s.mult;
+      // Mobile : scènes nettement plus courtes (moins de défilement vide/pages noires),
+      // SAUF le hero qui garde de la longueur pour que la dispersion des photos
+      // soit bien visible (sinon l'animation « passe » trop vite).
+      const factor = s.root.classList.contains('s-hero') ? 0.85 : 0.4;
+      const mult = smallScreen ? Math.max(1.6, 1 + (s.mult - 1) * factor) : s.mult;
       s.root.style.height = mult * vh + 'px';
       s.start = docTop(s.root);
-      s.len = (mult - 1) * vh;
+      // Mobile : on étire le scrub sur presque TOUTE la hauteur de la scène (le pin
+      // 100vh couvre donc le viewport avec son fond quasi tout du long) et on ne
+      // laisse qu'un léger tuilage (~0.15 écran) de release entre deux scènes.
+      // → supprime les ~1 écran « noirs » de transition. Desktop : comportement d'origine.
+      s.len = smallScreen ? Math.max(vh * 0.6, mult * vh - vh * 0.15) : (mult - 1) * vh;
       s.lastP = -1;
     });
   }
@@ -276,7 +288,48 @@
     });
   }
 
+  /* ─── HORLOGE : la SEULE couche visible du hero (la pasteboard est display:none).
+     Ses 12 photos se dispersent radialement hors écran quand on entre dans le site,
+     en s'effaçant ; l'emblème et l'anneau tiennent le centre puis cèdent la place à
+     la scène suivante PILE à la transition (aucun trou noir). C'est l'animation
+     d'ouverture — visible sur mobile ET desktop. */
+  const clockPhotos = $$('.ch-ph');
+  const clockCenter = $('.clock-center');
+  const clockRing = $('.clock-ring');
+  const clockAccroche = $('.clock-accroche');
+  let chDirs = [];
+  function measureClock() {
+    chDirs = clockPhotos.map((f) => {
+      const lx = parseFloat(f.style.left) || 50, ty = parseFloat(f.style.top) || 50;
+      const dx = lx - 50, dy = ty - 50;
+      const n = Math.max(0.001, Math.hypot(dx, dy));
+      return { x: dx / n, y: dy / n };
+    });
+  }
+
   addScene('.s-hero', (p) => {
+    /* ── HORLOGE (couche visible) : dispersion radiale des 12 photos hors écran,
+       en léger décalé, avec fondu. L'emblème + l'anneau tiennent le centre et ne
+       s'effacent qu'en toute fin (p≈0.82→1), pile quand la scène suivante arrive →
+       pas de hero « vide ». ── */
+    const far = Math.hypot(vw, vh);
+    clockPhotos.forEach((f, i) => {
+      const dir = chDirs[i] || { x: 0, y: -1 };
+      const t = seg(p, 0.08 + (i % 4) * 0.02, 0.74 + (i % 4) * 0.02, easeIn);
+      const dist = t * far * 0.62;
+      // on CONSERVE le translate(-50%,-50%) de centrage de la figure, puis on
+      // ajoute l'écartement (px écran) et l'échelle. À p=0 → identique au repos.
+      f.style.transform = `translate(-50%, -50%) translate3d(${(dir.x * dist).toFixed(1)}px, ${(dir.y * dist).toFixed(1)}px, 0) scale(${(1 - t * 0.35).toFixed(3)})`;
+      f.style.opacity = (1 - seg(p, 0.30, 0.70)).toFixed(3);
+    });
+    if (clockAccroche) clockAccroche.style.opacity = (1 - seg(p, 0.10, 0.30)).toFixed(3);
+    if (clockRing) clockRing.style.opacity = (1 - seg(p, 0.42, 0.62)).toFixed(3);
+    if (clockCenter) {
+      const hold = seg(p, 0.82, 1, easeIn);
+      clockCenter.style.opacity = (1 - hold).toFixed(3);
+      clockCenter.style.transform = `translate(-50%, -50%) scale(${(1 + seg(p, 0.05, 0.8) * 0.12 - hold * 0.12).toFixed(3)})`;
+    }
+
     /* on TRAVERSE le nuage : les visuels naissent petits et resserrés au
        centre, s'ouvrent vers leur place en grandissant, puis dérivent vers
        les bords. Une partie n'arrive qu'en cours de route. Il en reste donc
@@ -559,12 +612,15 @@
       measureScenes();
       grow1.measure(); grow2.measure();
       measureFloaters();
+      measureClock();
       measureMotto();
       measureArrivals();
     }
     if (!staticMode) refreshDraws();
     docH = wrapper.scrollHeight;
-    if (!staticMode) document.body.style.height = docH + 'px';
+    // Desktop (scroll virtuel) : la hauteur du body est posée manuellement. En
+    // nativeScrub, les scènes sont dans le flux normal → le body fait déjà docH.
+    if (!staticMode && !nativeScrub) document.body.style.height = docH + 'px';
     cacheReveals();
     cacheParallax();
   }
@@ -572,7 +628,9 @@
   /* ═══════════ RENDU ═══════════ */
   function render(pos) {
     if (!staticMode) {
-      wrapper.style.transform = `translate3d(0, ${-pos.toFixed(1)}px, 0)`;
+      // nativeScrub : PAS de transform du wrapper — c'est le scroll natif qui déplace
+      // la page ; l'épinglage des scènes (pin.transform) suffit à figer le contenu.
+      if (!nativeScrub) wrapper.style.transform = `translate3d(0, ${-pos.toFixed(1)}px, 0)`;
       renderScenes(pos);
       renderArrivals(pos);
       for (const px of pxCache) {
@@ -586,7 +644,9 @@
   function frame() {
     if (!paused) {
       target = scrollY;
-      current = staticMode ? target : lerp(current, target, followK);
+      // nativeScrub : current = target (le scrub suit le doigt à l'instant, aucun
+      // retard) → sensation native. Desktop seul : lissage par lerp.
+      current = (staticMode || nativeScrub) ? target : lerp(current, target, followK);
       if (Math.abs(current - target) < 0.05) current = target;
       mx = lerp(mx, mxT, 0.06);
       my = lerp(my, myT, 0.06);
@@ -664,7 +724,9 @@
     }
   }
 
-  if (!staticMode) document.body.classList.add('is-smooth');
+  // is-smooth → .smooth passe en position:fixed (scroll virtuel). PAS en nativeScrub :
+  // on veut .smooth dans le flux normal pour que le scroll natif défile les scènes.
+  if (!staticMode && !nativeScrub) document.body.classList.add('is-smooth');
 
   if (reduced) {
     loader.remove();

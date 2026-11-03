@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="/assets/hbx-player.css">
   <style>
+  /* Les photos de l'horloge se dispersent hors écran : on CLIPPE le débordement
+     horizontal pour qu'il n'y ait jamais de scroll/espace noir à droite. */
+  html { overflow-x: clip; }
   /* Sous-menu « MENU ▾ » — ajout hors feuille canonique du template.
      Placé HORS de .dock-nav pour rester visible sous 480 px (wordmark + MENU + CTA). */
   .dock-wordmark { white-space: nowrap; } /* sinon il se replie sur 3 lignes vers 1024 px */
