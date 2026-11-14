@@ -28,13 +28,11 @@
   // Mobile = tactile OU largeur étroite. (On NE se base PAS sur la hauteur : un
   // desktop à faible hauteur — 1280×768 — n'est pas un mobile.)
   const smallScreen = touch || innerWidth <= 820;
-  /* reduced-motion → version PLATE (aucun scrub ; contenu posé à plat par le CSS
-     body.static). Mobile → « nativeScrub » : le scroll reste NATIF (fluide, léger,
-     pas de wrapper fixe ni de lerp qui traîne) MAIS le scrub des scènes JOUE — la
-     dispersion des photos du hero et les croissances d'images sont donc bien
-     présentes. Desktop → scroll virtuel lissé (lerp). */
-  const staticMode = reduced;
-  const nativeScrub = smallScreen && !reduced;
+  /* Mobile/tablette ET reduced-motion → version PLATE : pas de scrub, pas
+     d'immersif, contenu posé à plat par le CSS body.static. Seule transition :
+     un fondu d'entrée section par section au scroll natif (.to-reveal/.seen,
+     cf. boot()). Desktop seul → scroll virtuel lissé (lerp) + scènes scrubées. */
+  const staticMode = reduced || smallScreen;
   const followK = 0.085;
 
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -240,19 +238,12 @@
     scenes.push({ root, pin: $('.pin', root), mult: +root.dataset.pin, start: 0, len: 1, update, lastP: -1 });
   }
   function measureScenes() {
+    // N'est appelée que si !staticMode (cf. measure()) — donc desktop uniquement :
+    // mobile est à plat, ces scènes scrubées ne jouent jamais pour lui.
     scenes.forEach((s) => {
-      // Mobile : scènes nettement plus courtes (moins de défilement vide/pages noires),
-      // SAUF le hero qui garde de la longueur pour que la dispersion des photos
-      // soit bien visible (sinon l'animation « passe » trop vite).
-      const factor = s.root.classList.contains('s-hero') ? 0.85 : 0.4;
-      const mult = smallScreen ? Math.max(1.6, 1 + (s.mult - 1) * factor) : s.mult;
-      s.root.style.height = mult * vh + 'px';
+      s.root.style.height = s.mult * vh + 'px';
       s.start = docTop(s.root);
-      // Mobile : on étire le scrub sur presque TOUTE la hauteur de la scène (le pin
-      // 100vh couvre donc le viewport avec son fond quasi tout du long) et on ne
-      // laisse qu'un léger tuilage (~0.15 écran) de release entre deux scènes.
-      // → supprime les ~1 écran « noirs » de transition. Desktop : comportement d'origine.
-      s.len = smallScreen ? Math.max(vh * 0.6, mult * vh - vh * 0.15) : (mult - 1) * vh;
+      s.len = (s.mult - 1) * vh;
       s.lastP = -1;
     });
   }
@@ -618,9 +609,7 @@
     }
     if (!staticMode) refreshDraws();
     docH = wrapper.scrollHeight;
-    // Desktop (scroll virtuel) : la hauteur du body est posée manuellement. En
-    // nativeScrub, les scènes sont dans le flux normal → le body fait déjà docH.
-    if (!staticMode && !nativeScrub) document.body.style.height = docH + 'px';
+    if (!staticMode) document.body.style.height = docH + 'px';
     cacheReveals();
     cacheParallax();
   }
@@ -628,9 +617,7 @@
   /* ═══════════ RENDU ═══════════ */
   function render(pos) {
     if (!staticMode) {
-      // nativeScrub : PAS de transform du wrapper — c'est le scroll natif qui déplace
-      // la page ; l'épinglage des scènes (pin.transform) suffit à figer le contenu.
-      if (!nativeScrub) wrapper.style.transform = `translate3d(0, ${-pos.toFixed(1)}px, 0)`;
+      wrapper.style.transform = `translate3d(0, ${-pos.toFixed(1)}px, 0)`;
       renderScenes(pos);
       renderArrivals(pos);
       for (const px of pxCache) {
@@ -644,9 +631,7 @@
   function frame() {
     if (!paused) {
       target = scrollY;
-      // nativeScrub : current = target (le scrub suit le doigt à l'instant, aucun
-      // retard) → sensation native. Desktop seul : lissage par lerp.
-      current = (staticMode || nativeScrub) ? target : lerp(current, target, followK);
+      current = staticMode ? target : lerp(current, target, followK);
       if (Math.abs(current - target) < 0.05) current = target;
       mx = lerp(mx, mxT, 0.06);
       my = lerp(my, myT, 0.06);
@@ -724,9 +709,8 @@
     }
   }
 
-  // is-smooth → .smooth passe en position:fixed (scroll virtuel). PAS en nativeScrub :
-  // on veut .smooth dans le flux normal pour que le scroll natif défile les scènes.
-  if (!staticMode && !nativeScrub) document.body.classList.add('is-smooth');
+  // is-smooth → .smooth passe en position:fixed (scroll virtuel, desktop seul).
+  if (!staticMode) document.body.classList.add('is-smooth');
 
   if (reduced) {
     loader.remove();
