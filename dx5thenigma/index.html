@@ -44,7 +44,7 @@
      des textes courts (« bonjour@exemple.fr », « Élise Aubert »). Les nôtres
      sont plus longs — sur mobile on abaisse le plancher, desktop inchangé. */
   @media (max-width: 700px) {
-    .footer-mail { font-size: clamp(17px, 7vw, 34px); }
+    .footer-mail { font-size: clamp(16px, 5.4vw, 21px); }
     .footer-name { font-size: clamp(26px, 11.2vw, 60px); }
   }
 
@@ -186,14 +186,20 @@
      à 120px dans la feuille canonique : on le resserre ici (override), sans
      toucher à styles.css. */
   .footer { padding-bottom: 40px; text-align: left; }
-  .footer-top { display: flex; align-items: center; justify-content: space-between; gap: clamp(28px, 5vw, 72px); }
+  /* Grille à deux colonnes ÉGALES : chaque bloc est centré DANS sa propre
+     colonne (pas collé aux bords du footer — ce qu'un flex space-between
+     aurait fait). */
+  .footer-top { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(28px, 5vw, 72px); }
   .footer-name[hidden] { display: none; }
-  .footer-logo { display: inline-block; flex: none; }
-  .footer-logo img { width: auto; height: clamp(76px, 8vw, 132px); border-radius: 0; animation: logoPulse 3.6s ease-in-out infinite; transform-origin: center; }
-  .footer-info { text-align: right; }
+  .footer-logo { display: inline-block; justify-self: center; }
+  .footer-logo img { width: auto; height: clamp(130px, 13vw, 230px); border-radius: 0; animation: logoPulse 3.6s ease-in-out infinite; transform-origin: center; }
+  .footer-info { text-align: center; }
   @media (max-width: 700px) {
-    .footer-top { flex-direction: column; align-items: flex-start; gap: 36px; }
-    .footer-info { text-align: left; }
+    .footer-top { grid-template-columns: 1fr; justify-items: center; gap: 36px; }
+    /* largeur bridée + centrée : évite que l'e-mail ne passe sous la pile de
+       boutons flottants (WhatsApp/booking/langue/thème), collée au bord droit. */
+    .footer-info { text-align: center; max-width: calc(100% - 96px); margin-inline: auto; }
+    .footer-logo img { height: clamp(110px, 24vw, 170px); }
   }
   @keyframes logoPulse {
     0%, 100% { filter: drop-shadow(0 0 0 rgba(216, 35, 31, 0)); transform: scale(1); }
