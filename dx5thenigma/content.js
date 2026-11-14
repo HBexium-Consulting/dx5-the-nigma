@@ -48,7 +48,7 @@ window.SITE_CONTENT = {
   },
 
   proof: {
-    layout: 'masonry',
+    layout: 'portrait',
     kicker: 'LE DOSSIER',
     title: 'Pièces à conviction',
     sub: 'Fragments du parcours classés comme des pièces d’archive.',
@@ -164,7 +164,13 @@ window.SITE_CONTENT = {
     head[3].textContent = C.proof.meta;
   }
   const grid = $('#collGrid');
-  if (grid && C.proof.layout === 'bento') {
+  if (grid && C.proof.layout === 'portrait') {
+    // colonnes portrait, défilement horizontal — comme « Sur scène » chez Ken FS
+    grid.className = 'proof-track';
+    grid.innerHTML = C.proof.projects.map((p) =>
+      `<figure class="pf"><div class="pf-img"><img src="${p.img}" alt="${p.title} — ${p.meta}" loading="lazy" decoding="async"></div><figcaption><b>${p.title}</b><span class="mono ash">${p.meta}</span></figcaption></figure>`
+    ).join('') + `<a class="pf-more" href="/galerie/">Toute la galerie<span aria-hidden="true">→</span></a>`;
+  } else if (grid && C.proof.layout === 'bento') {
     grid.className = 'bento-grid';
     grid.innerHTML = C.proof.features.map((f) =>
       `<figure class="card${f.size ? ' b-' + f.size : ''}"><div class="card-img"><img src="${f.illu}" alt="${f.title}" loading="lazy" decoding="async"></div><figcaption>${f.title}<span class="mono">${f.meta}</span></figcaption></figure>`

@@ -267,6 +267,35 @@ body.is-ready .fl img { transform: scale(1); }
 .card figcaption { margin-top: 12px; font-size: 19px; letter-spacing: -0.007em; }
 .card figcaption .mono { display: block; color: var(--ash); margin-top: 3px; }
 
+/* ═══ pièces à conviction en colonnes PORTRAIT, défilement horizontal
+   (comme « Sur scène » chez Ken FS) ═══ */
+.proof-track {
+  display: flex; gap: clamp(16px, 2vw, 26px);
+  overflow-x: auto; scroll-snap-type: x proximity;
+  padding: 2px 2px 16px; align-items: stretch;
+  position: relative; z-index: 2; -webkit-overflow-scrolling: touch;
+}
+.pf { flex: 0 0 auto; width: clamp(190px, 20vw, 250px); scroll-snap-align: start; }
+.pf-img { position: relative; overflow: hidden; border-radius: var(--radius); aspect-ratio: 3 / 4; }
+.pf-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .9s var(--ease-out); }
+.pf:hover .pf-img img { transform: scale(1.045); }
+.pf figcaption { margin-top: 12px; }
+.pf figcaption b { display: block; font-size: 16px; letter-spacing: -0.007em; font-weight: 500; }
+.pf figcaption span { display: block; color: var(--ash); margin-top: 4px; font-size: 11px; letter-spacing: 0.08em; }
+.pf-more {
+  flex: 0 0 auto; width: clamp(140px, 14vw, 180px); align-self: stretch;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  border: 1px solid var(--ink-faint); border-radius: var(--radius);
+  text-decoration: none; color: var(--ink); font-weight: 500; text-align: center; padding: 20px 14px;
+  transition: border-color .25s, color .25s;
+}
+.pf-more:hover { border-color: #e23b36; color: #e23b36; }
+.pf-more span { font-size: 22px; }
+@media (max-width: 760px) {
+  .pf { width: 150px; }
+  .pf-more { width: 110px; }
+}
+
 /* carte vedette : voyage du centre du titre vers sa case */
 #featuredCard { will-change: transform; position: relative; z-index: 3; }
 
