@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="fr" class="is-pg">
+<head>
+<script>document.documentElement.setAttribute("data-theme", localStorage.getItem("dx5-theme") || "dark");</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Galerie — DX-5 The Nigma</title>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/bibliotheque/styles.css">
+<link rel="stylesheet" href="/assets/hbx-player.css">
+<link rel="stylesheet" href="/assets/floating-cta.css">
+<style>
+.gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin: 10px 0 56px; }
+.gal-grid button { all: unset; cursor: zoom-in; display: block; position: relative; aspect-ratio: 3 / 4; overflow: hidden; border-radius: var(--radius); }
+.gal-grid img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s var(--ease-out, ease); }
+.gal-grid button:hover img { transform: scale(1.05); }
+.gal-cat-head { margin: 48px 0 6px; }
+.gal-cat-head:first-of-type { margin-top: 8px; }
+.gal-cat-lead { color: var(--ash); margin-bottom: 4px; }
+
+.gal-lightbox {
+  position: fixed; inset: 0; z-index: 200; display: none;
+  background: rgba(4, 4, 6, 0.94); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center;
+}
+.gal-lightbox.open { display: flex; }
+.gal-lightbox img { max-width: min(92vw, 1100px); max-height: 86vh; object-fit: contain; border-radius: 4px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.gal-lb-close, .gal-lb-prev, .gal-lb-next {
+  position: absolute; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+  color: #fff; border-radius: 50%; width: 48px; height: 48px; font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: background .2s;
+}
+.gal-lb-close:hover, .gal-lb-prev:hover, .gal-lb-next:hover { background: rgba(255,255,255,0.18); }
+.gal-lb-close { top: 18px; right: 18px; }
+.gal-lb-prev { left: 18px; top: 50%; transform: translateY(-50%); }
+.gal-lb-next { right: 18px; top: 50%; transform: translateY(-50%); }
+.gal-lb-count { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #fff; opacity: .7; font: 500 12px/1 var(--mono); letter-spacing: .1em; }
+@media (max-width: 640px) {
+  .gal-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+  .gal-lb-prev, .gal-lb-next { width: 40px; height: 40px; font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="wordmark" href="/" title="Accueil"><img class="brand-logo" src="/assets/logo.png" alt="DX-5 The Nigma"></a>
+  <nav class="top-nav" aria-label="Navigation principale">
+    <a class="nav-link mono" href="/bibliotheque/">BIBLIOTHÈQUE</a>
+    <a class="nav-link mono" href="/agenda/">AGENDA</a>
+    <a class="nav-link mono" href="/ecrits/">ÉCRITS</a>
+    <a class="nav-link mono" href="/a-propos/">À PROPOS</a>
+    <a class="nav-link mono active" href="/galerie/" aria-current="page">GALERIE</a>
+    <a class="nav-link mono" href="/contact/">CONTACT</a>
+    <span class="nav-sub">
+      <button class="nav-link mono nav-more" id="navMore" aria-expanded="false" aria-controls="navMenu" aria-haspopup="true">PLUS ▾</button>
+      <div class="nav-menu" id="navMenu" hidden>
+        <a class="mono m-only" href="/bibliotheque/">BIBLIOTHÈQUE</a>
+        <a class="mono m-only" href="/agenda/">AGENDA</a>
+        <a class="mono m-only" href="/ecrits/">ÉCRITS</a>
+        <a class="mono m-only" href="/a-propos/">À PROPOS</a>
+        <a class="mono m-only" href="/galerie/">GALERIE</a>
+        <a class="mono m-only" href="/pro/">ESPACE PRO</a>
+        <a class="mono m-only" href="/contact/">CONTACT</a>
+        <a class="mono" href="/boutique/">BOUTIQUE</a>
+        <a class="mono" href="/soutenir/">LE CERCLE</a>
+        <a class="mono" href="/actualites/">ACTUALITÉS</a>
+        <a class="mono" href="/suivre/">SUIVRE PARTOUT</a>
+      </div>
+    </span>
+  </nav>
+  <a class="nav-cta mono" href="/bibliotheque/#discographie">ÉCOUTER</a>
+</header>
+
+<main>
+  <div class="page-head">
+    <span class="mono kicker">LA GALERIE</span>
+    <h1>Chaque image, <em>une pièce du dossier.</em></h1>
+    <p class="lead">Portraits, archives, pochettes et coulisses — tout ce qui documente DX-5 The Nigma, au même endroit. Clic pour agrandir.</p>
+  </div>
+
+  <h2 class="gal-cat-head">Portrait — l’horloge</h2>
+  <p class="gal-cat-lead mono ash">12 VISUELS</p>
+  <div class="gal-grid" data-gallery="clock"></div>
+
+  <h2 class="gal-cat-head">Pièces d’archive</h2>
+  <p class="gal-cat-lead mono ash">8 VISUELS</p>
+  <div class="gal-grid" data-gallery="pieces"></div>
+
+  <h2 class="gal-cat-head">Pochettes &amp; visuels de sortie</h2>
+  <p class="gal-cat-lead mono ash">20 VISUELS</p>
+  <div class="gal-grid" data-gallery="covers"></div>
+
+  <h2 class="gal-cat-head">Coulisses</h2>
+  <p class="gal-cat-lead mono ash">10 VISUELS</p>
+  <div class="gal-grid" data-gallery="backstage"></div>
+
+  <footer class="foot">
+    <nav class="foot-links mono" aria-label="Pied de page">
+      <a href="/">ACCUEIL</a><a href="/boutique/">BOUTIQUE</a><a href="/soutenir/">LE CERCLE</a><a href="/actualites/">ACTUALITÉS</a><a href="/suivre/">SUIVRE PARTOUT</a><a href="/mentions-legales/">MENTIONS LÉGALES</a><a href="/confidentialite/">CONFIDENTIALITÉ</a>
+    </nav>
+    <nav class="foot-links mono" aria-label="Réseaux">
+      <a href="https://www.tiktok.com/@dx5thenigma" target="_blank" rel="noopener">TIKTOK ↗</a>
+      <a href="https://youtube.com/@dx-5thenigma" target="_blank" rel="noopener">YOUTUBE ↗</a>
+      <a href="https://www.instagram.com/dx5thenigma" target="_blank" rel="noopener">INSTAGRAM ↗</a>
+      <a href="https://www.facebook.com/dx5thenigma" target="_blank" rel="noopener">FACEBOOK ↗</a>
+    </nav>
+    <p class="mono ash">© 2026 DX-5 THE NIGMA — PORT-DE-PAIX · SOFIA</p>
+  </footer>
+</main>
+
+<div class="gal-lightbox" id="galLightbox" role="dialog" aria-modal="true" aria-label="Image en grand">
+  <button class="gal-lb-close" id="galLbClose" aria-label="Fermer">✕</button>
+  <button class="gal-lb-prev" id="galLbPrev" aria-label="Image précédente">‹</button>
+  <img id="galLbImg" src="" alt="">
+  <button class="gal-lb-next" id="galLbNext" aria-label="Image suivante">›</button>
+  <span class="gal-lb-count" id="galLbCount"></span>
+</div>
+
+<script src="/bibliotheque/data.js"></script>
+<script src="/assets/hbx-player.js"></script>
+<script src="/assets/floating-cta.js"></script>
+<script src="/assets/fx.js"></script>
+<script src="/bibliotheque/app.js"></script>
+<script src="/assets/nav.js"></script>
+<script>
+(() => {
+  const n2 = (i) => String(i).padStart(2, '0');
+  const SETS = {
+    clock: Array.from({ length: 12 }, (_, i) => ({ src: `/images/clock-${n2(i + 1)}.jpg`, alt: `DX-5 The Nigma — portrait ${i + 1}` })),
+    pieces: [
+      { src: '/images/p-01.jpg', alt: 'Le trophée — lauréat national, 2016' },
+      { src: '/images/p-02.jpg', alt: 'Sofia, invité d’honneur — ESFAM / AUF, 2024' },
+      { src: '/images/p-03.jpg', alt: 'Sessions de nuit — studio' },
+      { src: '/images/p-04.jpg', alt: 'DX-5 The Nigma, vue de dos' },
+      { src: '/images/p-05.jpg', alt: 'Sur scène — live' },
+      { src: '/images/p-06.jpg', alt: 'Les carnets — écriture' },
+      { src: '/images/p-07.jpg', alt: 'Le public — 14 pays' },
+      { src: '/images/p-08.jpg', alt: 'L’album — 12 titres, nov. 2026' },
+    ],
+    covers: Array.from({ length: 20 }, (_, i) => ({ src: `/images/t-${n2(i + 1)}.jpg`, alt: `Pochette / visuel DX-5 The Nigma ${i + 1}` })),
+    backstage: Array.from({ length: 10 }, (_, i) => ({ src: `/images/fl-${n2(i + 1)}.jpg`, alt: `Coulisses DX-5 The Nigma ${i + 1}` })),
+  };
+
+  const order = ['clock', 'pieces', 'covers', 'backstage'];
+  const flat = [];
+  order.forEach((k) => SETS[k].forEach((item) => flat.push(item)));
+
+  order.forEach((key) => {
+    const grid = document.querySelector(`[data-gallery="${key}"]`);
+    if (!grid) return;
+    grid.innerHTML = SETS[key].map((item) => {
+      const idx = flat.indexOf(item);
+      return `<button type="button" data-idx="${idx}"><img src="${item.src}" alt="${item.alt}" loading="lazy" decoding="async"></button>`;
+    }).join('');
+  });
+
+  const lb = document.getElementById('galLightbox');
+  const lbImg = document.getElementById('galLbImg');
+  const lbCount = document.getElementById('galLbCount');
+  let active = -1;
+
+  const show = (i) => {
+    active = (i + flat.length) % flat.length;
+    lbImg.src = flat[active].src;
+    lbImg.alt = flat[active].alt;
+    lbCount.textContent = `${active + 1} / ${flat.length}`;
+  };
+  const open = (i) => { show(i); lb.classList.add('open'); };
+  const close = () => { lb.classList.remove('open'); lbImg.src = ''; };
+
+  document.querySelectorAll('.gal-grid button').forEach((btn) => {
+    btn.addEventListener('click', () => open(+btn.dataset.idx));
+  });
+  document.getElementById('galLbClose').addEventListener('click', close);
+  document.getElementById('galLbPrev').addEventListener('click', () => show(active - 1));
+  document.getElementById('galLbNext').addEventListener('click', () => show(active + 1));
+  lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+  addEventListener('keydown', (e) => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(active - 1);
+    if (e.key === 'ArrowRight') show(active + 1);
+  });
+})();
+</script>
+</body>
+</html>

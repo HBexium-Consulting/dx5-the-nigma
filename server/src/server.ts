@@ -47,7 +47,7 @@ app.get('/a-venir/:slug', (req, reply) => {
 });
 
 // pages intérieures : /agenda/, /a-propos/, … (librairie injectée pour le lecteur)
-for (const slug of ['a-propos', 'agenda', 'ecrits', 'pro', 'contact', 'boutique', 'soutenir', 'actualites', 'suivre', 'mentions-legales', 'confidentialite']) {
+for (const slug of ['a-propos', 'agenda', 'ecrits', 'pro', 'contact', 'boutique', 'soutenir', 'actualites', 'suivre', 'mentions-legales', 'confidentialite', 'galerie']) {
   const handler = (_req: any, reply: any) => reply.type('text/html').send(injectPage(slug, F + `dx5-pages/${slug}/index.html`));
   app.get('/' + slug + '/', handler);
   app.get('/' + slug, (_req, reply) => reply.redirect('/' + slug + '/'));
