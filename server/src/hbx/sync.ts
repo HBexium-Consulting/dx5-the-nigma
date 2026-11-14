@@ -54,13 +54,15 @@ export async function refreshVideos(db: DB): Promise<void> {
 
 function upsertVideo(db: DB, d: any): void {
   db.prepare(`
-    INSERT INTO videos (uuid, title, youtube_id, youtube_url, description, thumbnail_url, position, deleted_at)
-    VALUES (@uuid,@title,@yt,@url,@desc,@thumb,@position,NULL)
+    INSERT INTO videos (uuid, title, youtube_id, youtube_url, description, thumbnail_url, position, category_slug, category_label, deleted_at)
+    VALUES (@uuid,@title,@yt,@url,@desc,@thumb,@position,@catSlug,@catLabel,NULL)
     ON CONFLICT(uuid) DO UPDATE SET title=@title, youtube_id=@yt, youtube_url=@url,
-      description=@desc, thumbnail_url=@thumb, position=@position, deleted_at=NULL
+      description=@desc, thumbnail_url=@thumb, position=@position,
+      category_slug=@catSlug, category_label=@catLabel, deleted_at=NULL
   `).run({
     uuid: d.uuid, title: d.title, yt: d.youtube_id ?? null, url: d.youtube_url ?? null,
     desc: d.description ?? null, thumb: d.thumbnail_url ?? null, position: d.position ?? 0,
+    catSlug: d.category?.slug ?? null, catLabel: d.category?.label ?? null,
   });
 }
 

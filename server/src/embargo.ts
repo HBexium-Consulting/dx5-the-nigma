@@ -68,10 +68,11 @@ export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any
   // Vidéos YouTube (module Vidéos du Dashboard) : le front les embarque en iframe
   // (la lecture compte comme une vue YouTube). Lecture seule, ordre `position`.
   const videos = db.prepare(
-    'SELECT title, youtube_id, youtube_url, description, thumbnail_url FROM videos WHERE deleted_at IS NULL ORDER BY position ASC, id ASC'
+    'SELECT title, youtube_id, youtube_url, description, thumbnail_url, category_slug, category_label FROM videos WHERE deleted_at IS NULL ORDER BY position ASC, id ASC'
   ).all().map((v: any) => ({
     title: v.title, yt: v.youtube_id, url: v.youtube_url,
     description: v.description ?? undefined, thumb: v.thumbnail_url ?? undefined,
+    category: v.category_slug ? { slug: v.category_slug, label: v.category_label ?? undefined } : undefined,
   }));
   return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [], upcoming, videos };
 }
