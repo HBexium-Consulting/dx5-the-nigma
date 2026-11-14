@@ -181,10 +181,20 @@
     .clock-ring text { font-size: 4px; letter-spacing: 1.6px; }
   }
 
-  /* ══════════ PIED DE PAGE · LOGO ANIMÉ EN CONTINU ══════════ */
+  /* ══════════ PIED DE PAGE · DEUX COLONNES (logo | infos) ══════════ */
+  /* L'espace noir qui suivait le bloc copyright/réseaux/signature était fixé
+     à 120px dans la feuille canonique : on le resserre ici (override), sans
+     toucher à styles.css. */
+  .footer { padding-bottom: 40px; text-align: left; }
+  .footer-top { display: flex; align-items: center; justify-content: space-between; gap: clamp(28px, 5vw, 72px); }
   .footer-name[hidden] { display: none; }
-  .footer-logo { display: block; margin: 6vh auto 0; width: min(78%, 640px); }
-  .footer-logo img { width: 100%; height: auto; border-radius: 0; animation: logoPulse 3.6s ease-in-out infinite; transform-origin: center; }
+  .footer-logo { display: inline-block; flex: none; }
+  .footer-logo img { width: auto; height: clamp(76px, 8vw, 132px); border-radius: 0; animation: logoPulse 3.6s ease-in-out infinite; transform-origin: center; }
+  .footer-info { text-align: right; }
+  @media (max-width: 700px) {
+    .footer-top { flex-direction: column; align-items: flex-start; gap: 36px; }
+    .footer-info { text-align: left; }
+  }
   @keyframes logoPulse {
     0%, 100% { filter: drop-shadow(0 0 0 rgba(216, 35, 31, 0)); transform: scale(1); }
     50% { filter: drop-shadow(0 0 26px rgba(216, 35, 31, 0.6)); transform: scale(1.018); }
@@ -312,13 +322,13 @@
       <div class="wrap">
         <div class="about-head">
           <p class="mono ash about-kicker">DX-5 THE NIGMA</p>
-          <h2 class="about-title" data-i18n="home.about.title">Rap-Ciné, <em>l’écriture d’abord.</em></h2>
+          <h2 class="about-title" data-i18n="home.about.title">Rap-Cine, <em>l’écriture d’abord.</em></h2>
         </div>
 
         <div class="about-marquee" aria-hidden="true">
           <div class="about-marquee-track" data-i18n="home.about.marquee">
-            <span>RAP-CINÉ</span><span>RACINES VODOU</span><span>PORT-DE-PAIX</span><span>PORT-AU-PRINCE</span><span>HAÏTI</span><span>AUTHENTIQUE</span><span>CRÉATIF</span><span>ENGAGÉ</span>
-            <span>RAP-CINÉ</span><span>RACINES VODOU</span><span>PORT-DE-PAIX</span><span>PORT-AU-PRINCE</span><span>HAÏTI</span><span>AUTHENTIQUE</span><span>CRÉATIF</span><span>ENGAGÉ</span>
+            <span>RAP-CINE</span><span>RACINES VODOU</span><span>PORT-DE-PAIX</span><span>PORT-AU-PRINCE</span><span>HAÏTI</span><span>AUTHENTIQUE</span><span>CRÉATIF</span><span>ENGAGÉ</span>
+            <span>RAP-CINE</span><span>RACINES VODOU</span><span>PORT-DE-PAIX</span><span>PORT-AU-PRINCE</span><span>HAÏTI</span><span>AUTHENTIQUE</span><span>CRÉATIF</span><span>ENGAGÉ</span>
           </div>
         </div>
 
@@ -330,12 +340,12 @@
               <div class="about-fact"><b data-i18n="home.about.fact.2.k">ORIGINE</b><span data-i18n="home.about.fact.2.v">Port-de-Paix, Nord-Ouest — Haïti</span></div>
               <div class="about-fact"><b data-i18n="home.about.fact.3.k">BASE</b><span data-i18n="home.about.fact.3.v">Port-au-Prince</span></div>
               <div class="about-fact"><b data-i18n="home.about.fact.4.k">DISCIPLINES</b><span data-i18n="home.about.fact.4.v">Rap · composition · écriture</span></div>
-              <div class="about-fact"><b data-i18n="home.about.fact.5.k">STYLE</b><span data-i18n="home.about.fact.5.v">Rap-Ciné — rap &amp; racines vodou</span></div>
+              <div class="about-fact"><b data-i18n="home.about.fact.5.k">STYLE</b><span data-i18n="home.about.fact.5.v">Rap-Cine — rap &amp; racines vodou</span></div>
               <div class="about-fact"><b data-i18n="home.about.fact.6.k">LANGUES</b><span data-i18n="home.about.fact.6.v">Créole haïtien · Français</span></div>
               <div class="about-fact"><b data-i18n="home.about.fact.7.k">DÉBUTS</b><span data-i18n="home.about.fact.7.v">2007 — Port-de-Paix, G-Squat</span></div>
             </div>
             <p class="about-text" data-i18n="home.about.bioShort">Rappeur, compositeur et arrangeur de texte, DX-5 The Nigma porte depuis Port-de-Paix une écriture qui n’a jamais quitté son pays natal.</p>
-            <p class="about-text ash" data-i18n="home.about.bioLong">Félix Debrosse est né à Port-de-Paix, dans le Nord-Ouest d’Haïti. La musique l’accompagne depuis l’enfance ; elle devient son métier en 2007, quand il fonde le groupe de rap G-Squat avec ses amis et écrit l’un des sept titres de son premier projet. En 2008, il quitte sa ville natale pour Port-au-Prince — des études universitaires d’un côté, un nouvel horizon dans la scène musicale haïtienne de l’autre. Aujourd’hui, DX-5 The Nigma est reconnu comme un artiste engagé pour la diversité culturelle et l’identité haïtienne, à travers un style qui lui est propre : le Rap-Ciné.</p>
+            <p class="about-text ash" data-i18n="home.about.bioLong">Félix Debrosse est né à Port-de-Paix, dans le Nord-Ouest d’Haïti. La musique l’accompagne depuis l’enfance ; elle devient son métier en 2007, quand il fonde le groupe de rap G-Squat avec ses amis et écrit l’un des sept titres de son premier projet. En 2008, il quitte sa ville natale pour Port-au-Prince — des études universitaires d’un côté, un nouvel horizon dans la scène musicale haïtienne de l’autre. Aujourd’hui, DX-5 The Nigma est reconnu comme un artiste engagé pour la diversité culturelle et l’identité haïtienne, à travers un style qui lui est propre : le Rap-Cine.</p>
             <p class="about-btns"><a class="about-cta" href="/a-propos/" data-i18n="home.about.cta">Lire le parcours complet →</a></p>
           </div>
           <div class="about-photo">
@@ -482,10 +492,14 @@
 
     <!-- ─── FOOTER ─── -->
     <footer class="footer" id="contact">
-      <p class="footer-kicker mono ash reveal" data-i18n="home.footer.kicker">UN PROJET, UNE IMAGE EN TÊTE ?</p>
-      <a class="footer-mail reveal" href="mailto:dx5thenigma@gmail.com"><span class="footer-mail-text">dx5thenigma@gmail.com</span></a>
-      <p class="footer-reassurance mono ash reveal" data-i18n="home.footer.reassurance">RÉPONSE SOUS 24 H — DEVIS GRATUIT, SANS ENGAGEMENT</p>
-      <a class="footer-logo" href="#hero" data-nav aria-label="DX-5 The Nigma"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></a>
+      <div class="footer-top">
+        <a class="footer-logo reveal" href="#hero" data-nav aria-label="DX-5 The Nigma"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></a>
+        <div class="footer-info">
+          <p class="footer-kicker mono ash reveal" data-i18n="home.footer.kicker">UN PROJET, UNE IMAGE EN TÊTE ?</p>
+          <a class="footer-mail reveal" href="mailto:dx5thenigma@gmail.com"><span class="footer-mail-text">dx5thenigma@gmail.com</span></a>
+          <p class="footer-reassurance mono ash reveal" data-i18n="home.footer.reassurance">RÉPONSE SOUS 24 H — DEVIS GRATUIT, SANS ENGAGEMENT</p>
+        </div>
+      </div>
       <h2 class="footer-name" id="footerName" aria-label="DX-5 The Nigma" hidden></h2>
       <div class="footer-bottom">
         <p class="mono ash" data-i18n="home.footer.copyright">© 2026 — PARIS, FRANCE</p>
@@ -554,22 +568,35 @@
 
   /* Manifeste : colorer en rouge les mots-clés (DX-5 The Nigma, Rap-Cine,
      manuscrit, énigme). Le texte est découpé en .fc (un par caractère) : on
-     reconstruit la chaîne, on repère chaque mot-clé et on marque ses .fc. */
-  addEventListener('load', () => setTimeout(() => {
+     reconstruit la chaîne, on repère chaque mot-clé et on marque ses .fc.
+     Rejouable après un changement de langue (i18n.js) : liste de mots-clés
+     par langue, puisque « manuscrit »/« énigme » se traduisent (pas DX-5 The
+     Nigma ni Rap-Cine, qui restent identiques dans les trois langues). */
+  function paintManifestoKeywords(lang) {
     const fill = document.getElementById('fillText');
     if (!fill) return;
     const spans = [...fill.querySelectorAll('.fc')];
+    spans.forEach((sp) => sp.classList.remove('red'));
     let text = '', map = [];
     spans.forEach((sp) => { const t = sp.textContent || ''; for (let k = 0; k < t.length; k++) map.push(sp); text += t; });
     const low = text.toLowerCase();  // les espaces ne sont pas dans les .fc : on compare sans espaces
-    ['dx-5 the nigma', 'rap-cine', 'manuscrit', 'énigme'].map((k) => k.replace(/\s/g, '')).forEach((kw) => {
+    const KEYWORDS = {
+      fr: ['dx-5 the nigma', 'rap-cine', 'manuscrit', 'énigme'],
+      ht: ['dx-5 the nigma', 'rap-cine', 'maniskri', 'devinèt'],
+      en: ['dx-5 the nigma', 'rap-cine', 'manuscript', 'enigma']
+    };
+    (KEYWORDS[lang] || KEYWORDS.fr).map((k) => k.replace(/\s/g, '')).forEach((kw) => {
       let from = 0, i;
       while ((i = low.indexOf(kw, from)) !== -1) {
         for (let j = i; j < i + kw.length; j++) if (map[j]) map[j].classList.add('red');
         from = i + kw.length;
       }
     });
+  }
+  addEventListener('load', () => setTimeout(() => {
+    paintManifestoKeywords((window.DX5_I18N && window.DX5_I18N.getLang()) || 'fr');
   }, 300));
+  window.__paintManifestoKeywords = paintManifestoKeywords;
 
   /* Sous-menu MENU ▾ : ouverture, clic hors zone, Échap */
   (() => {

@@ -43,6 +43,24 @@
         el.setAttribute(attr, v != null ? v : el.dataset[cacheAttr]);
       });
     });
+
+    // Accueil — manifeste (#fillText) et mots de la devise (.mw) : restructurés
+    // au scroll par app.js (caractères éclatés), donc pas de simple innerHTML
+    // générique ci-dessus — on passe par les hooks dédiés (content.js + app.js)
+    // qui reposent le texte PUIS re-découpent/resynchronisent la scène.
+    if (window.DX5_MANIFESTO) {
+      const v = (lang !== 'fr' && dict && dict['home.manifesto.text']) || window.DX5_MANIFESTO.original;
+      window.DX5_MANIFESTO.apply(v);
+    }
+    if (window.DX5_MOTTO) {
+      const words = window.DX5_MOTTO.original.map((orig, i) => {
+        const v = lang !== 'fr' && dict && dict['home.motto.' + i + '.word'];
+        return v || orig;
+      });
+      window.DX5_MOTTO.apply(words);
+    }
+    if (window.__paintManifestoKeywords) window.__paintManifestoKeywords(lang);
+
     paintSwitcher();
   }
 

@@ -172,7 +172,7 @@
 
   const fillText = $('#fillText');
   splitFillChars(fillText);
-  const fillChars = $$('.fc', fillText);
+  let fillChars = $$('.fc', fillText);
 
   $$('.mw').forEach((el) => splitChars(el, 'sc'));
   const footerName = $('#footerName');
@@ -359,7 +359,7 @@
   });
 
   /* ─── SCÈNE 2 · MANIFESTE ─── */
-  const boxDraw = makeDraw($('#boxPath'));
+  let boxDraw = makeDraw($('#boxPath'));
   let lastFillIdx = 0;
   addScene('.s-fill', (p) => {
     const idx = Math.round(seg(p, 0.05, 0.58) * fillChars.length);
@@ -371,6 +371,20 @@
     boxDraw(1 - seg(p, 0.42, 0.56));
     fillText.classList.toggle('greyed', p > 0.68);
   });
+
+  /* changement de langue : #fillText vient d'être repeuplé (nouveau texte,
+     markup « boxed » recréé) — on redécoule les caractères, on recapture le
+     tracé svg (même id, nouveau nœud) et on force un rendu de la scène. */
+  function resyncFillText() {
+    splitFillChars(fillText);
+    fillChars = $$('.fc', fillText);
+    lastFillIdx = 0;
+    const bp = $('#boxPath');
+    if (bp) boxDraw = makeDraw(bp);
+    const s = scenes.find((sc) => sc.root.classList.contains('s-fill'));
+    if (s) s.lastP = -1;
+    requestAnimationFrame(refreshDraws);
+  }
 
   /* arrivée désordonnée des cartes : chacune surgit du bas, décalée
      et légèrement tournée, puis se pose sur la grille au scroll */
@@ -413,6 +427,16 @@
         center: el.offsetLeft + el.offsetWidth / 2
       };
     });
+  }
+
+  /* changement de langue : content.js vient de reposer un nouveau texte brut
+     sur chaque .mw (sans toucher aux .mw-hint, gérées à part) — on redécoupe
+     en .sc, on remesure et on force un rendu de la scène. */
+  function resyncMotto() {
+    $$('.mw', mottoTrack).forEach((el) => splitChars(el, 'sc'));
+    measureMotto();
+    const s = scenes.find((sc) => sc.root.classList.contains('s-motto'));
+    if (s) s.lastP = -1;
   }
 
   addScene('.s-motto', (p) => {
@@ -715,6 +739,8 @@
   /* hook de debug (captures outillées) */
   window.__ea = {
     scrub(y) { paused = true; current = target = y; scenes.forEach((s) => (s.lastP = -1)); render(y); },
-    resume() { paused = false; }
+    resume() { paused = false; },
+    resyncFillText,
+    resyncMotto
   };
 })();

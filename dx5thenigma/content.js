@@ -147,13 +147,20 @@ window.SITE_CONTENT = {
   if (intro) intro.innerHTML = C.positioning.split(' ').map((w) => `<span>${w}</span>`).join(' ');
 
   // 3 · démarche
-  const fill = $('#fillText');
-  if (fill) {
-    fill.innerHTML = C.manifesto.text.replace(
+  function applyManifesto(text) {
+    const fill = $('#fillText');
+    if (!fill) return;
+    fill.innerHTML = text.replace(
       /\[\[(.+?)\]\]/,
       '<span class="boxed" id="boxedPhrase">$1<svg class="box-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="boxPath" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></span>'
     );
+    // #fillText est éclaté en spans .fc par app.js (animation au scrub) : un
+    // simple innerHTML désynchronise son cache — app.js expose un hook dédié
+    // pour re-découper + resynchroniser la scène après un changement de texte.
+    if (window.__ea && window.__ea.resyncFillText) window.__ea.resyncFillText();
   }
+  applyManifesto(C.manifesto.text);
+  window.DX5_MANIFESTO = { original: C.manifesto.text, apply: applyManifesto };
 
   // 4 · preuve : masonry (8 photos) ou bento (4 features big/tall/tall/big)
   const head = $$('.coll-head > *');
@@ -193,6 +200,16 @@ window.SITE_CONTENT = {
   if (mtrack) mtrack.innerHTML = C.motto.words.map((w, i) =>
     `<span class="motto-pair"><span class="mw">${w.word}</span><small class="mw-hint" data-i18n="home.motto.${i}.hint">${w.hint}</small></span>`
   ).join('');
+  // Traduction des mots .mw SEULS (pas les .mw-hint, gérées à part par
+  // data-i18n) : on ne touche que leur texte, puis on redécoupe en .sc via
+  // le hook app.js — reconstruire tout mtrack.innerHTML casserait le cache
+  // _origHtml des légendes.
+  function applyMottoWords(words) {
+    const mws = $$('.mw', $('#mottoTrack'));
+    mws.forEach((el, i) => { if (words[i] != null) el.textContent = words[i]; });
+    if (window.__ea && window.__ea.resyncMotto) window.__ea.resyncMotto();
+  }
+  window.DX5_MOTTO = { original: C.motto.words.map((w) => w.word), apply: applyMottoWords };
 
   // 6-7 · processus immersif (visuels posés un à un)
   set('#nw1', C.universes.introA);
