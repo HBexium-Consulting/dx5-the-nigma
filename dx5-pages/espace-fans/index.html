@@ -27,90 +27,90 @@
 <header class="top">
   <a class="wordmark" href="/" title="Accueil"><img class="brand-logo" src="/assets/logo.png" alt="DX-5 The Nigma"></a>
   <nav class="top-nav" aria-label="Navigation principale">
-    <a class="nav-link mono" href="/bibliotheque/">BIBLIOTHÈQUE</a>
-    <a class="nav-link mono" href="/agenda/">AGENDA</a>
-    <a class="nav-link mono" href="/ecrits/">ÉCRITS</a>
-    <a class="nav-link mono" href="/a-propos/">À PROPOS</a>
-    <a class="nav-link mono" href="/galerie/">GALERIE</a>
-    <a class="nav-link mono active" href="/espace-fans/" aria-current="page">ESPACE FANS</a>
-    <a class="nav-link mono" href="/contact/">CONTACT</a>
+    <a class="nav-link mono" href="/bibliotheque/" data-i18n="nav.bibliotheque">BIBLIOTHÈQUE</a>
+    <a class="nav-link mono" href="/agenda/" data-i18n="nav.agenda">AGENDA</a>
+    <a class="nav-link mono" href="/ecrits/" data-i18n="nav.ecrits">ÉCRITS</a>
+    <a class="nav-link mono" href="/a-propos/" data-i18n="nav.a-propos">À PROPOS</a>
+    <a class="nav-link mono" href="/galerie/" data-i18n="nav.galerie">GALERIE</a>
+    <a class="nav-link mono active" href="/espace-fans/" aria-current="page" data-i18n="nav.espace-fans">ESPACE FANS</a>
+    <a class="nav-link mono" href="/contact/" data-i18n="nav.contact">CONTACT</a>
     <span class="nav-sub">
-      <button class="nav-link mono nav-more" id="navMore" aria-expanded="false" aria-controls="navMenu" aria-haspopup="true">PLUS ▾</button>
+      <button class="nav-link mono nav-more" id="navMore" aria-expanded="false" aria-controls="navMenu" aria-haspopup="true" data-i18n="nav.menu">PLUS ▾</button>
       <div class="nav-menu" id="navMenu" hidden>
-        <a class="mono m-only" href="/bibliotheque/">BIBLIOTHÈQUE</a>
-        <a class="mono m-only" href="/agenda/">AGENDA</a>
-        <a class="mono m-only" href="/ecrits/">ÉCRITS</a>
-        <a class="mono m-only" href="/a-propos/">À PROPOS</a>
-        <a class="mono m-only" href="/galerie/">GALERIE</a>
-        <a class="mono m-only" href="/espace-fans/">ESPACE FANS</a>
-        <a class="mono m-only" href="/pro/">ESPACE PRO</a>
-        <a class="mono m-only" href="/contact/">CONTACT</a>
-        <a class="mono" href="/boutique/">BOUTIQUE</a>
-        <a class="mono" href="/soutenir/">LE CERCLE</a>
-        <a class="mono" href="/actualites/">ACTUALITÉS</a>
-        <a class="mono" href="/suivre/">SUIVRE PARTOUT</a>
+        <a class="mono m-only" href="/bibliotheque/" data-i18n="nav.bibliotheque">BIBLIOTHÈQUE</a>
+        <a class="mono m-only" href="/agenda/" data-i18n="nav.agenda">AGENDA</a>
+        <a class="mono m-only" href="/ecrits/" data-i18n="nav.ecrits">ÉCRITS</a>
+        <a class="mono m-only" href="/a-propos/" data-i18n="nav.a-propos">À PROPOS</a>
+        <a class="mono m-only" href="/galerie/" data-i18n="nav.galerie">GALERIE</a>
+        <a class="mono m-only" href="/espace-fans/" data-i18n="nav.espace-fans">ESPACE FANS</a>
+        <a class="mono m-only" href="/pro/" data-i18n="nav.espace-pro">ESPACE PRO</a>
+        <a class="mono m-only" href="/contact/" data-i18n="nav.contact">CONTACT</a>
+        <a class="mono" href="/boutique/" data-i18n="nav.boutique">BOUTIQUE</a>
+        <a class="mono" href="/soutenir/" data-i18n="nav.soutenir">LE CERCLE</a>
+        <a class="mono" href="/actualites/" data-i18n="nav.actualites">ACTUALITÉS</a>
+        <a class="mono" href="/suivre/" data-i18n="nav.suivre">SUIVRE PARTOUT</a>
       </div>
     </span>
   </nav>
-  <a class="nav-cta mono" href="/bibliotheque/#discographie">ÉCOUTER</a>
+  <a class="nav-cta mono" href="/bibliotheque/#discographie" data-i18n="nav.ecouter">ÉCOUTER</a>
 </header>
 
 <main>
   <div class="page-head">
-    <span class="mono kicker">ESPACE FANS</span>
-    <h1>Le <em>Cercle</em> a sa porte.</h1>
-    <p class="lead">Un compte, un e-mail, un code que vous choisissez — rien d’autre. Les coulisses, les annonces en priorité, et bientôt plus.</p>
+    <span class="mono kicker" data-i18n="fans.kicker">ESPACE FANS</span>
+    <h1 data-i18n="fans.h1">Le <em>Cercle</em> a sa porte.</h1>
+    <p class="lead" data-i18n="fans.lead">Un compte, un e-mail, un code que vous choisissez — rien d’autre. Les coulisses, les annonces en priorité, et bientôt plus.</p>
   </div>
 
   <!-- ── déconnecté : connexion / inscription ── -->
   <section id="fanGate">
     <div class="fan-tabs">
-      <button class="fan-tab active" id="tabLogin" type="button">J’AI DÉJÀ UN COMPTE</button>
-      <button class="fan-tab" id="tabJoin" type="button">PREMIÈRE VISITE</button>
+      <button class="fan-tab active" id="tabLogin" type="button" data-i18n="fans.tabLogin">J’AI DÉJÀ UN COMPTE</button>
+      <button class="fan-tab" id="tabJoin" type="button" data-i18n="fans.tabJoin">PREMIÈRE VISITE</button>
     </div>
 
     <form id="loginForm" class="fan-panel">
       <div class="frow">
-        <label>E-MAIL <input type="email" name="email" required></label>
-        <label>CODE <input type="password" name="code" minlength="6" maxlength="40" required></label>
+        <label><span data-i18n="fans.lblEmail">E-MAIL</span> <input type="email" name="email" required></label>
+        <label><span data-i18n="fans.lblCode">CODE</span> <input type="password" name="code" minlength="6" maxlength="40" required></label>
       </div>
-      <div><button class="btn" type="submit">SE CONNECTER</button></div>
+      <div><button class="btn" type="submit" data-i18n="fans.btnLogin">SE CONNECTER</button></div>
       <p class="fan-err" id="loginErr"></p>
-      <p style="margin-top:14px"><button class="fan-tab" id="forgotBtn" type="button" style="padding:0;border:0">CODE OUBLIÉ ?</button></p>
+      <p style="margin-top:14px"><button class="fan-tab" id="forgotBtn" type="button" style="padding:0;border:0" data-i18n="fans.forgotBtn">CODE OUBLIÉ ?</button></p>
     </form>
 
     <form id="joinForm" class="fan-panel" hidden>
-      <p class="form-note">Choisissez un code d’au moins 6 caractères — c’est votre seul mot de passe, gardez-le.</p>
+      <p class="form-note" data-i18n="fans.joinNote">Choisissez un code d’au moins 6 caractères — c’est votre seul mot de passe, gardez-le.</p>
       <div class="frow">
-        <label>E-MAIL <input type="email" name="email" required></label>
-        <label>CHOISISSEZ VOTRE CODE <input type="password" name="code" minlength="6" maxlength="40" required></label>
+        <label><span data-i18n="fans.lblEmail">E-MAIL</span> <input type="email" name="email" required></label>
+        <label><span data-i18n="fans.lblChooseCode">CHOISISSEZ VOTRE CODE</span> <input type="password" name="code" minlength="6" maxlength="40" required></label>
       </div>
-      <div><button class="btn" type="submit">REJOINDRE LE CERCLE</button></div>
+      <div><button class="btn" type="submit" data-i18n="fans.btnJoin">REJOINDRE LE CERCLE</button></div>
       <p class="fan-err" id="joinErr"></p>
     </form>
 
     <form id="forgotForm" class="fan-panel" hidden>
-      <p class="form-note">Un nouveau code vous sera envoyé par e-mail.</p>
-      <label>E-MAIL <input type="email" name="email" required></label>
-      <div style="margin-top:14px"><button class="btn" type="submit">RECEVOIR UN NOUVEAU CODE</button></div>
+      <p class="form-note" data-i18n="fans.forgotNote">Un nouveau code vous sera envoyé par e-mail.</p>
+      <label><span data-i18n="fans.lblEmail">E-MAIL</span> <input type="email" name="email" required></label>
+      <div style="margin-top:14px"><button class="btn" type="submit" data-i18n="fans.btnForgot">RECEVOIR UN NOUVEAU CODE</button></div>
       <p class="fan-ok" id="forgotOk"></p>
     </form>
   </section>
 
   <!-- ── connecté : contenu ── -->
   <section id="fanContent" hidden>
-    <p class="welcome">Bienvenue dans le Cercle, <b id="fanEmail"></b>.</p>
+    <p class="welcome"><span data-i18n="fans.welcome">Bienvenue dans le Cercle,</span> <b id="fanEmail"></b>.</p>
     <div class="fan-perks">
-      <div class="card"><h3>La galerie</h3><p>Tous les visuels, classés.</p><p style="margin-top:10px"><a class="btn ghost" href="/galerie/">Voir →</a></p></div>
-      <div class="card"><h3>Les coulisses</h3><p>Journal de bord, annonces en priorité.</p><p style="margin-top:10px"><a class="btn ghost" href="/actualites/">Voir →</a></p></div>
-      <div class="card"><h3>Le Cercle des proches</h3><p>Pour aller plus loin : réductions et exclusivités.</p><p style="margin-top:10px"><a class="btn ghost" href="/soutenir/">Voir →</a></p></div>
+      <div class="card"><h3 data-i18n="fans.perk.0.h">La galerie</h3><p data-i18n="fans.perk.0.p">Tous les visuels, classés.</p><p style="margin-top:10px"><a class="btn ghost" href="/galerie/" data-i18n="fans.voir">Voir →</a></p></div>
+      <div class="card"><h3 data-i18n="fans.perk.1.h">Les coulisses</h3><p data-i18n="fans.perk.1.p">Journal de bord, annonces en priorité.</p><p style="margin-top:10px"><a class="btn ghost" href="/actualites/" data-i18n="fans.voir">Voir →</a></p></div>
+      <div class="card"><h3 data-i18n="fans.perk.2.h">Le Cercle des proches</h3><p data-i18n="fans.perk.2.p">Pour aller plus loin : réductions et exclusivités.</p><p style="margin-top:10px"><a class="btn ghost" href="/soutenir/" data-i18n="fans.voir">Voir →</a></p></div>
     </div>
-    <p><button class="btn ghost" id="logoutBtn" type="button">SE DÉCONNECTER</button></p>
+    <p><button class="btn ghost" id="logoutBtn" type="button" data-i18n="fans.logout">SE DÉCONNECTER</button></p>
   </section>
 
   <footer class="foot">
     <nav class="foot-links mono" aria-label="Pied de page">
-      <a href="/">ACCUEIL</a><a href="/boutique/">BOUTIQUE</a><a href="/soutenir/">LE CERCLE</a><a href="/actualites/">ACTUALITÉS</a><a href="/suivre/">SUIVRE PARTOUT</a><a href="/mentions-legales/">MENTIONS LÉGALES</a><a href="/confidentialite/">CONFIDENTIALITÉ</a>
+      <a href="/" data-i18n="nav.accueil">ACCUEIL</a><a href="/boutique/">BOUTIQUE</a><a href="/soutenir/">LE CERCLE</a><a href="/actualites/">ACTUALITÉS</a><a href="/suivre/">SUIVRE PARTOUT</a><a href="/mentions-legales/" data-i18n="nav.mentions-legales">MENTIONS LÉGALES</a><a href="/confidentialite/" data-i18n="nav.confidentialite">CONFIDENTIALITÉ</a>
     </nav>
     <nav class="foot-links mono" aria-label="Réseaux">
       <a href="https://www.tiktok.com/@dx5thenigma" target="_blank" rel="noopener">TIKTOK ↗</a>

@@ -99,7 +99,7 @@ function injectLib(path: string): string {
 function injectPage(slug: string, path: string): string {
   const html = injectLib(path);
   const pc = JSON.stringify(pageOverrides(db, slug)).replace(/</g, '\\u003c');
-  const tag = `<script>window.PAGE_CONTENT=${pc};</script>\n<script src="/assets/page-inject.js"></script>`;
+  const tag = `<script>window.PAGE_CONTENT=${pc};</script>\n<script src="/assets/page-inject.js"></script>\n<script src="/assets/i18n-data.js"></script>\n<script src="/assets/i18n.js"></script>`;
   return html.includes('</body>') ? html.replace('</body>', tag + '\n</body>') : html + tag;
 }
 

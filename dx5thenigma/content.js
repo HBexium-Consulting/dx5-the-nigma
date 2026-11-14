@@ -167,9 +167,9 @@ window.SITE_CONTENT = {
   if (grid && C.proof.layout === 'portrait') {
     // colonnes portrait, défilement horizontal — comme « Sur scène » chez Ken FS
     grid.className = 'proof-track';
-    grid.innerHTML = C.proof.projects.map((p) =>
-      `<figure class="pf"><div class="pf-img"><img src="${p.img}" alt="${p.title} — ${p.meta}" loading="lazy" decoding="async"></div><figcaption><b>${p.title}</b><span class="mono ash">${p.meta}</span></figcaption></figure>`
-    ).join('') + `<a class="pf-more" href="/galerie/">Toute la galerie<span aria-hidden="true">→</span></a>`;
+    grid.innerHTML = C.proof.projects.map((p, i) =>
+      `<figure class="pf"><div class="pf-img"><img src="${p.img}" alt="${p.title} — ${p.meta}" loading="lazy" decoding="async"></div><figcaption><b data-i18n="home.proof.${i}.title">${p.title}</b><span class="mono ash" data-i18n="home.proof.${i}.meta">${p.meta}</span></figcaption></figure>`
+    ).join('') + `<a class="pf-more" href="/galerie/"><span data-i18n="home.proof.more">Toute la galerie</span><span aria-hidden="true">→</span></a>`;
   } else if (grid && C.proof.layout === 'bento') {
     grid.className = 'bento-grid';
     grid.innerHTML = C.proof.features.map((f) =>
@@ -190,8 +190,8 @@ window.SITE_CONTENT = {
   // en permanence (desktop ET mobile empilé), pas seulement au survol du scrub.
   set('#mottoKicker', C.motto.kicker);
   const mtrack = $('#mottoTrack');
-  if (mtrack) mtrack.innerHTML = C.motto.words.map((w) =>
-    `<span class="motto-pair"><span class="mw">${w.word}</span><small class="mw-hint">${w.hint}</small></span>`
+  if (mtrack) mtrack.innerHTML = C.motto.words.map((w, i) =>
+    `<span class="motto-pair"><span class="mw">${w.word}</span><small class="mw-hint" data-i18n="home.motto.${i}.hint">${w.hint}</small></span>`
   ).join('');
 
   // 6-7 · processus immersif (visuels posés un à un)
@@ -200,8 +200,8 @@ window.SITE_CONTENT = {
   set('#nw3', C.universes.introC);
   const psteps = $('#psteps');
   if (psteps) {
-    psteps.innerHTML = C.universes.items.map((u) =>
-      `<div class="pstep"><span class="pstep-meta mono ash">${u.meta}</span><h3>${u.name}</h3><p>${u.desc || ''}</p></div>`
+    psteps.innerHTML = C.universes.items.map((u, i) =>
+      `<div class="pstep"><span class="pstep-meta mono ash" data-i18n="home.universes.${i}.meta">${u.meta}</span><h3 data-i18n="home.universes.${i}.name">${u.name}</h3><p data-i18n="home.universes.${i}.desc">${u.desc || ''}</p></div>`
     ).join('');
   }
   const sCta = $('#stepsCtaLink');
@@ -216,12 +216,11 @@ window.SITE_CONTENT = {
   { const qt = $('#quoteText'); if (qt) qt.innerHTML = C.testimonial.quote.replace('une cérémonie officielle en concert', '<span class="hot">une cérémonie officielle en concert</span>'); }
   set('#quoteAuthor', C.testimonial.author);
 
-  // 9 · objections
+  // 9 · objections (fs4 garde sa structure fixe en HTML — le pill/svg y est dessiné
+  // par app.js via un id précis ; seul le TEXTE de ses deux segments est posé ici)
   C.objections.items.forEach((t, i) => { const el = $('#fs' + (i + 1)); if (el) el.innerHTML = t; });
-  const fs4 = $('#fs4');
-  if (fs4) {
-    fs4.innerHTML = `${C.objections.finale} <span class="pill" id="pillPhrase">${C.objections.pill}<svg class="pill-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="pillPath" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></span>`;
-  }
+  set('#objFinale', C.objections.finale);
+  set('#objPill', C.objections.pill);
   $$('#trail img').forEach((img, i) => { img.loading = 'lazy'; img.decoding = 'async'; img.src = C.trail[i % C.trail.length]; });
 
   // 10 · conversion
