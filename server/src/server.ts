@@ -1,10 +1,14 @@
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
+import fastifyCookie from '@fastify/cookie';
+import fastifyRateLimit from '@fastify/rate-limit';
+import { ZodError } from 'zod';
 import { readFileSync } from 'node:fs';
 import { openDb } from './db.ts';
 import { config } from './config.ts';
 import { registerWebhook } from './routes/webhook.ts';
 import { registerForms } from './routes/forms.ts';
+import { registerFans, getFan } from './routes/fans.ts';
 import { renderHome } from './render.ts';
 import { renderTeaser, teaserBySlug } from './teaser.ts';
 import { libraryPayload, pageOverrides } from './embargo.ts';
@@ -14,6 +18,17 @@ import { outboxFlush } from './hbx/outbox.ts';
 
 const db = openDb(config.dbPath);
 const app = Fastify({ logger: true, bodyLimit: 1_048_576 });
+await app.register(fastifyCookie);
+await app.register(fastifyRateLimit, { global: false });
+
+// entrée de formulaire invalide = erreur du visiteur (400), jamais un bug serveur (500)
+app.setErrorHandler((err, _req, reply) => {
+  if (err instanceof ZodError) {
+    return reply.code(400).send({ ok: false, message: 'Formulaire invalide.', issues: err.issues });
+  }
+  app.log.error(err);
+  return reply.code((err as any).statusCode ?? 500).send({ ok: false, message: 'Erreur serveur.' });
+});
 
 // corps brut nécessaire à la vérification HMAC du webhook
 app.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
@@ -53,7 +68,20 @@ for (const slug of ['a-propos', 'agenda', 'ecrits', 'pro', 'contact', 'boutique'
   app.get('/' + slug, (_req, reply) => reply.redirect('/' + slug + '/'));
 }
 
+// espace fans : rendu différent connecté/déconnecté (window.FAN), à part de la
+// boucle générique ci-dessus car il dépend de la session du visiteur.
+app.get('/espace-fans/', (req, reply) => {
+  const fan = getFan(db, req);
+  const html = injectPage('espace-fans', F + 'dx5-pages/espace-fans/index.html');
+  // AVANT <head>, pas avant </body> : /assets/fans.js (chargé dans le corps de
+  // la page) lit window.FAN à l'exécution — il doit déjà exister à ce moment.
+  const tag = `<script>window.FAN=${JSON.stringify(fan).replace(/</g, '\\u003c')};</script>\n`;
+  return reply.type('text/html').send(html.replace('<head>', '<head>\n' + tag));
+});
+app.get('/espace-fans', (_req, reply) => reply.redirect('/espace-fans/'));
+
 registerForms(app, db);
+registerFans(app, db);
 registerWebhook(app, db);
 app.get('/api/v1/health', () => ({ ok: true, time: new Date().toISOString() }));
 

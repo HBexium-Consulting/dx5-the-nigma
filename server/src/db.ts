@@ -41,7 +41,7 @@ export function openDb(path: string): DB {
     CREATE TABLE IF NOT EXISTS videos (
       id INTEGER PRIMARY KEY AUTOINCREMENT, uuid TEXT UNIQUE NOT NULL, title TEXT NOT NULL,
       youtube_id TEXT, youtube_url TEXT, description TEXT, thumbnail_url TEXT,
-      position INTEGER DEFAULT 0, deleted_at TEXT
+      position INTEGER DEFAULT 0, category_slug TEXT, category_label TEXT, deleted_at TEXT
     );
     CREATE TABLE IF NOT EXISTS newsletter_subscribers (
       id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL, locale TEXT, source TEXT,
@@ -67,7 +67,23 @@ export function openDb(path: string): DB {
     );
     CREATE TABLE IF NOT EXISTS hbx_sync_state (key TEXT PRIMARY KEY, value TEXT);
     CREATE TABLE IF NOT EXISTS page_overrides (slug TEXT PRIMARY KEY, fields TEXT);
+    -- Espace fans : compte par e-mail + code choisi par le fan (scrypt, jamais en clair).
+    -- Pas de mot de passe « système » : en cas d'oubli, un nouveau code est généré et
+    -- envoyé par e-mail via le Dashboard (file sortante, même mécanisme que newsletter).
+    CREATE TABLE IF NOT EXISTS fans (
+      id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT UNIQUE NOT NULL,
+      code_hash TEXT NOT NULL, created_at TEXT NOT NULL, last_login_at TEXT
+    );
+    CREATE TABLE IF NOT EXISTS fan_sessions (
+      token TEXT PRIMARY KEY, fan_id INTEGER NOT NULL REFERENCES fans(id) ON DELETE CASCADE,
+      created_at TEXT NOT NULL, expires_at TEXT NOT NULL
+    );
   `);
+  // Migrations additives (bases existantes) : rubrique de vidéo. Idempotent —
+  // ALTER échoue si la colonne existe déjà, on l'ignore.
+  for (const col of ['category_slug', 'category_label']) {
+    try { db.exec(`ALTER TABLE videos ADD COLUMN ${col} TEXT`); } catch { /* déjà présent */ }
+  }
   return db;
 }
 
