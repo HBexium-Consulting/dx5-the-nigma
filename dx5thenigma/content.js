@@ -79,7 +79,6 @@ window.SITE_CONTENT = {
     introB: 'énigme,',
     introC: '3 clés.',
     cta: 'Être prévenu →',
-    image: 'images/enigme-3cles.jpg',
     items: [
       { name: 'Le signal', meta: 'CLÉ — 01', desc: 'Un extrait, un compte à rebours. La fréquence s’installe, l’énigme commence.' },
       { name: 'Le déchiffrement', meta: 'CLÉ — 02', desc: 'Les douze titres se déverrouillent un à un, chacun avec son extrait, jusqu’au jour J.' },
@@ -181,17 +180,18 @@ window.SITE_CONTENT = {
     ).join('');
   }
 
-  // 5 · devise (train de mots-clés)
+  // 5 · devise (train de mots-clés) — chaque mot garde sa légende sous lui,
+  // en permanence (desktop ET mobile empilé), pas seulement au survol du scrub.
   set('#mottoKicker', C.motto.kicker);
   const mtrack = $('#mottoTrack');
-  if (mtrack) mtrack.innerHTML = C.motto.words.map((w) => `<span class="mw">${w.word}</span>`).join('');
+  if (mtrack) mtrack.innerHTML = C.motto.words.map((w) =>
+    `<span class="motto-pair"><span class="mw">${w.word}</span><small class="mw-hint">${w.hint}</small></span>`
+  ).join('');
 
   // 6-7 · processus immersif (visuels posés un à un)
   set('#nw1', C.universes.introA);
   set('#nw2', C.universes.introB);
   set('#nw3', C.universes.introC);
-  const g2 = $('#grow2 img');
-  if (g2) g2.src = C.universes.image || (C.universes.items[0] || {}).img || g2.src;
   const psteps = $('#psteps');
   if (psteps) {
     psteps.innerHTML = C.universes.items.map((u) =>

@@ -315,6 +315,8 @@ body.is-ready .fl img { transform: scale(1); }
   white-space: nowrap;
   will-change: transform;
 }
+/* chaque mot + sa légende, en permanence (plus un seul indice partagé en fondu) */
+.motto-pair { display: inline-flex; flex-direction: column; align-items: center; gap: 1.4vh; }
 .mw {
   font-family: var(--geo);
   font-weight: 300;
@@ -324,15 +326,11 @@ body.is-ready .fl img { transform: scale(1); }
   will-change: opacity;
 }
 .mw .sc { display: inline-block; will-change: transform; }
-.motto-hint {
-  position: absolute; bottom: 14vh; left: 50%;
-  transform: translateX(-50%);
-  color: var(--lime-ink);
-  transition: opacity .25s;
-  text-align: center;
-  max-width: 80vw;
+.mw-hint {
+  display: block; white-space: normal; max-width: 22ch;
+  font: 500 clamp(13px, 1.1vw, 16px)/1.35 var(--sans);
+  color: var(--lime-ink); opacity: 0.72; text-align: center;
 }
-.motto-hint.swap { opacity: 0; }
 
 /* ═══════════ S5 · NUIT + EXPLORER ═══════════ */
 .s-night .pin { background: var(--bone); }
@@ -636,10 +634,11 @@ body.static .disc-desc { opacity: 1 !important; color: var(--ink); }
 
 body.static .s-motto .pin { padding: 12vh var(--gutter); }
 body.static .motto-kicker { position: static; transform: none; margin-bottom: 26px; }
-body.static .motto-track { position: static; transform: none !important; flex-direction: column; align-items: flex-start; gap: 12px; white-space: normal; }
+body.static .motto-track { position: static; transform: none !important; flex-direction: column; align-items: flex-start; gap: 20px; white-space: normal; }
+body.static .motto-pair { align-items: flex-start; gap: 6px; }
 body.static .mw { opacity: 1 !important; font-size: clamp(56px, 13vw, 110px); }
 body.static .mw .sc { transform: none !important; }
-body.static .motto-hint { display: none; }
+body.static .mw-hint { text-align: left; max-width: 34ch; }
 body.static .disc-cta { position: static; transform: none !important; opacity: 1 !important; color: var(--ink); margin: 4vh var(--gutter) 8vh; display: inline-block; }
 body.static .disc-cta .cta-oval path { stroke: var(--ink); }
 body.static .s-quote .pin { padding: 12vh var(--gutter); }
@@ -797,8 +796,10 @@ body.static .footer-name .chi { transform: none; }
   body.static .psteps { padding: 14px var(--gutter) 4vh; }
   body.static .steps-cta { padding-bottom: 5vh; }
   body.static .night-line { height: 34vh; }
-  /* la devise doit rester monumentale, c'est son rôle */
-  body.static .mw { font-size: clamp(46px, 17vw, 92px) !important; }
+  /* la devise doit rester monumentale, c'est son rôle — mais pas au point de
+     casser « Authentique » en 2 lignes sur les écrans étroits (chaque mot
+     porte maintenant sa légende juste dessous, cf. .mw-hint). */
+  body.static .mw { font-size: clamp(32px, 9.5vw, 72px) !important; }
 
   /* ══ SCÈNES ANIMÉES SUR MOBILE ══
      Le mode statique ne se déclenche plus que sur « prefers-reduced-motion » :

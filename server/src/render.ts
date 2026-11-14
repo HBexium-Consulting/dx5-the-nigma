@@ -67,7 +67,7 @@ export function renderHome(db: DB): string {
     html = html.replace(/images\/clock-\d+\.jpg/g, () => G[ci++ % G.length]);  // horloge : 12 visuels distincts
     let gi = 0;
     html = html.replace(
-      /https?:\/\/picsum\.photos\/[^"'()\s\\]+|images\/(?:fl|p|t)-\d+\.jpg|images\/enigme-3cles\.jpg/g,
+      /https?:\/\/picsum\.photos\/[^"'()\s\\]+|images\/(?:fl|p|t)-\d+\.jpg/g,
       () => G[gi++ % G.length],
     );
   }

@@ -398,11 +398,12 @@
 
   /* ─── SCÈNE 4 · DEVISE — train de mots-clés horizontal ─── */
   const mottoTrack = $('#mottoTrack');
-  const mottoHint = $('#mottoHint');
-  const MOTTO = (window.SITE_CONTENT && window.SITE_CONTENT.motto) || null;
-  const mottoHints = MOTTO ? MOTTO.words.map((w) => w.hint) : [];
-  let mottoWords = [], mottoActive = -1, mottoHintTimer = 0;
+  let mottoWords = [];
 
+  /* chaque mot porte DÉSORMAIS sa légende en permanence sous lui (.mw-hint,
+     posée par content.js) — plus besoin d'un élément partagé en fondu : le
+     contenu qui va avec chaque mot est visible qu'on scrute le train ou
+     qu'on regarde la version empilée mobile. */
   function measureMotto() {
     mottoWords = $$('.mw', mottoTrack).map((el) => {
       const chars = $$('.sc', el);
@@ -423,31 +424,18 @@
     const x = vw / 2 - mix(first, last, t);
     mottoTrack.style.transform = `translate(${x.toFixed(1)}px, -50%)`;
 
-    let best = 0, bestD = 1e9;
-    mottoWords.forEach((w, wi) => {
+    mottoWords.forEach((w) => {
       const rel = clamp((w.center + x - vw / 2) / vw, -1.3, 1.3);
       const d = Math.abs(rel);
-      if (d < bestD) { bestD = d; best = wi; }
       // loin du centre : lettres dispersées et mot en retrait ; au centre : posé
       w.el.style.opacity = (1 - Math.min(d * 1.1, 0.75)).toFixed(3);
       w.chars.forEach((c, i) => {
         c.style.transform = `translate3d(0, ${(w.amps[i] * rel * vh * 0.3).toFixed(1)}px, 0) rotate(${(w.amps[i] * rel * 6).toFixed(2)}deg)`;
       });
     });
-
-    if (best !== mottoActive) {
-      mottoActive = best;
-      mottoHint.classList.add('swap');
-      clearTimeout(mottoHintTimer);
-      mottoHintTimer = setTimeout(() => {
-        mottoHint.textContent = mottoHints[best] || '';
-        mottoHint.classList.remove('swap');
-      }, 150);
-    }
   });
 
   /* ─── SCÈNE 5 · PROCESSUS — des tirages posés un à un sur la table ─── */
-  const grow2 = makeGrow($('#grow2'));
   const nightLineEl = $('#nightLine');
   const nightWords = [$('#nw1'), $('#nw2'), $('#nw3')];
   const STEPS = ((window.SITE_CONTENT && window.SITE_CONTENT.universes) || { items: [] }).items;
@@ -465,11 +453,6 @@
       w.style.opacity = k.toFixed(3);
       w.style.transform = `translateY(${((1 - k) * 16).toFixed(1)}px)`;
     });
-    // le zoom atteint le plein écran PUIS continue d'avancer :
-    // la caméra ne recule jamais, c'est le rideau qui coupe.
-    const g = seg(p, 0.08, 0.30, easeInOut);
-    grow2.set(g, 1 + seg(p, 0.30, 0.52, easeOut) * 0.18);
-
     // rideau de lames : couvre de gauche à droite, se retire de droite à
     // gauche — il découvre une scène entièrement typographique.
     slats.forEach((sl, i) => {
@@ -601,7 +584,7 @@
     vh = innerHeight; vw = innerWidth;
     if (!staticMode) {
       measureScenes();
-      grow1.measure(); grow2.measure();
+      grow1.measure();
       measureFloaters();
       measureClock();
       measureMotto();
