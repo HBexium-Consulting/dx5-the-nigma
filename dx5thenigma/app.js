@@ -705,7 +705,7 @@
       const io = new IntersectionObserver((es) => {
         es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); } });
       }, { threshold: 0.06, rootMargin: '0px 0px -6% 0px' });
-      $$('.scene, .collection').forEach((s, i) => { if (i > 0) { s.classList.add('to-reveal'); io.observe(s); } });
+      $$('.scene, .collection, .about-dx5').forEach((s, i) => { if (i > 0) { s.classList.add('to-reveal'); io.observe(s); } });
     }
   }
 
