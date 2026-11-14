@@ -482,8 +482,11 @@ body.is-ready .fl img { transform: scale(1); }
   background: var(--bone);
   display: flex; align-items: center; justify-content: center;
 }
-/* témoignage : guillemet, parole, filet, signature — la grammaire d'un avis */
-.q-stack { position: relative; z-index: 2; width: min(980px, 84vw); }
+/* témoignage : photo à gauche, guillemet/parole/filet/signature à droite */
+.q-wrap { display: flex; align-items: center; gap: clamp(28px, 4vw, 64px); width: min(1180px, 90vw); }
+.q-photo { flex: 0 0 clamp(190px, 24vw, 300px); margin: 0; }
+.q-photo img { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; display: block; border-radius: 6px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22); }
+.q-stack { position: relative; z-index: 2; flex: 1 1 auto; max-width: 780px; width: auto; }
 .q-glyph {
   display: block;
   font-size: clamp(88px, 8.5vw, 146px); line-height: 0.62;
@@ -671,6 +674,9 @@ body.static .mw-hint { text-align: left; max-width: 34ch; }
 body.static .disc-cta { position: static; transform: none !important; opacity: 1 !important; color: var(--ink); margin: 4vh var(--gutter) 8vh; display: inline-block; }
 body.static .disc-cta .cta-oval path { stroke: var(--ink); }
 body.static .s-quote .pin { padding: 12vh var(--gutter); }
+body.static .q-wrap { flex-direction: column; width: 100%; align-items: flex-start; gap: 22px; }
+body.static .q-photo { flex: none; width: min(220px, 56vw); align-self: center; }
+body.static .q-stack { max-width: 100%; }
 body.static .wipe, body.static .bignum { display: none; }
 body.static .q-glyph, body.static .q-text, body.static .q-name,
 body.static .q-ctx, body.static .q-fig { opacity: 1; }
