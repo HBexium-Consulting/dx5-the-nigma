@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
+<script>document.documentElement.setAttribute("data-theme", localStorage.getItem("dx5-theme") || "dark");</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Template Site Immersif</title>
@@ -12,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="/assets/hbx-player.css">
+<link rel="stylesheet" href="/assets/floating-cta.css">
   <style>
   /* Les photos de l'horloge se dispersent hors écran : on CLIPPE le débordement
      horizontal pour qu'il n'y ait jamais de scroll/espace noir à droite. */
@@ -46,20 +48,31 @@
     .footer-name { font-size: clamp(26px, 11.2vw, 60px); }
   }
 
-  /* ── « Trois mots, un code » : fond nuit FONDU noir/bleu, comme la bibliothèque ── */
-  .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #070b14 50.3%); }
-  .band .from-lime { background: linear-gradient(to bottom right, #070b14 49.7%, transparent 50.3%); }
-  .s-motto .pin {
+  /* ── « Trois mots, un code » : bande de contraste, teintée nuit (dark) ou
+     chaleureuse or/crème (light) — toujours « comme la bibliothèque » de SON thème. ── */
+  html[data-theme="dark"] .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #070b14 50.3%); }
+  html[data-theme="dark"] .band .from-lime { background: linear-gradient(to bottom right, #070b14 49.7%, transparent 50.3%); }
+  html[data-theme="dark"] .s-motto .pin {
     background:
       radial-gradient(900px 480px at 78% 12%, rgba(76, 194, 255, 0.12), transparent 60%),
       radial-gradient(700px 420px at 14% 86%, rgba(76, 194, 255, 0.07), transparent 65%),
       #070b14;
   }
-  .s-motto .motto-kicker, .s-motto .motto-hint { color: #8da0bf; }
+  html[data-theme="light"] .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #efe7d4 50.3%); }
+  html[data-theme="light"] .band .from-lime { background: linear-gradient(to bottom right, #efe7d4 49.7%, transparent 50.3%); }
+  html[data-theme="light"] .s-motto .pin {
+    background:
+      radial-gradient(900px 480px at 78% 12%, rgba(216, 35, 31, 0.08), transparent 60%),
+      radial-gradient(700px 420px at 14% 86%, rgba(232, 199, 106, 0.22), transparent 65%),
+      #efe7d4;
+  }
+  html[data-theme="dark"] .s-motto .motto-kicker, html[data-theme="dark"] .s-motto .motto-hint { color: #8da0bf; }
+  html[data-theme="light"] .s-motto .motto-kicker, html[data-theme="light"] .s-motto .motto-hint { color: #6b6f76; }
   .s-motto .mw { color: #e23b36; }
 
-  /* ── fonds noirs : écritures en BLANC, mots-clés en ROUGE (cohérence logo) ── */
-  .fill-text .fc.on { color: #f4efef; }           /* manifeste : corps en blanc */
+  /* ── écritures : var(--ink) suit le thème (blanc en nuit, encre en clair) ;
+     mots-clés en ROUGE, constants (cohérence logo, lisibles sur les 2 fonds) ── */
+  .fill-text .fc.on { color: var(--ink); }        /* manifeste : corps */
   .fill-text .fc.red.on { color: #e23b36; }       /* mots-clés en rouge (DX-5, Rap-Cine, manuscrit, énigme) */
   .box-svg path { stroke: #d8231f; }
   .night-line .hl { color: #e23b36; }             /* « Une énigme, 3 clés » */
@@ -67,31 +80,31 @@
   .steps-cta a { color: #e23b36; }
   .cta-oval path { stroke: #d8231f; }
   .final-text .fs { color: #e23b36; }             /* phrases « Pas de… » en rouge */
-  .final-text .fs .kw { color: #f4efef; }         /* posture / formule / filtre en blanc */
+  .final-text .fs .kw { color: var(--ink); }      /* posture / formule / filtre */
   .pill-svg path { stroke: #d8231f; }
   .q-glyph { color: #d8231f; }
   .q-text .hot { color: #e23b36; }                /* « une cérémonie officielle en concert » */
   .q-fig { color: #e23b36; }
-  .footer-mail { color: #f4efef; }                /* e-mail du pied de page en blanc */
-  .footer-mail-text::after { background: #f4efef; }
+  .footer-mail { color: var(--ink); }             /* e-mail du pied de page */
+  .footer-mail-text::after { background: var(--ink); }
 
   /* « LE DOSSIER » : rouge et un peu plus grand */
   .coll-head > p.mono.ash:first-child { color: #e23b36; font-size: 15px; letter-spacing: 0.2em; }
 
-  /* motto : Authentique + Engagé en blanc, Créatif en rouge */
-  .s-motto .mw:nth-child(1), .s-motto .mw:nth-child(3) { color: #f4efef; }
+  /* motto : Authentique + Engagé suivent l'encre, Créatif en rouge */
+  .s-motto .mw:nth-child(1), .s-motto .mw:nth-child(3) { color: var(--ink); }
   .s-motto .mw:nth-child(2) { color: #e23b36; }
 
   /* guillemet de fermeture, en bas à gauche du témoignage */
   .q-stack { position: relative; }
   .q-glyph-close { position: absolute; left: 0; bottom: -0.2em; transform: rotate(180deg); line-height: 0.6; }
 
-  /* accroche de l'horloge : texte blanc, mot-clé « l'énigme » en rouge */
-  .clock-accroche { color: #f4efef; }
+  /* accroche de l'horloge : texte suit l'encre, mot-clé « l'énigme » en rouge */
+  .clock-accroche { color: var(--ink); }
   .clock-accroche .kw { color: #e23b36; }
-  .fill-text .boxed .fc.on { color: #f4efef; }    /* « déverrouille » dans l'ovale */
-  #nw3 { color: #f4efef; }                        /* « 3 clés. » */
-  .final-text .pill { color: #f4efef; }           /* « brut. » */
+  .fill-text .boxed .fc.on { color: var(--ink); } /* « déverrouille » dans l'ovale */
+  #nw3 { color: var(--ink); }                     /* « 3 clés. » */
+  .final-text .pill { color: var(--ink); }        /* « brut. » */
 
   /* ── « Trois mots » sur mobile/tablette étroite : le train horizontal géant
      déborde (lettres étalées sur ~600px). On empile les 3 mots, centrés, sans
@@ -368,7 +381,7 @@
     <!-- ─── FOOTER ─── -->
     <footer class="footer" id="contact">
       <p class="footer-kicker mono ash reveal">UN PROJET, UNE IMAGE EN TÊTE ?</p>
-      <a class="footer-mail reveal" href="mailto:bonjour@eliseaubert.fr"><span class="footer-mail-text">bonjour@eliseaubert.fr</span></a>
+      <a class="footer-mail reveal" href="mailto:dx5thenigma@gmail.com"><span class="footer-mail-text">dx5thenigma@gmail.com</span></a>
       <p class="footer-reassurance mono ash reveal">RÉPONSE SOUS 24 H — DEVIS GRATUIT, SANS ENGAGEMENT</p>
       <a class="footer-logo" href="#hero" data-nav aria-label="DX-5 The Nigma"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></a>
       <h2 class="footer-name" id="footerName" aria-label="DX-5 The Nigma" hidden></h2>
@@ -410,6 +423,7 @@
 
   <script src="/bibliotheque/data.js"></script>
   <script src="/assets/hbx-player.js"></script>
+<script src="/assets/floating-cta.js"></script>
   <script src="content.js"></script>
   <script src="app.js"></script>
   <script>

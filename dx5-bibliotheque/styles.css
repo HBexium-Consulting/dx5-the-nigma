@@ -14,6 +14,19 @@
   --mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
 }
 
+/* Mode clair (bascule) : même charte « Énigme » bleu/or, surface claire. */
+html.is-bib[data-theme="light"] {
+  --bg: #f4f3f0;
+  --surface: #ffffff;
+  --surface-2: #ece9e3;
+  --line: rgba(26, 25, 21, 0.14);
+  --ink: #1a1915;
+  --ash: #5c6570;
+  --blue: #0b74b0;
+  --gold: #a9780a;
+  --red: #c23a2e;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 html.is-bib body {
@@ -178,6 +191,7 @@ html.is-bib body {
   background: rgba(10, 15, 26, 0.5); border: 1px solid rgba(232, 199, 106, 0.22);
   border-radius: 14px; padding: 14px; transition: border-color 0.25s;
 }
+html[data-theme="light"] .up-card { background: rgba(255, 255, 255, 0.6); }
 .up-card:hover { border-color: rgba(232, 199, 106, 0.5); }
 .up-cover {
   position: relative; flex: 0 0 104px; width: 104px; height: 104px;
@@ -196,7 +210,7 @@ html.is-bib body {
 .up-live { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; color: #e23b36; }
 .up-when { font-size: 10px; }
 .up-more { display: inline-block; margin-top: 4px; font-size: 11px; letter-spacing: 0.1em; color: #e23b36; text-decoration: none; border-bottom: 1px solid rgba(226, 59, 54, 0.5); padding-bottom: 1px; width: fit-content; transition: color 0.2s, border-color 0.2s; }
-.up-more:hover { color: #f4efef; border-color: #f4efef; }
+.up-more:hover { color: var(--ink); border-color: var(--ink); }
 .up-card { border-color: rgba(216, 35, 31, 0.26); }
 @media (max-width: 520px) { .up-card { flex-direction: column; } .up-cover { width: 100%; flex-basis: 150px; height: 150px; } }
 

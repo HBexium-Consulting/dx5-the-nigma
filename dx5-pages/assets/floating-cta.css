@@ -1,0 +1,47 @@
+/* ── Boutons flottants WhatsApp + Réserver l'artiste — feuille AUTONOME ──
+   Chargée sur l'accueil immersif, la bibliothèque et toutes les pages.
+   Empilés sur le bord droit, à mi-hauteur : la barre du lecteur persistant
+   (hbx-player) occupe déjà tout le bas de l'écran, donc on évite cette zone. */
+
+.fcta-stack {
+  position: fixed; right: 14px; top: 50%; transform: translateY(-50%);
+  z-index: 58; display: flex; flex-direction: column; gap: 12px;
+}
+.fcta {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; text-decoration: none;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  transition: transform 0.25s cubic-bezier(0.19, 1, 0.22, 1), box-shadow 0.25s;
+}
+.fcta:hover, .fcta:focus-visible { transform: scale(1.08); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45); }
+.fcta svg { width: 26px; height: 26px; fill: currentColor; }
+.fcta.fcta-wa { background: #25d366; }
+.fcta.fcta-book { background: #d8231f; }
+.fcta.fcta-theme { background: #1a1915; border: 1px solid rgba(255, 255, 255, 0.14); cursor: pointer; }
+html[data-theme="light"] .fcta.fcta-theme { background: #ffffff; color: #1a1915; border-color: rgba(26, 25, 21, 0.14); }
+
+/* étiquette au survol (souris uniquement) — jamais de clic requis pour comprendre */
+.fcta-label {
+  position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%);
+  white-space: nowrap; padding: 6px 12px; border-radius: 8px;
+  background: rgba(10, 10, 10, 0.88); color: #fff;
+  font: 500 13px/1 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+@media (hover: hover) {
+  .fcta { position: relative; }
+  .fcta:hover .fcta-label, .fcta:focus-visible .fcta-label { opacity: 1; }
+}
+
+/* mobile : plus petit, remonté pour ne jamais chevaucher le lecteur */
+@media (max-width: 640px) {
+  .fcta-stack { right: 10px; top: auto; bottom: 150px; transform: none; gap: 10px; }
+  .fcta { width: 46px; height: 46px; }
+  .fcta svg { width: 22px; height: 22px; }
+  .fcta-label { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fcta { transition: none; }
+}

@@ -42,6 +42,7 @@ body {
   border: 1px solid var(--line); border-radius: 12px;
   flex-wrap: wrap;
 }
+html[data-theme="light"] .top { background: rgba(255, 255, 255, 0.82); }
 .wordmark { font-weight: 700; white-space: nowrap; color: inherit; text-decoration: none; }
 .wordmark:hover { color: var(--blue); }
 .top-nav { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -125,7 +126,7 @@ a { color: var(--blue); }
   border-left: 2px solid var(--gold);
   padding: 6px 0 6px 22px; margin: 26px 0;
   font-family: var(--serif); font-style: italic;
-  font-size: 19px; line-height: 1.75; color: #d9e0ee;
+  font-size: 19px; line-height: 1.75; color: var(--ink);
   max-width: 56ch;
 }
 .fragment footer { font-family: var(--mono); font-style: normal; font-size: 10px; letter-spacing: 0.14em; color: var(--ash); margin-top: 10px; }
@@ -189,6 +190,7 @@ input:focus, textarea:focus, select:focus { outline: 2px solid var(--blue); outl
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--line); border-radius: 12px; z-index: 90;
 }
+html[data-theme="light"] .nav-menu { background: rgba(255, 255, 255, 0.98); }
 .nav-menu a { padding: 9px 12px; border-radius: 8px; text-decoration: none; color: var(--ash); white-space: nowrap; }
 .nav-menu a:hover { background: rgba(76, 194, 255, 0.1); color: var(--gold); }
 .nav-menu[hidden] { display: none; } /* l' attribut hidden doit gagner sur display:flex */
@@ -249,6 +251,25 @@ html.is-pg body {
     var(--bg);
 }
 
+/* ── Mode clair (bascule) : mêmes accents noir & rouge, surface claire ── */
+html.is-pg[data-theme="light"] {
+  --bg: #f4f3f0;
+  --surface: #ffffff;
+  --surface-2: #ece9e3;
+  --line: rgba(26, 25, 21, 0.14);
+  --ink: #1a1915;
+  --ash: #6b6f76;
+  --blue: #c81e1a;
+  --gold: #a9780a;
+  --red: #b9261f;
+}
+html.is-pg[data-theme="light"] body {
+  background:
+    radial-gradient(900px 480px at 78% -8%, rgba(216, 35, 31, 0.05), transparent 60%),
+    radial-gradient(700px 420px at 12% 14%, rgba(232, 199, 106, 0.10), transparent 65%),
+    var(--bg);
+}
+
 /* logo officiel dans l'entête partagé */
 .wordmark { display: inline-flex; align-items: center; }
 .wordmark .brand-logo { height: 34px; width: auto; display: block; border-radius: 0; }
@@ -262,3 +283,5 @@ html.is-pg body {
   background: radial-gradient(130px 90px at 36px 50%, rgba(0, 0, 0, 0.55), transparent 72%);
   border-radius: 12px 0 0 12px; pointer-events: none; z-index: -1;
 }
+/* clair : halo sombre devenu inutile (le logo porte déjà son propre contour) */
+html[data-theme="light"] .top::before { display: none; }

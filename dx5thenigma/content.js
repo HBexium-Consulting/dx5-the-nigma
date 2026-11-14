@@ -103,7 +103,7 @@ window.SITE_CONTENT = {
 
   contact: {
     kicker: 'ENTRER DANS LE DOSSIER ?',
-    email: 'contact@dx5thenigma.com',
+    email: 'dx5thenigma@gmail.com',
     reassurance: 'ALBUM 12 TITRES — NOVEMBRE 2026 · BOOKING & PRESSE : RÉPONSE SOUS 24 H'
   },
 
