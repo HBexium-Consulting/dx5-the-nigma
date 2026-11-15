@@ -50,11 +50,14 @@ export function renderHome(db: DB): string {
 
   // Injection du contenu (SITE_CONTENT) AVANT le remplacement des images : ainsi
   // le JSON embarqué est aussi balayé, et content-inject.js pose des URLs Dashboard.
+  // Remplacements INDÉPENDANTS (pas un bloc de 3 lignes consécutives) : un script
+  // ajouté entre-temps (ex. floating-cta.js) ne doit jamais faire échouer ce
+  // remplacement en silence — c'était le cas avant ce correctif.
   html = html.replace(
-    `  <script src="/bibliotheque/data.js"></script>\n  <script src="/assets/hbx-player.js"></script>\n  <script src="content.js"></script>`,
-    `  <script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>\n` +
-    `  <script src="/assets/hbx-player.js"></script>\n  <script src="/js/content-inject.js"></script>`
+    '<script src="/bibliotheque/data.js"></script>',
+    `<script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>`
   );
+  html = html.replace('<script src="content.js"></script>', '<script src="/js/content-inject.js"></script>');
 
   // ── Repli positionnel (galerie à plat) ──
   // Pour les images ENCORE locales : markup brut et champs non couverts par une
