@@ -33,7 +33,7 @@ window.I18N_DICT = {
     "home.nav.proof": "ACHIV",
     "home.nav.cta": "KOUTE",
     "home.clock.accroche": "Siyal la soti Ayiti,<br>dechifre <span class=\"kw\">devinèt la.</span>",
-    "home.manifesto.text": "Depi 2007, DX-5 The Nigma ap fòje Rap-Cine a : rap modèn grafte sou tanbou rasin vodou ayisyen an. Anba chak chante, gen yon maniskri ; anba maniskri a, gen yon devinèt. Isit la, nou pa li byografi li : nou [[dekloure]] l.",
+    "home.manifesto.text": "Depi 2007, DX-5 The Nigma ap fòje Rap-Cine a : rap modèn grafte sou tanbou rasin vodou ayisyen an. Anba chak chante, gen yon maniskri ; anba maniskri a, gen yon devinèt. Isit la, nou pa li byografi li : nou dekloure l.",
 
     // accueil — section À propos
     "home.about.title": "Rap-Cine, <em>ekriti anvan tout bagay.</em>",
@@ -471,7 +471,7 @@ window.I18N_DICT = {
     "home.nav.proof": "ARCHIVES",
     "home.nav.cta": "LISTEN",
     "home.clock.accroche": "The signal comes from Haiti,<br>decode <span class=\"kw\">the enigma.</span>",
-    "home.manifesto.text": "Since 2007, DX-5 The Nigma has forged Rap-Cine: modern rap grafted onto the root drum of Haitian Vodou. Beneath every track, a manuscript; beneath the manuscript, an enigma. Here, we don't read his biography: we [[unlock]] it.",
+    "home.manifesto.text": "Since 2007, DX-5 The Nigma has forged Rap-Cine: modern rap grafted onto the root drum of Haitian Vodou. Beneath every track, a manuscript; beneath the manuscript, an enigma. Here, we don't read his biography: we unlock it.",
 
     "home.about.title": "Rap-Cine, <em>the writing comes first.</em>",
     "home.about.marquee": "<span>RAP-CINE</span><span>VODOU ROOTS</span><span>PORT-DE-PAIX</span><span>PORT-AU-PRINCE</span><span>HAITI</span><span>AUTHENTIC</span><span>CREATIVE</span><span>COMMITTED</span><span>RAP-CINE</span><span>VODOU ROOTS</span><span>PORT-DE-PAIX</span><span>PORT-AU-PRINCE</span><span>HAITI</span><span>AUTHENTIC</span><span>CREATIVE</span><span>COMMITTED</span>",

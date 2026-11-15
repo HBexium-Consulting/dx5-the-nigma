@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script>document.documentElement.setAttribute("data-theme", localStorage.getItem("dx5-theme") || "dark");</script>
+<script>document.documentElement.setAttribute("data-theme", "dark");</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Template Site Immersif</title>
@@ -73,8 +73,7 @@
   /* ── écritures : var(--ink) suit le thème (blanc en nuit, encre en clair) ;
      mots-clés en ROUGE, constants (cohérence logo, lisibles sur les 2 fonds) ── */
   .fill-text .fc.on { color: var(--ink); }        /* manifeste : corps */
-  .fill-text .fc.red.on { color: #e23b36; }       /* mots-clés en rouge (DX-5, Rap-Cine, manuscrit, énigme) */
-  .box-svg path { stroke: #d8231f; }
+  .fill-text .fc.red.on { color: #e23b36; }       /* mots-clés en rouge (DX-5, Rap-Cine, manuscrit, énigme, déverrouille) */
   .night-line .hl { color: #e23b36; }             /* « Une énigme, 3 clés » */
   .psteps h3 { color: #e23b36; }
   .steps-cta a { color: #e23b36; }
@@ -102,7 +101,6 @@
   /* accroche de l'horloge : texte suit l'encre, mot-clé « l'énigme » en rouge */
   .clock-accroche { color: var(--ink); }
   .clock-accroche .kw { color: #e23b36; }
-  .fill-text .boxed .fc.on { color: var(--ink); } /* « déverrouille » dans l'ovale */
   #nw3 { color: var(--ink); }                     /* « 3 clés. » */
   .final-text .pill { color: var(--ink); }        /* « brut. » */
 
@@ -131,9 +129,36 @@
   /* ── LOGO officiel DX-5 : il vole du loader jusqu'au dock (passation) ── */
   img.brand-logo { border-radius: 0; width: auto; display: block; }
   .loader-wordmark .brand-logo { height: clamp(46px, 8vw, 96px); }
+  /* logo animé (vidéo) : même gabarit que l'ancien img.brand-logo qu'il remplace */
+  .logo-video { border-radius: 0; width: auto; display: block; object-fit: contain; }
+  .loader-wordmark .logo-video { height: clamp(46px, 8vw, 96px); }
   .dock-wordmark { display: inline-flex; align-items: center; }
   .dock-wordmark .brand-logo { height: 38px; filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.6)); }
   @media (max-width: 760px) { .dock-wordmark .brand-logo { height: 26px; } }
+
+  /* ══════════ ACCUEIL · fond noir permanent (identité visuelle de l'artiste) ══════════ */
+  /* Le thème est forcé en « dark » (voir le <script> dans <head>), quel que
+     soit le réglage mémorisé par le visiteur sur une autre page. On masque
+     donc le bouton de bascule ici — il resterait sans effet. */
+  .fcta-theme { display: none !important; }
+
+  /* ══════════ MANIFESTE · photo à gauche, texte à droite ══════════ */
+  .fill-row { display: flex; align-items: center; gap: clamp(28px, 5vw, 72px); width: min(1180px, 88vw); }
+  .fill-photo { flex: none; width: clamp(200px, 26vw, 340px); aspect-ratio: 4 / 5; overflow: hidden; border-radius: 2px; margin: 0; opacity: 0; will-change: opacity, transform; }
+  .fill-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .s-fill .fill-text { width: auto; flex: 1 1 auto; }
+  @media (max-width: 900px) {
+    .fill-row { flex-direction: column; align-items: flex-start; width: auto; }
+    .fill-photo { width: min(58vw, 300px); }
+  }
+  body.static .fill-row { padding: 0 var(--gutter); }
+  body.static .s-fill .fill-text { padding: 0; }
+  body.static .fill-photo { opacity: 1; transform: none; }
+
+  /* « Une énigme, 3 clés. » : alignée à gauche comme les étapes qui suivent
+     (au lieu du centre de l'écran) — l'intro et son contenu partagent la
+     même colonne, au lieu de deux compositions sans lien. */
+  .night-line { justify-content: flex-start; padding-left: var(--gutter); }
 
   /* ══════════ ACCUEIL · HORLOGE ══════════ */
   /* Hauteurs des scènes PRÉ-FIXÉES (= data-pin × 100vh) : le moteur mesure les
@@ -193,6 +218,9 @@
   .footer-name[hidden] { display: none; }
   .footer-logo { display: inline-block; justify-self: center; }
   .footer-logo img { width: auto; height: clamp(130px, 13vw, 230px); border-radius: 0; animation: logoPulse 3.6s ease-in-out infinite; transform-origin: center; }
+  /* vidéo du logo (déjà animée) : même gabarit, sans le pulse CSS — redondant
+     avec le mouvement propre à la vidéo. */
+  .footer-logo .logo-video { height: clamp(130px, 13vw, 230px); }
   .footer-info { text-align: center; }
   @media (max-width: 700px) {
     .footer-top { grid-template-columns: 1fr; justify-items: center; gap: 36px; }
@@ -200,6 +228,7 @@
        boutons flottants (WhatsApp/booking/langue/thème), collée au bord droit. */
     .footer-info { text-align: center; max-width: calc(100% - 96px); margin-inline: auto; }
     .footer-logo img { height: clamp(110px, 24vw, 170px); }
+    .footer-logo .logo-video { height: clamp(110px, 24vw, 170px); }
   }
   @keyframes logoPulse {
     0%, 100% { filter: drop-shadow(0 0 0 rgba(216, 35, 31, 0)); transform: scale(1); }
@@ -228,7 +257,8 @@
 
   .about-bio { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: clamp(28px, 5vw, 64px); align-items: start; margin-bottom: 64px; }
   .about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin-bottom: 26px; }
-  .about-fact { border-top: 1px solid var(--ink-faint); padding-top: 8px; }
+  .about-fact { border-top: 1px solid var(--ink-faint); padding-top: 8px; transition: border-color 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
+  .about-fact:hover { border-color: #e23b36; transform: translateX(3px); }
   .about-fact b { display: block; font: 600 10.5px/1 var(--mono); letter-spacing: 0.14em; color: var(--ash); margin-bottom: 4px; }
   .about-fact span { color: var(--ink); font-size: 14.5px; }
   .about-text { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.6; color: var(--ink); margin-bottom: 16px; }
@@ -239,11 +269,16 @@
   .about-photo img { width: 100%; height: auto; display: block; border-radius: 6px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25); }
 
   .about-triptych { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 40px); margin-bottom: 64px; padding-top: 44px; border-top: 1px solid var(--ink-faint); }
-  .about-trip-item h3 { font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: #e23b36; margin-bottom: 10px; }
+  .about-trip-item { transition: transform 0.35s var(--ease-out); }
+  .about-trip-item:hover { transform: translateY(-4px); }
+  .about-trip-item h3 { font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase; color: #e23b36; margin-bottom: 10px; position: relative; display: inline-block; }
+  .about-trip-item h3::after { content: ''; position: absolute; left: 0; bottom: -3px; width: 100%; height: 1px; background: #e23b36; transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--ease-out); }
+  .about-trip-item:hover h3::after { transform: scaleX(1); }
   .about-trip-item p { color: var(--ash); line-height: 1.55; font-size: 15px; }
 
   .about-timeline-track { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
-  .about-tl-item { scroll-snap-align: start; flex: 0 0 auto; width: 220px; padding: 16px 18px; border-radius: 8px; background: var(--white); border: 1px solid var(--ink-faint); }
+  .about-tl-item { scroll-snap-align: start; flex: 0 0 auto; width: 220px; padding: 16px 18px; border-radius: 8px; background: var(--white); border: 1px solid var(--ink-faint); transition: border-color 0.3s var(--ease-out), transform 0.3s var(--ease-out); }
+  .about-tl-item:hover { border-color: #e23b36; transform: translateY(-3px); }
   .about-tl-item b { display: block; font: 700 20px/1 var(--sans); color: #e23b36; margin-bottom: 8px; }
   .about-tl-item span { color: var(--ash); font-size: 13.5px; line-height: 1.45; }
 
@@ -263,7 +298,7 @@
   <!-- ══════════ PRELOADER ══════════ -->
   <div class="loader" id="loader" aria-hidden="true">
     <div class="loader-inner">
-      <p class="loader-wordmark"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></p>
+      <p class="loader-wordmark"><video class="logo-video" autoplay muted loop playsinline poster="video/dx5-logo-poster.jpg" aria-label="DX-5 The Nigma"><source src="video/dx5-logo.mp4" type="video/mp4"></video></p>
       <span class="loader-rule"><i id="loaderBar"></i></span>
     </div>
   </div>
@@ -382,7 +417,10 @@
     <!-- ─── SCÈNE 2 · MANIFESTE (remplissage caractère par caractère) ─── -->
     <section class="scene s-fill" id="manifeste" data-pin="3.5">
       <div class="pin">
-        <p class="fill-text" id="fillText">Élise Aubert photographie des gens vrais, dans des lumières trouvées. Elle cherche l'instant précis où l'on <span class="boxed" id="boxedPhrase">cesse de poser<svg class="box-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="boxPath" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></span> — la seconde où le vrai visage revient.</p>
+        <div class="fill-row">
+          <figure class="fill-photo" id="fillPhotoWrap"><img id="fillPhoto" src="" alt="DX-5 The Nigma" loading="lazy" decoding="async"></figure>
+          <p class="fill-text" id="fillText">Depuis 2007, DX-5 The Nigma forge le Rap-Cine.</p>
+        </div>
       </div>
     </section>
 
@@ -499,7 +537,7 @@
     <!-- ─── FOOTER ─── -->
     <footer class="footer" id="contact">
       <div class="footer-top">
-        <a class="footer-logo reveal" href="#hero" data-nav aria-label="DX-5 The Nigma"><img class="brand-logo" src="logo.png" alt="DX-5 The Nigma"></a>
+        <a class="footer-logo reveal" href="#hero" data-nav aria-label="DX-5 The Nigma"><video class="logo-video" autoplay muted loop playsinline poster="video/dx5-logo-poster.jpg"><source src="video/dx5-logo.mp4" type="video/mp4"></video></a>
         <div class="footer-info">
           <p class="footer-kicker mono ash reveal" data-i18n="home.footer.kicker">UN PROJET, UNE IMAGE EN TÊTE ?</p>
           <a class="footer-mail reveal" href="mailto:dx5thenigma@gmail.com"><span class="footer-mail-text">dx5thenigma@gmail.com</span></a>
@@ -587,9 +625,9 @@
     spans.forEach((sp) => { const t = sp.textContent || ''; for (let k = 0; k < t.length; k++) map.push(sp); text += t; });
     const low = text.toLowerCase();  // les espaces ne sont pas dans les .fc : on compare sans espaces
     const KEYWORDS = {
-      fr: ['dx-5 the nigma', 'rap-cine', 'manuscrit', 'énigme'],
-      ht: ['dx-5 the nigma', 'rap-cine', 'maniskri', 'devinèt'],
-      en: ['dx-5 the nigma', 'rap-cine', 'manuscript', 'enigma']
+      fr: ['dx-5 the nigma', 'rap-cine', 'manuscrit', 'énigme', 'déverrouille'],
+      ht: ['dx-5 the nigma', 'rap-cine', 'maniskri', 'devinèt', 'dekloure'],
+      en: ['dx-5 the nigma', 'rap-cine', 'manuscript', 'enigma', 'unlock']
     };
     (KEYWORDS[lang] || KEYWORDS.fr).map((k) => k.replace(/\s/g, '')).forEach((kw) => {
       let from = 0, i;

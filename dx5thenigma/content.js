@@ -44,7 +44,8 @@ window.SITE_CONTENT = {
   positioning: 'Rap et écriture, d’Haïti au monde.',
 
   manifesto: {
-    text: 'Depuis 2007, DX-5 The Nigma forge le Rap-Cine : le rap moderne greffé sur le tambour racine du vodou haïtien. Sous chaque morceau, un manuscrit ; sous le manuscrit, une énigme. Ici on ne lit pas sa biographie : on la [[déverrouille]].'
+    text: 'Depuis 2007, DX-5 The Nigma forge le Rap-Cine : le rap moderne greffé sur le tambour racine du vodou haïtien. Sous chaque morceau, un manuscrit ; sous le manuscrit, une énigme. Ici on ne lit pas sa biographie : on la déverrouille.',
+    image: 'images/p-06.jpg'
   },
 
   proof: {
@@ -147,13 +148,12 @@ window.SITE_CONTENT = {
   if (intro) intro.innerHTML = C.positioning.split(' ').map((w) => `<span>${w}</span>`).join(' ');
 
   // 3 · démarche
+  const fillPhoto = $('#fillPhoto');
+  if (fillPhoto && C.manifesto.image) fillPhoto.src = C.manifesto.image;
   function applyManifesto(text) {
     const fill = $('#fillText');
     if (!fill) return;
-    fill.innerHTML = text.replace(
-      /\[\[(.+?)\]\]/,
-      '<span class="boxed" id="boxedPhrase">$1<svg class="box-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="boxPath" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></span>'
-    );
+    fill.innerHTML = text;
     // #fillText est éclaté en spans .fc par app.js (animation au scrub) : un
     // simple innerHTML désynchronise son cache — app.js expose un hook dédié
     // pour re-découper + resynchroniser la scène après un changement de texte.

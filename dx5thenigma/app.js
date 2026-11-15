@@ -359,8 +359,8 @@
   });
 
   /* ─── SCÈNE 2 · MANIFESTE ─── */
-  let boxDraw = makeDraw($('#boxPath'));
   let lastFillIdx = 0;
+  const fillPhoto = $('#fillPhotoWrap');
   addScene('.s-fill', (p) => {
     const idx = Math.round(seg(p, 0.05, 0.58) * fillChars.length);
     if (idx !== lastFillIdx) {
@@ -368,19 +368,20 @@
       for (let i = lo; i < hi; i++) fillChars[i].classList.toggle('on', i < idx);
       lastFillIdx = idx;
     }
-    boxDraw(1 - seg(p, 0.42, 0.56));
+    if (fillPhoto) {
+      const e = seg(p, 0, 0.18, easeOut);
+      fillPhoto.style.opacity = e.toFixed(3);
+      fillPhoto.style.transform = `scale(${(0.94 + e * 0.06).toFixed(3)})`;
+    }
     fillText.classList.toggle('greyed', p > 0.68);
   });
 
-  /* changement de langue : #fillText vient d'être repeuplé (nouveau texte,
-     markup « boxed » recréé) — on redécoule les caractères, on recapture le
-     tracé svg (même id, nouveau nœud) et on force un rendu de la scène. */
+  /* changement de langue : #fillText vient d'être repeuplé (nouveau texte) —
+     on redécoupe les caractères et on force un rendu de la scène. */
   function resyncFillText() {
     splitFillChars(fillText);
     fillChars = $$('.fc', fillText);
     lastFillIdx = 0;
-    const bp = $('#boxPath');
-    if (bp) boxDraw = makeDraw(bp);
     const s = scenes.find((sc) => sc.root.classList.contains('s-fill'));
     if (s) s.lastP = -1;
     requestAnimationFrame(refreshDraws);

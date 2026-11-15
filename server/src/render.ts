@@ -104,6 +104,10 @@ function applyZones(content: any, media: { hero: string | null; zones: Record<st
   const enigme = Z['une-enigme-3-cles'] || [];
   if (enigme[0]) { content.universes ??= {}; content.universes.image = enigme[0]; }
 
+  // MANIFESTE (« Depuis 2007… ») : photo à gauche du texte.
+  const manifeste = Z['depuis-2007-le-manifeste'] || [];
+  if (manifeste[0]) { content.manifesto ??= {}; content.manifesto.image = manifeste[0]; }
+
   // GRANDE DÉRIVE (« Pas de posture… ») : traîne de bas de page.
   const drift = Z['pas-de-posture-pas-de-formule-pas-de-filtre-juste-le-text'] || [];
   if (drift.length) content.trail = drift;
