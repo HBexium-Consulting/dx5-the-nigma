@@ -44,7 +44,7 @@ export const isUnlocked = (t: any): boolean =>
   !t.unlock_at || new Date(t.unlock_at).getTime() <= Date.now();
 
 /** Données du lecteur persistant : extraits des titres publiés ET déverrouillés. */
-export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any[]; upcoming: any[]; videos: any[] } {
+export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any[]; upcoming: any[]; videos: any[]; spotify?: string } {
   const tracks: any[] = [];
   for (const rel of publishedReleases(db)) {
     for (const t of unlockedTracks(db, rel.id)) {
@@ -74,7 +74,10 @@ export function libraryPayload(db: DB): { tracks: any[]; clips: any[]; live: any
     description: v.description ?? undefined, thumb: v.thumbnail_url ?? undefined,
     category: v.category_slug ? { slug: v.category_slug, label: v.category_label ?? undefined } : undefined,
   }));
-  return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [], upcoming, videos };
+  // Lien Spotify de l'artiste (réglage Dashboard, synchronisé dans hbx_sync_state) :
+  // le front en embarque le lecteur officiel. undefined si non renseigné.
+  const spotify = ((db.prepare("SELECT value FROM hbx_sync_state WHERE key='spotify_url'").get() as any)?.value) || undefined;
+  return { tracks: unique, clips: lib?.clips ?? [], live: lib?.live ?? [], upcoming, videos, spotify };
 }
 
 export function sceneSettings(db: DB, key: string): any | null {

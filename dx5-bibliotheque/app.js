@@ -81,12 +81,37 @@
       `<img src="${esc(v.thumb || ('https://img.youtube.com/vi/' + v.yt + '/hqdefault.jpg'))}" alt="" loading="lazy" width="480" height="270">` +
       '<span class="f-play" aria-hidden="true">▶</span></button>' +
       `<span class="v-title">${esc(v.title)}</span><span class="v-meta">${esc(v.description || '')}</span></div>`;
-    // Les clips officiels viennent du module « Vidéos » du Dashboard s'il en a ;
-    // sinon on retombe sur les clips curatés via les réglages de scène (legacy).
+    // Vidéos du module « Vidéos » du Dashboard, RÉPARTIES PAR RUBRIQUE :
+    //  - « Live & interview » (category.slug === 'live') → grille Live & interviews ;
+    //  - « Clip officiel » (slug 'clip') OU non classée → grille Clips officiels.
+    // Repli sur les clips/live curatés (scène, legacy) si une rubrique n'a
+    // aucune vidéo Dashboard — aucune régression si le module est vide.
     const dashVideos = (window.LIB.videos || []).filter((v) => v && v.yt);
-    document.getElementById('clipGrid').innerHTML = dashVideos.length
-      ? dashVideos.map(facadeYt).join('')
+    const dashLive = dashVideos.filter((v) => v.category && v.category.slug === 'live');
+    const dashClips = dashVideos.filter((v) => !(v.category && v.category.slug === 'live'));
+    document.getElementById('clipGrid').innerHTML = dashClips.length
+      ? dashClips.map(facadeYt).join('')
       : (window.LIB.clips || []).map(facade).join('');
-    document.getElementById('liveGrid').innerHTML = (window.LIB.live || []).map(facade).join('');
+    document.getElementById('liveGrid').innerHTML = dashLive.length
+      ? dashLive.map(facadeYt).join('')
+      : (window.LIB.live || []).map(facade).join('');
+
+    /* ── Lecteur Spotify (lien artiste piloté par le Dashboard) ── */
+    const spUrl = window.LIB.spotify;
+    const spHost = document.getElementById('spotifyEmbed');
+    const spBlock = document.getElementById('spotify-block');
+    if (spUrl && spHost) {
+      const m = String(spUrl).match(/open\.spotify\.com\/(?:intl-[a-z-]+\/)?(artist|album|track|playlist)\/([A-Za-z0-9]+)/);
+      if (m) {
+        const f = document.createElement('iframe');
+        f.src = `https://open.spotify.com/embed/${m[1]}/${m[2]}`;
+        f.width = '100%'; f.height = '352'; f.loading = 'lazy';
+        f.style.cssText = 'border:0;border-radius:12px';
+        f.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+        f.setAttribute('allowfullscreen', '');
+        spHost.innerHTML = ''; spHost.appendChild(f);
+        if (spBlock) spBlock.hidden = false;
+      }
+    }
   };
 })();
