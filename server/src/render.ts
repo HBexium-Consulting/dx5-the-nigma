@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import type { DB } from './db.ts';
 import { config } from './config.ts';
-import { libraryPayload, sceneSettings, sceneMedia } from './embargo.ts';
+import { sceneSettings, sceneMedia } from './embargo.ts';
 
 /** Rend l'accueil immersif en INJECTANT les données depuis la base (comme le
  *  faisait la vue serveur) : SEO réglé, contenu piloté par le Dashboard. */
@@ -27,12 +27,31 @@ function applyHomeOverrides(base: any, d: any): any {
   return c;
 }
 
+/** Construit les SURCHARGES de contenu (window.SITE_CONTENT_OVERRIDES) à partir
+ *  des champs réglés dans la scène `home` du Dashboard. Ne renvoie QUE ce qui est
+ *  renseigné → content.js garde sa valeur de base pour tout le reste (zéro régression). */
+function buildHomeOverrides(d: any): any {
+  const o: any = {};
+  const str = (v: unknown) => typeof v === 'string' && v.trim() !== '';
+  // Pièces à conviction (« Le dossier ») : liste complète pilotée par le Dashboard.
+  // Chaque pièce = { img, title, meta }. Un tableau fourni remplace celui de base.
+  if (Array.isArray(d.proof_projects) && d.proof_projects.length) {
+    const projects = d.proof_projects
+      .map((p: any) => ({ img: p.img, title: p.title, meta: p.meta }))
+      .filter((p: any) => str(p.img) || str(p.title));
+    if (projects.length) o.proof = { projects };
+  }
+  // NB : les champs texte scalaires (kicker, copyright, e-mail, footer…) seront
+  // ajoutés ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte
+  // pas de valeurs périmées (sinon elles surchargeraient l'accueil → régression).
+  return o;
+}
+
 export function renderHome(db: DB): string {
   let html = readFileSync(config.frontRoot + 'dx5thenigma/index.html', 'utf8');
   // Base = contenu crafté (fichier) ; surcharge = champs éditables de la scène API.
   const base = JSON.parse(readFileSync(new URL('../data/home-content.json', import.meta.url), 'utf8'));
   const content = applyHomeOverrides(base, sceneSettings(db, 'home') ?? {});
-  const lib = libraryPayload(db);
 
   // ── Placement des images PAR SECTION (zones du Dashboard) ──
   // Chaque image rangée sous une section de la médiathèque va dans SA zone du
@@ -48,27 +67,16 @@ export function renderHome(db: DB): string {
   html = html.replace('content="Site généré depuis le template Site Immersif."', `content="${esc(desc)}"`);
   html = html.replace('href="bibliotheque/"', 'href="/bibliotheque/"');
 
-  // ⚠️ INJECTION DE window.SITE_CONTENT VOLONTAIREMENT INACTIVE ICI.
-  // Elle échouait silencieusement depuis l'ajout de floating-cta.js (un script
-  // supplémentaire cassait le remplacement texte-à-texte visé) : l'accueil
-  // tournait donc sur le contenu codé en dur dans content.js — qui s'est
-  // trouvé être la version À JOUR (mise en page portrait des pièces à
-  // conviction, manifeste, footer… toutes les refontes récentes). En
-  // réparant ce remplacement, le contenu de home-content.json + Dashboard est
-  // réapparu — et il s'est révélé OBSOLÈTE sur plusieurs champs (mise en page
-  // « masonry » au lieu de « portrait », 5 pièces au lieu de 7, adresse
-  // e-mail différente, anciens marqueurs [[...]] dans le manifeste…) :
-  // régression constatée en production, corrigée en revenant ici au
-  // comportement précédent (content.js sert sa propre version, intacte).
-  // Ne PAS réactiver ce remplacement avant d'avoir remis à niveau et vérifié
-  // home-content.json / le Dashboard champ par champ face à content.js.
-  const match = `  <script src="/bibliotheque/data.js"></script>\n  <script src="/assets/hbx-player.js"></script>\n  <script src="content.js"></script>`;
-  if (html.includes(match)) {
-    html = html.replace(
-      match,
-      `  <script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>\n` +
-      `  <script src="/assets/hbx-player.js"></script>\n  <script src="/js/content-inject.js"></script>`
-    );
+  // SURCHARGES DASHBOARD : injectées AVANT content.js, qui les fusionne par-dessus
+  // son contenu de base. Canal SÛR qui remplace l'ancien « remplacement total »
+  // (désactivé car home-content.json dérivait → régressions en prod : 5 pièces au
+  // lieu de 7, e-mail obsolète…). Ici content.js reste la source de base intacte :
+  // sans override, l'accueil est STRICTEMENT identique ; le Dashboard ne fait que
+  // surcharger les champs qu'il renseigne.
+  const overrides = buildHomeOverrides(sceneSettings(db, 'home') ?? {});
+  const CJS = '  <script src="content.js"></script>';
+  if (html.includes(CJS)) {
+    html = html.replace(CJS, `  <script>window.SITE_CONTENT_OVERRIDES=${json(overrides)};</script>\n${CJS}`);
   }
 
   // ── Repli positionnel (galerie à plat) ──

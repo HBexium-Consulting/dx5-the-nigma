@@ -116,6 +116,25 @@ window.SITE_CONTENT = {
   ]
 };
 
+/* ───────────────────────────────────────────────────────────
+   SURCHARGES DASHBOARD (window.SITE_CONTENT_OVERRIDES, injecté par le serveur
+   AVANT ce script). Repli TOTAL : sans override, le contenu de base ci-dessus
+   est servi tel quel → accueil strictement identique. Fusion profonde ; un
+   tableau fourni remplace entièrement le tableau de base (ex. « Pièces »).
+   ─────────────────────────────────────────────────────────── */
+(function (ov) {
+  if (!ov || typeof ov !== 'object') return;
+  (function merge(base, o) {
+    for (const k in o) {
+      const v = o[k];
+      if (v === null || v === undefined) continue;
+      if (Array.isArray(v)) base[k] = v;
+      else if (typeof v === 'object' && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) merge(base[k], v);
+      else base[k] = v;
+    }
+  })(window.SITE_CONTENT, ov);
+})(window.SITE_CONTENT_OVERRIDES);
+
 /* ═══════════════════════════════════════════════════════════
    INJECTION — NE PAS MODIFIER (remplit le DOM avant app.js)
    ═══════════════════════════════════════════════════════════ */
