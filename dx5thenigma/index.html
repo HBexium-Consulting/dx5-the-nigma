@@ -48,26 +48,11 @@
     .footer-name { font-size: clamp(26px, 11.2vw, 60px); }
   }
 
-  /* ── « Trois mots, un code » : bande de contraste, teintée nuit (dark) ou
-     chaleureuse or/crème (light) — toujours « comme la bibliothèque » de SON thème. ── */
-  html[data-theme="dark"] .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #070b14 50.3%); }
-  html[data-theme="dark"] .band .from-lime { background: linear-gradient(to bottom right, #070b14 49.7%, transparent 50.3%); }
-  html[data-theme="dark"] .s-motto .pin {
-    background:
-      radial-gradient(900px 480px at 78% 12%, rgba(76, 194, 255, 0.12), transparent 60%),
-      radial-gradient(700px 420px at 14% 86%, rgba(76, 194, 255, 0.07), transparent 65%),
-      #070b14;
-  }
-  html[data-theme="light"] .band .to-lime   { background: linear-gradient(to bottom right, transparent 49.7%, #efe7d4 50.3%); }
-  html[data-theme="light"] .band .from-lime { background: linear-gradient(to bottom right, #efe7d4 49.7%, transparent 50.3%); }
-  html[data-theme="light"] .s-motto .pin {
-    background:
-      radial-gradient(900px 480px at 78% 12%, rgba(216, 35, 31, 0.08), transparent 60%),
-      radial-gradient(700px 420px at 14% 86%, rgba(232, 199, 106, 0.22), transparent 65%),
-      #efe7d4;
-  }
-  html[data-theme="dark"] .s-motto .motto-kicker, html[data-theme="dark"] .s-motto .motto-hint { color: #8da0bf; }
-  html[data-theme="light"] .s-motto .motto-kicker, html[data-theme="light"] .s-motto .motto-hint { color: #6b6f76; }
+  /* ── « Trois mots, un code » : écran uniforme (noir en sombre, blanc en
+     clair), comme toutes les autres scènes — plus de teinte bleue/rouge/or. ── */
+  .band .to-lime, .band .from-lime { background: var(--bone); }
+  .s-motto .pin { background: var(--bone); }
+  .s-motto .motto-kicker, .s-motto .motto-hint { color: var(--ash); }
   .s-motto .mw { color: #e23b36; }
 
   /* ── écritures : var(--ink) suit le thème (blanc en nuit, encre en clair) ;
@@ -90,9 +75,11 @@
   /* « LE DOSSIER » : rouge et un peu plus grand */
   .coll-head > p.mono.ash:first-child { color: #e23b36; font-size: 15px; letter-spacing: 0.2em; }
 
-  /* motto : Authentique + Engagé suivent l'encre, Créatif en rouge */
-  .s-motto .mw:nth-child(1), .s-motto .mw:nth-child(3) { color: var(--ink); }
-  .s-motto .mw:nth-child(2) { color: #e23b36; }
+  /* motto : Authentique + Engagé suivent l'encre, Créatif en rouge.
+     (.mw est toujours le 1er enfant de SON .motto-pair — :nth-child sur .mw
+     lui-même ne distingue donc jamais les 3 mots : on cible .motto-pair.) */
+  .motto-pair:nth-child(1) .mw, .motto-pair:nth-child(3) .mw { color: var(--ink); }
+  .motto-pair:nth-child(2) .mw { color: #e23b36; }
 
   /* guillemet de fermeture, en bas à gauche du témoignage */
   .q-stack { position: relative; }
