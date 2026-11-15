@@ -48,16 +48,28 @@ export function renderHome(db: DB): string {
   html = html.replace('content="Site généré depuis le template Site Immersif."', `content="${esc(desc)}"`);
   html = html.replace('href="bibliotheque/"', 'href="/bibliotheque/"');
 
-  // Injection du contenu (SITE_CONTENT) AVANT le remplacement des images : ainsi
-  // le JSON embarqué est aussi balayé, et content-inject.js pose des URLs Dashboard.
-  // Remplacements INDÉPENDANTS (pas un bloc de 3 lignes consécutives) : un script
-  // ajouté entre-temps (ex. floating-cta.js) ne doit jamais faire échouer ce
-  // remplacement en silence — c'était le cas avant ce correctif.
-  html = html.replace(
-    '<script src="/bibliotheque/data.js"></script>',
-    `<script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>`
-  );
-  html = html.replace('<script src="content.js"></script>', '<script src="/js/content-inject.js"></script>');
+  // ⚠️ INJECTION DE window.SITE_CONTENT VOLONTAIREMENT INACTIVE ICI.
+  // Elle échouait silencieusement depuis l'ajout de floating-cta.js (un script
+  // supplémentaire cassait le remplacement texte-à-texte visé) : l'accueil
+  // tournait donc sur le contenu codé en dur dans content.js — qui s'est
+  // trouvé être la version À JOUR (mise en page portrait des pièces à
+  // conviction, manifeste, footer… toutes les refontes récentes). En
+  // réparant ce remplacement, le contenu de home-content.json + Dashboard est
+  // réapparu — et il s'est révélé OBSOLÈTE sur plusieurs champs (mise en page
+  // « masonry » au lieu de « portrait », 5 pièces au lieu de 7, adresse
+  // e-mail différente, anciens marqueurs [[...]] dans le manifeste…) :
+  // régression constatée en production, corrigée en revenant ici au
+  // comportement précédent (content.js sert sa propre version, intacte).
+  // Ne PAS réactiver ce remplacement avant d'avoir remis à niveau et vérifié
+  // home-content.json / le Dashboard champ par champ face à content.js.
+  const match = `  <script src="/bibliotheque/data.js"></script>\n  <script src="/assets/hbx-player.js"></script>\n  <script src="content.js"></script>`;
+  if (html.includes(match)) {
+    html = html.replace(
+      match,
+      `  <script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>\n` +
+      `  <script src="/assets/hbx-player.js"></script>\n  <script src="/js/content-inject.js"></script>`
+    );
+  }
 
   // ── Repli positionnel (galerie à plat) ──
   // Pour les images ENCORE locales : markup brut et champs non couverts par une
