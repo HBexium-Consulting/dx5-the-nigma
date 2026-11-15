@@ -218,8 +218,12 @@ html.js .rv.in { opacity: 1; transform: none; }
   .top-nav { gap: 14px; }
 }
 @media (max-width: 800px) {
-  /* téléphone et petite tablette : la navigation se verse dans PLUS ▾ */
-  .top-nav { display: none; }
+  /* téléphone et petite tablette : la navigation se verse dans PLUS ▾ —
+     seuls les liens directs se masquent ; .nav-sub (qui porte le bouton
+     PLUS ▾ lui-même) doit rester visible, sinon plus aucun moyen de
+     l'ouvrir (bug constaté sur toutes les pages intérieures, pas
+     seulement l'espace fans). */
+  .top-nav > a.nav-link { display: none; }
   .nav-menu .m-only { display: block; }
 }
 
