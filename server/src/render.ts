@@ -33,17 +33,23 @@ function applyHomeOverrides(base: any, d: any): any {
 function buildHomeOverrides(d: any): any {
   const o: any = {};
   const str = (v: unknown) => typeof v === 'string' && v.trim() !== '';
-  // Pièces à conviction (« Le dossier ») : liste complète pilotée par le Dashboard.
-  // Chaque pièce = { img, title, meta }. Un tableau fourni remplace celui de base.
+  // Section « Le dossier » / Pièces à conviction (bloc artist_proof du Dashboard).
+  const proof: any = {};
+  if (str(d.proof_kicker)) proof.kicker = d.proof_kicker;
+  if (str(d.proof_title)) proof.title = d.proof_title;
+  if (str(d.proof_sub)) proof.sub = d.proof_sub;
+  if (str(d.proof_meta)) proof.meta = d.proof_meta;
+  // Pièces : liste complète { img, title, meta }. Un tableau fourni remplace celui de base.
   if (Array.isArray(d.proof_projects) && d.proof_projects.length) {
     const projects = d.proof_projects
       .map((p: any) => ({ img: p.img, title: p.title, meta: p.meta }))
       .filter((p: any) => str(p.img) || str(p.title));
-    if (projects.length) o.proof = { projects };
+    if (projects.length) proof.projects = projects;
   }
-  // NB : les champs texte scalaires (kicker, copyright, e-mail, footer…) seront
-  // ajoutés ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte
-  // pas de valeurs périmées (sinon elles surchargeraient l'accueil → régression).
+  if (Object.keys(proof).length) o.proof = proof;
+  // NB : les autres champs texte scalaires (brand, contact, footer…) seront ajoutés
+  // ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte pas de
+  // valeurs périmées (sinon elles surchargeraient l'accueil → régression).
   return o;
 }
 
