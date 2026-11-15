@@ -625,6 +625,24 @@
   }, 300));
   window.__paintManifestoKeywords = paintManifestoKeywords;
 
+  /* Logo vidéo (chargeur + pied de page) : l'attribut autoplay suffit sur
+     desktop, mais certains navigateurs mobiles (économie d'énergie, mode
+     données réduites, retour d'un onglet en arrière-plan) l'ignorent ou la
+     mettent en pause sans la relancer. On force la lecture par script —
+     plus fiable que l'attribut seul — et on la relance si le navigateur
+     l'a mise en pause ou si la page redevient visible. */
+  function keepLogoVideosPlaying() {
+    document.querySelectorAll('video.logo-video').forEach((v) => {
+      if (v.paused) v.play().catch(() => {});
+    });
+  }
+  document.querySelectorAll('video.logo-video').forEach((v) => {
+    v.addEventListener('pause', () => { if (!document.hidden) v.play().catch(() => {}); });
+    v.addEventListener('canplay', () => v.play().catch(() => {}), { once: true });
+  });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) keepLogoVideosPlaying(); });
+  keepLogoVideosPlaying();
+
   /* Sous-menu MENU ▾ : ouverture, clic hors zone, Échap */
   (() => {
     const more = document.getElementById('dockMore'), menu = document.getElementById('dockMenu');
