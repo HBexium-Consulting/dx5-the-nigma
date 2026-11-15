@@ -117,30 +117,36 @@
     root.querySelectorAll('h1, h2, .kicker, [data-scramble]').forEach((h) => hio.observe(h));
   }
 
-  /* ───── formulaires & porte pro (délégués : survivent aux swaps) ───── */
+  /* ───── formulaires (délégués : survivent aux swaps) ─────
+     Soumission réelle vers le serveur (POST JSON) — remplace l'ancien
+     comportement qui affichait un faux succès sans jamais rien envoyer. */
+  const FORM_ENDPOINTS = { bookingForm: '/booking', contactForm: '/contact' };
   document.addEventListener('submit', (e) => {
     const f = e.target;
-    if (f.id === 'gateForm') {
-      e.preventDefault();
-      const v = (document.getElementById('gateCode') || {}).value || '';
-      if (v.trim().toUpperCase() === 'DX5') { sessionStorage.setItem('dx5pro', '1'); proReveal(); }
-      else document.getElementById('gateErr')?.classList.remove('hidden');
-    }
-    if (f.id === 'bookingForm') { e.preventDefault(); document.getElementById('bookingOk')?.classList.remove('hidden'); }
-    if (f.id === 'contactForm') { e.preventDefault(); document.getElementById('contactOk')?.classList.remove('hidden'); }
+    const url = FORM_ENDPOINTS[f.id];
+    if (!url) return;
+    e.preventDefault();
+    const prefix = f.id === 'bookingForm' ? 'booking' : 'contact';
+    const okEl = document.getElementById(prefix + 'Ok');
+    const errEl = document.getElementById(prefix + 'Err');
+    errEl?.classList.add('hidden');
+    const data = Object.fromEntries(new FormData(f).entries());
+    const btn = f.querySelector('button[type="submit"]');
+    if (btn) btn.disabled = true;
+    fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(async (res) => {
+        if (!res.ok) throw new Error();
+        okEl?.classList.remove('hidden');
+        f.reset();
+      })
+      .catch(() => errEl?.classList.remove('hidden'))
+      .finally(() => { if (btn) btn.disabled = false; });
   });
-  function proReveal() {
-    const gate = document.getElementById('gate'), content = document.getElementById('proContent');
-    if (gate && content && sessionStorage.getItem('dx5pro') === '1') {
-      gate.classList.add('hidden'); content.classList.remove('hidden');
-    }
-  }
 
   /* ───── initialisation d'une page (chargement dur OU swap) ───── */
   function initPage() {
     mode = document.documentElement.classList.contains('is-bib') ? 'bib' : 'pg';
     if (reduced) ring(0);
-    proReveal();
     if (window.initBib && mode === 'bib') window.initBib();   // construire AVANT d'animer
     animate(document.querySelector('main') || document.body);
   }

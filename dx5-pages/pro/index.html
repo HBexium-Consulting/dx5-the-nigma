@@ -47,24 +47,13 @@
 
 <main>
   <div class="page-head">
-    <span class="mono kicker" data-hbx="pro.span.0">ACCÈS RESTREINT</span>
+    <span class="mono kicker" data-hbx="pro.span.0">RÉSERVER L’ARTISTE</span>
     <h1 data-hbx="pro.h1.1">Le passage en <em>coulisses.</em></h1>
     <p class="lead" data-hbx="pro.p.2">Presse, programmateurs, partenaires : dossier de presse, fiche technique
-    et demande de booking. L’accès s’ouvre avec un code.</p>
+    et demande de booking.</p>
   </div>
 
-  <section id="gate">
-    <form id="gateForm">
-      <label><span data-i18n="pro.lblAccessCode">CODE D’ACCÈS</span>
-        <input type="password" id="gateCode" autocomplete="off" placeholder="•••" required>
-      </label>
-      <div><button class="btn" type="submit" data-i18n="pro.unlock">DÉVERROUILLER</button></div>
-      <p class="form-note" data-hbx="pro.p.3">ACCÈS RÉSERVÉ AUX PROFESSIONNELS — CODE SUR DEMANDE : DX5THENIGMA@GMAIL.COM</p>
-      <p class="ok-msg hidden" id="gateErr" style="color:var(--red)" data-hbx="pro.p.4">CODE REFUSÉ — RÉESSAYEZ.</p>
-    </form>
-  </section>
-
-  <section id="proContent" class="hidden">
+  <section id="proContent">
     <h2 data-hbx="pro.h2.5">Le dossier professionnel</h2>
     <div class="cards">
       <div class="card"><h3 data-hbx="pro.h3.6">Dossier de presse</h3><span class="mono ash" data-hbx="pro.span.7">PDF</span>
@@ -102,6 +91,7 @@
       <label><span data-i18n="form.project">VOTRE PROJET</span> <textarea name="message" rows="4"></textarea></label>
       <div><button class="btn" type="submit" data-i18n="form.sendRequest">ENVOYER LA DEMANDE</button></div>
       <p class="ok-msg hidden" id="bookingOk" data-hbx="pro.p.17">DEMANDE ENREGISTRÉE — RÉPONSE SOUS 24 H.</p>
+      <p class="ok-msg hidden" id="bookingErr" style="color:var(--red)">UNE ERREUR EST SURVENUE — RÉESSAYEZ.</p>
     </form>
   </section>
 
