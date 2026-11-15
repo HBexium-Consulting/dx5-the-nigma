@@ -65,7 +65,6 @@
   .cta-oval path { stroke: #d8231f; }
   .final-text .fs { color: #e23b36; }             /* phrases « Pas de… » en rouge */
   .final-text .fs .kw { color: var(--ink); }      /* posture / formule / filtre */
-  .pill-svg path { stroke: #d8231f; }
   .q-glyph { color: #d8231f; }
   .q-text .hot { color: #e23b36; }                /* « une cérémonie officielle en concert » */
   .q-fig { color: #e23b36; }
@@ -122,6 +121,11 @@
   .dock-wordmark { display: inline-flex; align-items: center; }
   .dock-wordmark .brand-logo { height: 38px; filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.6)); }
   @media (max-width: 760px) { .dock-wordmark .brand-logo { height: 26px; } }
+
+  /* « LE DOSSIER / Pièces à conviction » : écran uniforme, comme les autres
+     scènes — var(--white) est une teinte « surface élevée » (très légèrement
+     chaude/rougeâtre), pas le noir uni attendu ici. */
+  .collection { background: var(--bone); }
 
   /* ══════════ MANIFESTE · photo à gauche, texte à droite ══════════ */
   .fill-row { display: flex; align-items: center; gap: clamp(28px, 5vw, 72px); width: min(1180px, 88vw); }
@@ -486,7 +490,7 @@
           <span class="fs" id="fs1" data-i18n="home.objections.0">Pas de décor.</span>
           <span class="fs" id="fs2" data-i18n="home.objections.1">Pas de poses.</span>
           <span class="fs" id="fs3" data-i18n="home.objections.2">Pas de filtres.</span><br>
-          <span class="fs" id="fs4"><span id="objFinale" data-i18n="home.objections.finale">Juste vous,</span> <span class="pill" id="pillPhrase"><span id="objPill" data-i18n="home.objections.pill">en vrai.</span><svg class="pill-svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path id="pillPath" d="M50,6 C88,4 98,22 97,50 C96,82 76,96 49,95 C16,94 3,76 4,48 C5,18 20,7 50,6 Z"/></svg></span></span>
+          <span class="fs" id="fs4"><span id="objFinale" data-i18n="home.objections.finale">Juste vous,</span> <span class="pill" id="pillPhrase"><span id="objPill" data-i18n="home.objections.pill">en vrai.</span></span></span>
         </p>
 
         <!-- réserve d'images pour la traînée sous la souris -->

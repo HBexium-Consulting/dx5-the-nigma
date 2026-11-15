@@ -556,11 +556,9 @@
 
   /* ─── SCÈNE 6 · FINALE ─── */
   const fsEls = [$('#fs1'), $('#fs2'), $('#fs3'), $('#fs4')];
-  const pillDraw = makeDraw($('#pillPath'));
 
   addScene('.s-final', (p) => {
     [0.08, 0.2, 0.34, 0.52].forEach((th, i) => fsEls[i].classList.toggle('on', p > th));
-    pillDraw(1 - seg(p, 0.56, 0.72));
   });
 
   /* traînée d'images sous la souris (comme l'original) :
