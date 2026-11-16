@@ -60,6 +60,17 @@ function buildHomeOverrides(d: any): any {
   if (str(d.testimonial_quote)) testimonial.quote = d.testimonial_quote;
   if (str(d.testimonial_author)) testimonial.author = d.testimonial_author;
   if (Object.keys(testimonial).length) o.testimonial = testimonial;
+  // Section « Juste le texte, brut » (bloc artist_objections) : phrases + chute + pastille.
+  const objections: any = {};
+  if (Array.isArray(d.objections_items) && d.objections_items.length) objections.items = d.objections_items.filter((x: any) => str(x));
+  if (str(d.objections_finale)) objections.finale = d.objections_finale;
+  if (str(d.objections_pill)) objections.pill = d.objections_pill;
+  if (Object.keys(objections).length) o.objections = objections;
+  // Traîne d'images du bas (« grande dérive ») : liste d'URLs. Vide = traîne de base conservée.
+  if (Array.isArray(d.trail) && d.trail.length) {
+    const trail = d.trail.filter((u: any) => str(u));
+    if (trail.length) o.trail = trail;
+  }
   // NB : les autres champs texte scalaires (brand, contact, footer…) seront ajoutés
   // ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte pas de
   // valeurs périmées (sinon elles surchargeraient l'accueil → régression).
