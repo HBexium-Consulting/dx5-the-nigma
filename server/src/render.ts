@@ -47,6 +47,19 @@ function buildHomeOverrides(d: any): any {
     if (projects.length) proof.projects = projects;
   }
   if (Object.keys(proof).length) o.proof = proof;
+  // Manifeste (« Depuis 2007… ») : texte + photo (bloc artist_manifesto du Dashboard).
+  const manifesto: any = {};
+  if (str(d.manifesto_text)) manifesto.text = d.manifesto_text;
+  if (str(d.manifesto_image)) manifesto.image = d.manifesto_image;
+  if (Object.keys(manifesto).length) o.manifesto = manifesto;
+  // Témoignage (bloc artist_testimonial) : citation + chiffre-clé + source.
+  const testimonial: any = {};
+  if (str(d.testimonial_kicker)) testimonial.kicker = d.testimonial_kicker;
+  if (str(d.testimonial_figure)) testimonial.figure = d.testimonial_figure;
+  if (str(d.testimonial_unit)) testimonial.unit = d.testimonial_unit;
+  if (str(d.testimonial_quote)) testimonial.quote = d.testimonial_quote;
+  if (str(d.testimonial_author)) testimonial.author = d.testimonial_author;
+  if (Object.keys(testimonial).length) o.testimonial = testimonial;
   // NB : les autres champs texte scalaires (brand, contact, footer…) seront ajoutés
   // ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte pas de
   // valeurs périmées (sinon elles surchargeraient l'accueil → régression).
