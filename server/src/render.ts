@@ -71,6 +71,17 @@ function buildHomeOverrides(d: any): any {
     const trail = d.trail.filter((u: any) => str(u));
     if (trail.length) o.trail = trail;
   }
+  // Hero / accroche (bloc artist_hook) : 3 lignes + image de fond + vignettes flottantes.
+  const hook: any = {};
+  if (str(d.hook_line1)) hook.line1 = d.hook_line1;
+  if (str(d.hook_line2a)) hook.line2a = d.hook_line2a;
+  if (str(d.hook_line2b)) hook.line2b = d.hook_line2b;
+  if (str(d.hook_image)) hook.image = d.hook_image;
+  if (Array.isArray(d.hook_floaters) && d.hook_floaters.length) {
+    const fl = d.hook_floaters.filter((u: any) => str(u));
+    if (fl.length) hook.floaters = fl;
+  }
+  if (Object.keys(hook).length) o.hook = hook;
   // NB : les autres champs texte scalaires (brand, contact, footer…) seront ajoutés
   // ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte pas de
   // valeurs périmées (sinon elles surchargeraient l'accueil → régression).
