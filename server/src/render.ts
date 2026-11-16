@@ -82,6 +82,22 @@ function buildHomeOverrides(d: any): any {
     if (fl.length) hook.floaters = fl;
   }
   if (Object.keys(hook).length) o.hook = hook;
+  // Décryptage (bloc artist_decrypt) : devise « 3 mots, un code » + intro « Une énigme, 3 clés ».
+  const motto: any = {};
+  if (str(d.motto_kicker)) motto.kicker = d.motto_kicker;
+  if (Array.isArray(d.motto_words) && d.motto_words.length) {
+    const words = d.motto_words
+      .map((w: any) => ({ word: w?.word, hint: w?.hint }))
+      .filter((w: any) => str(w.word) || str(w.hint));
+    if (words.length) motto.words = words;
+  }
+  if (Object.keys(motto).length) o.motto = motto;
+  const universes: any = {};
+  if (str(d.universes_introA)) universes.introA = d.universes_introA;
+  if (str(d.universes_introB)) universes.introB = d.universes_introB;
+  if (str(d.universes_introC)) universes.introC = d.universes_introC;
+  if (str(d.universes_cta)) universes.cta = d.universes_cta;
+  if (Object.keys(universes).length) o.universes = universes;
   // NB : les autres champs texte scalaires (brand, contact, footer…) seront ajoutés
   // ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte pas de
   // valeurs périmées (sinon elles surchargeraient l'accueil → régression).
