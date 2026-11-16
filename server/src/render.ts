@@ -98,9 +98,38 @@ function buildHomeOverrides(d: any): any {
   if (str(d.universes_introC)) universes.introC = d.universes_introC;
   if (str(d.universes_cta)) universes.cta = d.universes_cta;
   if (Object.keys(universes).length) o.universes = universes;
-  // NB : les autres champs texte scalaires (brand, contact, footer…) seront ajoutés
-  // ici dans un 2ᵉ temps, APRÈS vérification que la scène `home` ne porte pas de
-  // valeurs périmées (sinon elles surchargeraient l'accueil → régression).
+  // Les 3 clés (bloc artist_keys → scene.blocks) : name/desc + meta auto « CLÉ — 0N ».
+  if (Array.isArray(d.blocks) && d.blocks.length) {
+    const items = d.blocks
+      .map((b: any, i: number) => ({ meta: `CLÉ — ${String(i + 1).padStart(2, '0')}`, name: b?.title, desc: b?.text }))
+      .filter((it: any) => str(it.name) || str(it.desc));
+    if (items.length) (o.universes ??= {}).items = items;
+  }
+  // Marque : sur-titre (artist_hero) + copyright/signature/réseaux (artist_footer).
+  const brand: any = {};
+  if (str(d.kicker)) brand.kicker = d.kicker;
+  if (str(d.copyright)) brand.copyright = d.copyright;
+  if (str(d.signature)) brand.signature = d.signature;
+  if (Array.isArray(d.socials) && d.socials.length) {
+    const socials = d.socials
+      .map((s: any) => ({ label: s?.label, url: s?.url }))
+      .filter((s: any) => str(s.label) && str(s.url));
+    if (socials.length) brand.socials = socials;
+  }
+  if (Object.keys(brand).length) o.brand = brand;
+  // Contact / pied (bloc artist_footer).
+  const contact: any = {};
+  if (str(d.footer_kicker)) contact.kicker = d.footer_kicker;
+  if (str(d.contact_email)) contact.email = d.contact_email;
+  if (str(d.footer_reassurance)) contact.reassurance = d.footer_reassurance;
+  if (Object.keys(contact).length) o.contact = contact;
+  // Positionnement (tagline) + libellés de navigation (bloc artist_footer étendu).
+  if (str(d.positioning)) o.positioning = d.positioning;
+  const nav: any = {};
+  if (str(d.nav_proof)) nav.proof = d.nav_proof;
+  if (str(d.nav_universes)) nav.universes = d.nav_universes;
+  if (str(d.nav_cta)) nav.cta = d.nav_cta;
+  if (Object.keys(nav).length) o.nav = nav;
   return o;
 }
 
