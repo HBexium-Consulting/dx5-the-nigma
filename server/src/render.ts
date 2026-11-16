@@ -59,6 +59,7 @@ function buildHomeOverrides(d: any): any {
   if (str(d.testimonial_unit)) testimonial.unit = d.testimonial_unit;
   if (str(d.testimonial_quote)) testimonial.quote = d.testimonial_quote;
   if (str(d.testimonial_author)) testimonial.author = d.testimonial_author;
+  if (str(d.testimonial_image)) testimonial.image = d.testimonial_image;
   if (Object.keys(testimonial).length) o.testimonial = testimonial;
   // Section « Juste le texte, brut » (bloc artist_objections) : phrases + chute + pastille.
   const objections: any = {};
