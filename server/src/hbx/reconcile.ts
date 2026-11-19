@@ -1,6 +1,6 @@
 import type { DB } from '../db.ts';
 import { hbxGet } from './client.ts';
-import { pullEntity, softDelete, refreshScenes, refreshVideos } from './sync.ts';
+import { pullEntity, softDelete, refreshScenes, refreshVideos, refreshSettings, refreshMedia } from './sync.ts';
 
 /** §4.1 règle n°3 : toutes les 15 min, rattraper les changements. On stocke
  *  server_time comme prochain `since`, jamais notre horloge (§4.2). 410 → resync. */
@@ -31,6 +31,10 @@ export async function reconcile(db: DB): Promise<void> {
   await refreshScenes(db);
   // Idem pour les vidéos (dépublication/réordre ne passent pas toujours par un delta).
   await refreshVideos(db);
+  // Réglages publics (lien Spotify) : pas de delta dédié → on rafraîchit à chaque passage.
+  await refreshSettings(db);
+  // Galerie (médiathèque taguée page=galerie) : idem, rafraîchie à chaque passage.
+  await refreshMedia(db);
 }
 
 export async function syncFull(db: DB): Promise<void> {

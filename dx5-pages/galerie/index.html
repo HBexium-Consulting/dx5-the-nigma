@@ -129,7 +129,8 @@
 <script>
 (() => {
   const n2 = (i) => String(i).padStart(2, '0');
-  const SETS = {
+  // Repli statique (si une zone n'a pas d'images pilotées depuis le Dashboard).
+  const FALLBACK = {
     clock: Array.from({ length: 12 }, (_, i) => ({ src: `/images/clock-${n2(i + 1)}.jpg`, alt: `DX-5 The Nigma — portrait ${i + 1}` })),
     pieces: [
       { src: '/images/p-01.jpg', alt: 'Le trophée — lauréat national, 2016' },
@@ -145,7 +146,14 @@
     backstage: Array.from({ length: 10 }, (_, i) => ({ src: `/images/fl-${n2(i + 1)}.jpg`, alt: `Coulisses DX-5 The Nigma ${i + 1}` })),
   };
 
+  // Médias pilotés par le Dashboard (médiathèque, tagués page=galerie + section=zone),
+  // injectés dans window.GAL. Chaque zone : médias du Dashboard si présents, sinon repli.
+  const GAL = (window.GAL && typeof window.GAL === 'object') ? window.GAL : {};
+
   const order = ['clock', 'pieces', 'covers', 'backstage'];
+  const SETS = {};
+  order.forEach((k) => { SETS[k] = (Array.isArray(GAL[k]) && GAL[k].length) ? GAL[k] : FALLBACK[k]; });
+
   const flat = [];
   order.forEach((k) => SETS[k].forEach((item) => flat.push(item)));
 

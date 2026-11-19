@@ -31,6 +31,66 @@ export async function refreshScenes(db: DB): Promise<void> {
   }
 }
 
+/** Rafraîchit les RÉGLAGES publics (ex. lien Spotify de l'artiste) depuis
+ *  /v1/settings et les stocke dans hbx_sync_state. Le site s'en sert pour embarquer
+ *  le lecteur Spotify officiel. 404/erreur → on ne touche à rien. */
+export async function refreshSettings(db: DB): Promise<void> {
+  const res = await hbxGet('settings');
+  if (!res.ok) return;
+  const j: any = await res.json();
+  const s = j.data ?? j ?? {};
+  const spotify = typeof s.spotify_url === 'string' ? s.spotify_url : '';
+  db.prepare(
+    "INSERT INTO hbx_sync_state (key, value) VALUES ('spotify_url', ?) ON CONFLICT(key) DO UPDATE SET value = ?"
+  ).run(spotify, spotify);
+
+  // Liens d'écoute en streaming (section « Écouter en streaming » de /suivre).
+  // Clés alignées sur les marqueurs data-stream du front. Vide = plateforme masquée.
+  const streamMap: Record<string, string> = {
+    spotify: 'spotify_url',
+    apple_music: 'apple_music_url',
+    deezer: 'deezer_url',
+    audiomack: 'audiomack_url',
+    soundcloud: 'soundcloud_url',
+  };
+  const streaming: Record<string, string> = {};
+  for (const [zone, key] of Object.entries(streamMap)) {
+    const v = s[key];
+    if (typeof v === 'string' && v.trim() !== '') streaming[zone] = v.trim();
+  }
+  const sj = JSON.stringify(streaming);
+  db.prepare(
+    "INSERT INTO hbx_sync_state (key, value) VALUES ('streaming', ?) ON CONFLICT(key) DO UPDATE SET value = ?"
+  ).run(sj, sj);
+}
+
+/** Rafraîchit les médias de la GALERIE depuis /v1/media?page=galerie, groupés par
+ *  section (zone : clock/pieces/covers/backstage), stockés en JSON dans hbx_sync_state.
+ *  Le front galerie les affiche par zone (repli sur ses images statiques si vide).
+ *  404 = module library off → on ne touche à rien. */
+export async function refreshMedia(db: DB): Promise<void> {
+  const res = await hbxGet('media', { page: 'galerie' });
+  if (!res.ok) return;
+  const j: any = await res.json();
+  // Zones réelles de la page galerie. Une image taguée sans zone connue
+  // (ou sans section) retombe dans « covers » (visuels) pour rester visible.
+  const ZONES = ['clock', 'pieces', 'covers', 'backstage'];
+  const byZone: Record<string, Array<{ src: string; alt: string }>> = {};
+  for (const m of j.data ?? []) {
+    const src = m.url;
+    if (!src) continue;
+    const known = (Array.isArray(m.sections) ? m.sections : []).filter((s: string) => ZONES.includes(s));
+    const target = known.length ? known : ['covers'];
+    for (const s of target) {
+      (byZone[s] ||= []).push({ src, alt: m.alt ?? '' });
+    }
+  }
+  const json = JSON.stringify(byZone);
+  db.prepare(
+    "INSERT INTO hbx_sync_state (key, value) VALUES ('gallery', ?) ON CONFLICT(key) DO UPDATE SET value = ?"
+  ).run(json, json);
+}
+
 /** Rafraîchit TOUTES les vidéos publiées depuis la liste /v1/videos, puis retire
  *  localement celles qui n'y sont plus (dépubliées/supprimées/réordonnées). 404 =
  *  module désactivé → on ne touche à rien. */

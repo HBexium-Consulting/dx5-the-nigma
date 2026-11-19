@@ -64,12 +64,39 @@
 
   <h2 data-hbx="suivre.h2.24">Écouter en streaming</h2>
   <div class="cards">
-    <div class="card"><h3 data-hbx="suivre.h3.25">Spotify</h3><span class="mono ash" data-hbx="suivre.span.26">PROFIL</span><p data-hbx="suivre.p.27">La musique en streaming.</p><p style="margin-top:12px" data-hbx="suivre.p.28"><a class="btn ghost" href="https://open.spotify.com/user/5saceswrlhrssbuzh82k0n6uw" target="_blank" rel="noopener">ÉCOUTER ↗</a></p></div>
-    <div class="card"><h3 data-hbx="suivre.h3.29">Audiomack</h3><span class="mono ash" data-hbx="suivre.span.30">DX5THENIGMA</span><p data-hbx="suivre.p.31">Les sorties, en écoute libre.</p><p style="margin-top:12px" data-hbx="suivre.p.32"><a class="btn ghost" href="https://audiomack.com/dx5thenigma" target="_blank" rel="noopener">ÉCOUTER ↗</a></p></div>
-    <div class="card"><h3 data-hbx="suivre.h3.33">SoundCloud</h3><span class="mono ash" data-hbx="suivre.span.34">DX-5 THE NIGMA</span><p data-hbx="suivre.p.35">Titres et sons bruts.</p><p style="margin-top:12px" data-hbx="suivre.p.36"><a class="btn ghost" href="https://on.soundcloud.com/c5ltMVg6FQv6gLJBMX" target="_blank" rel="noopener">ÉCOUTER ↗</a></p></div>
-    <div class="card"><h3 data-hbx="suivre.h3.37">Apple Music</h3><span class="mono ash" data-hbx="suivre.span.38">BIENTÔT</span><p data-hbx="suivre.p.39">Disponible prochainement.</p><p style="margin-top:12px" data-hbx="suivre.p.40"><button class="btn ghost" disabled>BIENTÔT</button></p></div>
-    <div class="card"><h3 data-hbx="suivre.h3.41">Deezer</h3><span class="mono ash" data-hbx="suivre.span.42">BIENTÔT</span><p data-hbx="suivre.p.43">Disponible prochainement.</p><p style="margin-top:12px" data-hbx="suivre.p.44"><button class="btn ghost" disabled>BIENTÔT</button></p></div>
+    <div class="card"><h3 data-hbx="suivre.h3.25">Spotify</h3><span class="mono ash" data-hbx="suivre.span.26">PROFIL</span><p data-hbx="suivre.p.27">La musique en streaming.</p><p style="margin-top:12px" data-hbx="suivre.p.28"><a class="btn ghost" data-stream="spotify" href="https://open.spotify.com/user/5saceswrlhrssbuzh82k0n6uw" target="_blank" rel="noopener">ÉCOUTER ↗</a></p></div>
+    <div class="card"><h3 data-hbx="suivre.h3.29">Audiomack</h3><span class="mono ash" data-hbx="suivre.span.30">DX5THENIGMA</span><p data-hbx="suivre.p.31">Les sorties, en écoute libre.</p><p style="margin-top:12px" data-hbx="suivre.p.32"><a class="btn ghost" data-stream="audiomack" href="https://audiomack.com/dx5thenigma" target="_blank" rel="noopener">ÉCOUTER ↗</a></p></div>
+    <div class="card"><h3 data-hbx="suivre.h3.33">SoundCloud</h3><span class="mono ash" data-hbx="suivre.span.34">DX-5 THE NIGMA</span><p data-hbx="suivre.p.35">Titres et sons bruts.</p><p style="margin-top:12px" data-hbx="suivre.p.36"><a class="btn ghost" data-stream="soundcloud" href="https://on.soundcloud.com/c5ltMVg6FQv6gLJBMX" target="_blank" rel="noopener">ÉCOUTER ↗</a></p></div>
+    <div class="card"><h3 data-hbx="suivre.h3.37">Apple Music</h3><span class="mono ash" data-hbx="suivre.span.38">BIENTÔT</span><p data-hbx="suivre.p.39">Disponible prochainement.</p><p style="margin-top:12px" data-hbx="suivre.p.40"><button class="btn ghost" data-stream="apple_music" disabled>BIENTÔT</button></p></div>
+    <div class="card"><h3 data-hbx="suivre.h3.41">Deezer</h3><span class="mono ash" data-hbx="suivre.span.42">BIENTÔT</span><p data-hbx="suivre.p.43">Disponible prochainement.</p><p style="margin-top:12px" data-hbx="suivre.p.44"><button class="btn ghost" data-stream="deezer" disabled>BIENTÔT</button></p></div>
   </div>
+
+  <script>
+  /* Liens d'écoute en streaming pilotés par le Dashboard (window.STREAM, injecté
+     par le serveur). Chaque élément [data-stream] : lien existant → href piloté
+     (repli sur le href d'origine si vide) ; bouton « BIENTÔT » → devient un lien
+     actif dès qu'une URL est réglée. Après DOMContentLoaded : window.STREAM et
+     page-inject.js sont déjà passés. */
+  document.addEventListener('DOMContentLoaded', function () {
+    var S = (window.STREAM && typeof window.STREAM === 'object') ? window.STREAM : {};
+    document.querySelectorAll('[data-stream]').forEach(function (el) {
+      var url = S[el.getAttribute('data-stream')];
+      if (el.tagName === 'A') {
+        if (url) el.setAttribute('href', url); // sinon : garde le href d'origine
+        return;
+      }
+      if (url) { // bouton « BIENTÔT » (Apple/Deezer) → lien actif
+        var a = document.createElement('a');
+        a.className = 'btn ghost'; a.href = url; a.target = '_blank';
+        a.rel = 'noopener'; a.textContent = 'ÉCOUTER ↗';
+        el.replaceWith(a);
+        var card = a.closest('.card');
+        var badge = card && card.querySelector('.mono.ash');
+        if (badge && /BIENT/i.test(badge.textContent || '')) badge.textContent = 'ÉCOUTER';
+      }
+    });
+  });
+  </script>
 
   <p style="margin-top:30px" data-hbx="suivre.p.45"><a class="btn" href="/contact/" data-i18n="nav.contact">UNE QUESTION ? ÉCRIVEZ-NOUS →</a></p>
 

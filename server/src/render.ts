@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import type { DB } from './db.ts';
 import { config } from './config.ts';
-import { libraryPayload, sceneSettings, sceneMedia } from './embargo.ts';
+import { sceneSettings, sceneMedia } from './embargo.ts';
 
 /** Rend l'accueil immersif en INJECTANT les données depuis la base (comme le
  *  faisait la vue serveur) : SEO réglé, contenu piloté par le Dashboard. */
@@ -27,12 +27,118 @@ function applyHomeOverrides(base: any, d: any): any {
   return c;
 }
 
+/** Construit les SURCHARGES de contenu (window.SITE_CONTENT_OVERRIDES) à partir
+ *  des champs réglés dans la scène `home` du Dashboard. Ne renvoie QUE ce qui est
+ *  renseigné → content.js garde sa valeur de base pour tout le reste (zéro régression). */
+function buildHomeOverrides(d: any): any {
+  const o: any = {};
+  const str = (v: unknown) => typeof v === 'string' && v.trim() !== '';
+  // Section « Le dossier » / Pièces à conviction (bloc artist_proof du Dashboard).
+  const proof: any = {};
+  if (str(d.proof_kicker)) proof.kicker = d.proof_kicker;
+  if (str(d.proof_title)) proof.title = d.proof_title;
+  if (str(d.proof_sub)) proof.sub = d.proof_sub;
+  if (str(d.proof_meta)) proof.meta = d.proof_meta;
+  // Pièces : liste complète { img, title, meta }. Un tableau fourni remplace celui de base.
+  if (Array.isArray(d.proof_projects) && d.proof_projects.length) {
+    const projects = d.proof_projects
+      .map((p: any) => ({ img: p.img, title: p.title, meta: p.meta }))
+      .filter((p: any) => str(p.img) || str(p.title));
+    if (projects.length) proof.projects = projects;
+  }
+  if (Object.keys(proof).length) o.proof = proof;
+  // Manifeste (« Depuis 2007… ») : texte + photo (bloc artist_manifesto du Dashboard).
+  const manifesto: any = {};
+  if (str(d.manifesto_text)) manifesto.text = d.manifesto_text;
+  if (str(d.manifesto_image)) manifesto.image = d.manifesto_image;
+  if (Object.keys(manifesto).length) o.manifesto = manifesto;
+  // Témoignage (bloc artist_testimonial) : citation + chiffre-clé + source.
+  const testimonial: any = {};
+  if (str(d.testimonial_kicker)) testimonial.kicker = d.testimonial_kicker;
+  if (str(d.testimonial_figure)) testimonial.figure = d.testimonial_figure;
+  if (str(d.testimonial_unit)) testimonial.unit = d.testimonial_unit;
+  if (str(d.testimonial_quote)) testimonial.quote = d.testimonial_quote;
+  if (str(d.testimonial_author)) testimonial.author = d.testimonial_author;
+  if (str(d.testimonial_image)) testimonial.image = d.testimonial_image;
+  if (Object.keys(testimonial).length) o.testimonial = testimonial;
+  // Section « Juste le texte, brut » (bloc artist_objections) : phrases + chute + pastille.
+  const objections: any = {};
+  if (Array.isArray(d.objections_items) && d.objections_items.length) objections.items = d.objections_items.filter((x: any) => str(x));
+  if (str(d.objections_finale)) objections.finale = d.objections_finale;
+  if (str(d.objections_pill)) objections.pill = d.objections_pill;
+  if (Object.keys(objections).length) o.objections = objections;
+  // Traîne d'images du bas (« grande dérive ») : liste d'URLs. Vide = traîne de base conservée.
+  if (Array.isArray(d.trail) && d.trail.length) {
+    const trail = d.trail.filter((u: any) => str(u));
+    if (trail.length) o.trail = trail;
+  }
+  // Hero / accroche (bloc artist_hook) : 3 lignes + image de fond + vignettes flottantes.
+  const hook: any = {};
+  if (str(d.hook_line1)) hook.line1 = d.hook_line1;
+  if (str(d.hook_line2a)) hook.line2a = d.hook_line2a;
+  if (str(d.hook_line2b)) hook.line2b = d.hook_line2b;
+  if (str(d.hook_image)) hook.image = d.hook_image;
+  if (Array.isArray(d.hook_floaters) && d.hook_floaters.length) {
+    const fl = d.hook_floaters.filter((u: any) => str(u));
+    if (fl.length) hook.floaters = fl;
+  }
+  if (Object.keys(hook).length) o.hook = hook;
+  // Décryptage (bloc artist_decrypt) : devise « 3 mots, un code » + intro « Une énigme, 3 clés ».
+  const motto: any = {};
+  if (str(d.motto_kicker)) motto.kicker = d.motto_kicker;
+  if (Array.isArray(d.motto_words) && d.motto_words.length) {
+    const words = d.motto_words
+      .map((w: any) => ({ word: w?.word, hint: w?.hint }))
+      .filter((w: any) => str(w.word) || str(w.hint));
+    if (words.length) motto.words = words;
+  }
+  if (Object.keys(motto).length) o.motto = motto;
+  const universes: any = {};
+  if (str(d.universes_introA)) universes.introA = d.universes_introA;
+  if (str(d.universes_introB)) universes.introB = d.universes_introB;
+  if (str(d.universes_introC)) universes.introC = d.universes_introC;
+  if (str(d.universes_cta)) universes.cta = d.universes_cta;
+  if (Object.keys(universes).length) o.universes = universes;
+  // Les 3 clés (bloc artist_keys → scene.blocks) : name/desc + meta auto « CLÉ — 0N ».
+  if (Array.isArray(d.blocks) && d.blocks.length) {
+    const items = d.blocks
+      .map((b: any, i: number) => ({ meta: `CLÉ — ${String(i + 1).padStart(2, '0')}`, name: b?.title, desc: b?.text }))
+      .filter((it: any) => str(it.name) || str(it.desc));
+    if (items.length) (o.universes ??= {}).items = items;
+  }
+  // Marque : sur-titre (artist_hero) + copyright/signature/réseaux (artist_footer).
+  const brand: any = {};
+  if (str(d.kicker)) brand.kicker = d.kicker;
+  if (str(d.copyright)) brand.copyright = d.copyright;
+  if (str(d.signature)) brand.signature = d.signature;
+  if (Array.isArray(d.socials) && d.socials.length) {
+    const socials = d.socials
+      .map((s: any) => ({ label: s?.label, url: s?.url }))
+      .filter((s: any) => str(s.label) && str(s.url));
+    if (socials.length) brand.socials = socials;
+  }
+  if (Object.keys(brand).length) o.brand = brand;
+  // Contact / pied (bloc artist_footer).
+  const contact: any = {};
+  if (str(d.footer_kicker)) contact.kicker = d.footer_kicker;
+  if (str(d.contact_email)) contact.email = d.contact_email;
+  if (str(d.footer_reassurance)) contact.reassurance = d.footer_reassurance;
+  if (Object.keys(contact).length) o.contact = contact;
+  // Positionnement (tagline) + libellés de navigation (bloc artist_footer étendu).
+  if (str(d.positioning)) o.positioning = d.positioning;
+  const nav: any = {};
+  if (str(d.nav_proof)) nav.proof = d.nav_proof;
+  if (str(d.nav_universes)) nav.universes = d.nav_universes;
+  if (str(d.nav_cta)) nav.cta = d.nav_cta;
+  if (Object.keys(nav).length) o.nav = nav;
+  return o;
+}
+
 export function renderHome(db: DB): string {
   let html = readFileSync(config.frontRoot + 'dx5thenigma/index.html', 'utf8');
   // Base = contenu crafté (fichier) ; surcharge = champs éditables de la scène API.
   const base = JSON.parse(readFileSync(new URL('../data/home-content.json', import.meta.url), 'utf8'));
   const content = applyHomeOverrides(base, sceneSettings(db, 'home') ?? {});
-  const lib = libraryPayload(db);
 
   // ── Placement des images PAR SECTION (zones du Dashboard) ──
   // Chaque image rangée sous une section de la médiathèque va dans SA zone du
@@ -48,27 +154,16 @@ export function renderHome(db: DB): string {
   html = html.replace('content="Site généré depuis le template Site Immersif."', `content="${esc(desc)}"`);
   html = html.replace('href="bibliotheque/"', 'href="/bibliotheque/"');
 
-  // ⚠️ INJECTION DE window.SITE_CONTENT VOLONTAIREMENT INACTIVE ICI.
-  // Elle échouait silencieusement depuis l'ajout de floating-cta.js (un script
-  // supplémentaire cassait le remplacement texte-à-texte visé) : l'accueil
-  // tournait donc sur le contenu codé en dur dans content.js — qui s'est
-  // trouvé être la version À JOUR (mise en page portrait des pièces à
-  // conviction, manifeste, footer… toutes les refontes récentes). En
-  // réparant ce remplacement, le contenu de home-content.json + Dashboard est
-  // réapparu — et il s'est révélé OBSOLÈTE sur plusieurs champs (mise en page
-  // « masonry » au lieu de « portrait », 5 pièces au lieu de 7, adresse
-  // e-mail différente, anciens marqueurs [[...]] dans le manifeste…) :
-  // régression constatée en production, corrigée en revenant ici au
-  // comportement précédent (content.js sert sa propre version, intacte).
-  // Ne PAS réactiver ce remplacement avant d'avoir remis à niveau et vérifié
-  // home-content.json / le Dashboard champ par champ face à content.js.
-  const match = `  <script src="/bibliotheque/data.js"></script>\n  <script src="/assets/hbx-player.js"></script>\n  <script src="content.js"></script>`;
-  if (html.includes(match)) {
-    html = html.replace(
-      match,
-      `  <script>window.LIB=${json(lib)};window.SITE_CONTENT=${json(content)};</script>\n` +
-      `  <script src="/assets/hbx-player.js"></script>\n  <script src="/js/content-inject.js"></script>`
-    );
+  // SURCHARGES DASHBOARD : injectées AVANT content.js, qui les fusionne par-dessus
+  // son contenu de base. Canal SÛR qui remplace l'ancien « remplacement total »
+  // (désactivé car home-content.json dérivait → régressions en prod : 5 pièces au
+  // lieu de 7, e-mail obsolète…). Ici content.js reste la source de base intacte :
+  // sans override, l'accueil est STRICTEMENT identique ; le Dashboard ne fait que
+  // surcharger les champs qu'il renseigne.
+  const overrides = buildHomeOverrides(sceneSettings(db, 'home') ?? {});
+  const CJS = '  <script src="content.js"></script>';
+  if (html.includes(CJS)) {
+    html = html.replace(CJS, `  <script>window.SITE_CONTENT_OVERRIDES=${json(overrides)};</script>\n${CJS}`);
   }
 
   // ── Repli positionnel (galerie à plat) ──

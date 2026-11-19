@@ -52,7 +52,7 @@ app.get('/', (_req, reply) => reply.type('text/html').send(renderHome(db)));
 
 // bibliothèque : HTML avec la librairie injectée (base, embargo respecté)
 app.get('/bibliotheque/', (_req, reply) =>
-  reply.type('text/html').send(injectLib(F + 'dx5-bibliotheque/index.html')));
+  reply.type('text/html').send(injectVideoSplit(injectLib(F + 'dx5-bibliotheque/index.html'))));
 
 // page « à venir » d'une sortie programmée (teaser + compte à rebours rouge)
 app.get('/a-venir/:slug', (req, reply) => {
@@ -93,13 +93,66 @@ function injectLib(path: string): string {
   return html.replace('<script src="/bibliotheque/data.js"></script>', `<script>window.LIB=${lib};</script>`);
 }
 
+// ANTI-RÉGRESSION (injection SERVEUR, survit aux redéploiements du front) :
+// répartit les vidéos par rubrique. Après le rendu de la bibliothèque, DÉPLACE
+// les vidéos de catégorie « live » de la grille « Clips officiels » vers
+// « Live & interviews » — par déplacement de nœuds (pas de re-render → la lecture
+// YouTube reste liée). Débounce (le front pose clipGrid puis liveGrid) + observer
+// (navigation SPA sans rechargement). Sans vidéo « live » : aucune modification.
+// NB : le front (app.js) répartit déjà les vidéos ; ce filet survit si le front régresse.
+function injectVideoSplit(html: string): string {
+  const tag = `<script>
+(function(){
+  var t;
+  function apply(){
+    try{
+      if(!window.LIB||!Array.isArray(window.LIB.videos))return;
+      var live={};
+      window.LIB.videos.forEach(function(v){ if(v&&v.yt&&v.category&&v.category.slug==='live')live[v.yt]=1; });
+      var cg=document.getElementById('clipGrid'),lg=document.getElementById('liveGrid');
+      if(!cg||!lg)return;
+      var move=[];
+      cg.querySelectorAll('.vid').forEach(function(vid){
+        var b=vid.querySelector('[data-id]');
+        if(b&&live[b.getAttribute('data-id')])move.push(vid);
+      });
+      if(move.length){ lg.innerHTML=''; move.forEach(function(v){ lg.appendChild(v); }); }
+    }catch(e){}
+  }
+  function schedule(){ clearTimeout(t); t=setTimeout(apply,60); }
+  function setup(){
+    var cg=document.getElementById('clipGrid'),lg=document.getElementById('liveGrid');
+    if(!cg||!lg){ setTimeout(setup,300); return; }
+    try{ var o=new MutationObserver(schedule); o.observe(cg,{childList:true}); o.observe(lg,{childList:true}); }catch(e){}
+    schedule();
+  }
+  if(document.readyState!=='loading')setup(); else document.addEventListener('DOMContentLoaded',setup);
+})();
+</script>`;
+  return html.includes('</body>') ? html.replace('</body>', tag + '\n</body>') : html + tag;
+}
+
 // Page intérieure : HTML d'origine (design INCHANGÉ) + injection des overrides du
 // Dashboard (window.PAGE_CONTENT) + le script qui les pose sur les éléments
 // marqués data-hbx. Sans override → page strictement identique à l'origine.
 function injectPage(slug: string, path: string): string {
   const html = injectLib(path);
   const pc = JSON.stringify(pageOverrides(db, slug)).replace(/</g, '\\u003c');
-  const tag = `<script>window.PAGE_CONTENT=${pc};</script>\n<script src="/assets/page-inject.js"></script>\n<script src="/assets/i18n-data.js"></script>\n<script src="/assets/i18n.js"></script>`;
+  // Galerie : images pilotées par le Dashboard (médiathèque taguée page=galerie),
+  // groupées par zone dans window.GAL. Le front retombe sur ses images statiques si vide.
+  let gal = '';
+  if (slug === 'galerie') {
+    const g = (db.prepare("SELECT value FROM hbx_sync_state WHERE key='gallery'").get() as any)?.value || '{}';
+    gal = `<script>window.GAL=${String(g).replace(/</g, '\\u003c')};</script>\n`;
+  }
+  // Suivre : liens d'écoute en streaming pilotés par le Dashboard (window.STREAM).
+  // Le front renseigne chaque lien [data-stream] ; repli sur le href en dur si vide.
+  let stream = '';
+  if (slug === 'suivre') {
+    const st = (db.prepare("SELECT value FROM hbx_sync_state WHERE key='streaming'").get() as any)?.value || '{}';
+    stream = `<script>window.STREAM=${String(st).replace(/</g, '\\u003c')};</script>\n`;
+  }
+  const tag = `${gal}${stream}<script>window.PAGE_CONTENT=${pc};</script>\n<script src="/assets/page-inject.js"></script>\n<script src="/assets/i18n-data.js"></script>\n<script src="/assets/i18n.js"></script>`;
   return html.includes('</body>') ? html.replace('</body>', tag + '\n</body>') : html + tag;
 }
 

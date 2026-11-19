@@ -92,7 +92,8 @@ window.SITE_CONTENT = {
     figure: '14',
     unit: 'pays',
     quote: 'Il a transformé une cérémonie officielle en concert : la salle entière a suivi, du premier mot au dernier.',
-    author: '30ᵉ ANNIVERSAIRE ESFAM / AUF — CLUB MILITAIRE CENTRAL, SOFIA'
+    author: '30ᵉ ANNIVERSAIRE ESFAM / AUF — CLUB MILITAIRE CENTRAL, SOFIA',
+    image: 'images/quote-photo.jpg'
   },
 
   objections: {
@@ -115,6 +116,25 @@ window.SITE_CONTENT = {
     'images/t-17.jpg', 'images/t-18.jpg', 'images/t-19.jpg', 'images/t-20.jpg'
   ]
 };
+
+/* ───────────────────────────────────────────────────────────
+   SURCHARGES DASHBOARD (window.SITE_CONTENT_OVERRIDES, injecté par le serveur
+   AVANT ce script). Repli TOTAL : sans override, le contenu de base ci-dessus
+   est servi tel quel → accueil strictement identique. Fusion profonde ; un
+   tableau fourni remplace entièrement le tableau de base (ex. « Pièces »).
+   ─────────────────────────────────────────────────────────── */
+(function (ov) {
+  if (!ov || typeof ov !== 'object') return;
+  (function merge(base, o) {
+    for (const k in o) {
+      const v = o[k];
+      if (v === null || v === undefined) continue;
+      if (Array.isArray(v)) base[k] = v;
+      else if (typeof v === 'object' && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) merge(base[k], v);
+      else base[k] = v;
+    }
+  })(window.SITE_CONTENT, ov);
+})(window.SITE_CONTENT_OVERRIDES);
 
 /* ═══════════════════════════════════════════════════════════
    INJECTION — NE PAS MODIFIER (remplit le DOM avant app.js)
@@ -232,6 +252,7 @@ window.SITE_CONTENT = {
   set('#figUnit', C.testimonial.unit || '');
   { const qt = $('#quoteText'); if (qt) qt.innerHTML = C.testimonial.quote.replace('une cérémonie officielle en concert', '<span class="hot">une cérémonie officielle en concert</span>'); }
   set('#quoteAuthor', C.testimonial.author);
+  { const qp = $('.q-photo img'); if (qp && C.testimonial.image) qp.src = C.testimonial.image; }
 
   // 9 · objections (fs4 garde sa structure fixe en HTML — le pill/svg y est dessiné
   // par app.js via un id précis ; seul le TEXTE de ses deux segments est posé ici)
