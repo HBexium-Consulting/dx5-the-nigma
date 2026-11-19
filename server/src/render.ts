@@ -131,6 +131,27 @@ function buildHomeOverrides(d: any): any {
   if (str(d.nav_universes)) nav.universes = d.nav_universes;
   if (str(d.nav_cta)) nav.cta = d.nav_cta;
   if (Object.keys(nav).length) o.nav = nav;
+  // À propos (bloc artist_about) : titre, fiche, bio, lien, photo, 3 clés, frise.
+  const about: any = {};
+  if (str(d.about_title)) about.title = d.about_title;
+  if (str(d.about_bio_short)) about.bioShort = d.about_bio_short;
+  if (str(d.about_bio_long)) about.bioLong = d.about_bio_long;
+  if (str(d.about_cta)) about.ctaText = d.about_cta;
+  if (str(d.about_photo)) about.photo = d.about_photo;
+  if (str(d.about_since)) about.sinceKicker = d.about_since;
+  if (Array.isArray(d.about_facts) && d.about_facts.length) {
+    const facts = d.about_facts.map((f: any) => ({ k: f?.k, v: f?.v })).filter((f: any) => str(f.k) || str(f.v));
+    if (facts.length) about.facts = facts;
+  }
+  if (Array.isArray(d.about_trip) && d.about_trip.length) {
+    const trip = d.about_trip.map((t: any) => ({ h: t?.h, p: t?.p })).filter((t: any) => str(t.h) || str(t.p));
+    if (trip.length) about.trip = trip;
+  }
+  if (Array.isArray(d.about_timeline) && d.about_timeline.length) {
+    const tl = d.about_timeline.map((t: any) => ({ year: t?.year, text: t?.text })).filter((t: any) => str(t.year) || str(t.text));
+    if (tl.length) about.tl = tl;
+  }
+  if (Object.keys(about).length) o.about = about;
   return o;
 }
 

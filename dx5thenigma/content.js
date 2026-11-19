@@ -96,6 +96,38 @@ window.SITE_CONTENT = {
     image: 'images/quote-photo.jpg'
   },
 
+  about: {
+    title: 'DX-5 THE NIGMA',
+    facts: [
+      { k: 'NOM DE SCÈNE', v: 'DX-5 The Nigma' },
+      { k: 'NOM RÉEL', v: 'Félix Debrosse' },
+      { k: 'ORIGINE', v: 'Port-de-Paix, Nord-Ouest — Haïti' },
+      { k: 'BASE', v: 'Port-au-Prince' },
+      { k: 'DISCIPLINES', v: 'Rap · composition · écriture' },
+      { k: 'STYLE', v: 'Rap-Cine — rap & racines vodou' },
+      { k: 'LANGUES', v: 'Créole haïtien · Français' },
+      { k: 'DÉBUTS', v: '2007 — Port-de-Paix, G-Squat' }
+    ],
+    bioShort: 'Rappeur, compositeur et arrangeur de texte, DX-5 The Nigma porte depuis Port-de-Paix une écriture qui n’a jamais quitté son pays natal.',
+    bioLong: 'Félix Debrosse est né à Port-de-Paix, dans le Nord-Ouest d’Haïti. La musique l’accompagne depuis l’enfance ; elle devient son métier en 2007, quand il fonde le groupe de rap G-Squat avec ses amis et écrit l’un des sept titres de son premier projet. En 2008, il quitte sa ville natale pour Port-au-Prince — des études universitaires d’un côté, un nouvel horizon dans la scène musicale haïtienne de l’autre. Aujourd’hui, DX-5 The Nigma est reconnu comme un artiste engagé pour la diversité culturelle et l’identité haïtienne, à travers un style qui lui est propre : le Rap-Cine.',
+    ctaText: 'Lire le parcours complet →',
+    photo: 'images/about-portrait.jpg',
+    trip: [
+      { h: 'Le mot', p: 'L’écriture vient d’abord : des textes travaillés en créole et en français, construits comme des argumentaires. La psychologie et la gestion ont laissé leur empreinte — raisonnement, structure, adresse directe à l’auditeur.' },
+      { h: 'Le tambour', p: 'Le rythme racine du vodou haïtien bat sous des productions contemporaines. C’est la colonne vertébrale de chaque titre, ce qui l’ancre.' },
+      { h: 'L’identité', p: 'Chaque titre vise le même but : faire entendre la culture haïtienne et la rendre désirable, pour la jeunesse du pays comme pour la diaspora et les publics francophones.' }
+    ],
+    sinceKicker: 'DEPUIS 2007',
+    tl: [
+      { year: '2007', text: 'Débuts professionnels à Port-de-Paix avec le groupe G-Squat ; il écrit l’un des sept titres du projet.' },
+      { year: '2008', text: 'Départ pour Port-au-Prince. Études universitaires et entrée dans la scène musicale de la capitale.' },
+      { year: '2016', text: 'Lauréat du concours national de texte et musique pour le centenaire du scoutisme en Haïti.' },
+      { year: '2020', text: 'Premier projet international avec l’ESFAM · AUF : <em>Pour l’Avenir</em>.' },
+      { year: '2024', text: 'Invité d’honneur du 30ᵉ anniversaire de l’ESFAM à Sofia, et second projet AUF.' },
+      { year: '2026', text: 'Un single, deux clips et un album de douze titres, le 18 novembre.' }
+    ]
+  },
+
   objections: {
     items: ['Pas de <span class="kw">posture</span>.', 'Pas de <span class="kw">formule</span>.', 'Pas de <span class="kw">filtre</span>.'],
     finale: 'Juste le texte,',
@@ -273,5 +305,36 @@ window.SITE_CONTENT = {
     bottom[0].textContent = C.brand.copyright;
     bottom[1].innerHTML = C.brand.socials.map((s) => `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join('&nbsp;&nbsp;&nbsp;');
     bottom[2].textContent = C.brand.signature;
+  }
+
+  // 11 · À propos (DX-5 The Nigma) — piloté par le Dashboard. Pose le contenu EN
+  // PLACE (on ne reconstruit pas les conteneurs) pour préserver les [data-i18n]
+  // → i18n reste fonctionnel (il snapshot ces valeurs). Sans override : intact.
+  if (C.about) {
+    const A = C.about;
+    if (A.title) set('.about-title', A.title);
+    if (A.sinceKicker) set('.about-kicker', A.sinceKicker);
+    if (A.bioShort) set('.about-text:not(.ash)', A.bioShort);
+    if (A.bioLong) set('.about-text.ash', A.bioLong);
+    if (A.ctaText) set('.about-cta', A.ctaText);
+    { const ap = $('.about-photo img'); if (ap && A.photo) ap.src = A.photo; }
+    if (Array.isArray(A.facts)) $$('.about-fact').forEach((el, i) => {
+      const f = A.facts[i]; if (!f) return;
+      const b = el.querySelector('b'), s = el.querySelector('span');
+      if (b && f.k != null) b.textContent = f.k;
+      if (s && f.v != null) s.textContent = f.v;
+    });
+    if (Array.isArray(A.trip)) $$('.about-trip-item').forEach((el, i) => {
+      const t = A.trip[i]; if (!t) return;
+      const h = el.querySelector('h3'), p = el.querySelector('p');
+      if (h && t.h != null) h.textContent = t.h;
+      if (p && t.p != null) p.innerHTML = t.p;
+    });
+    if (Array.isArray(A.tl)) $$('.about-tl-item').forEach((el, i) => {
+      const t = A.tl[i]; if (!t) return;
+      const b = el.querySelector('b'), s = el.querySelector('span');
+      if (b && t.year != null) b.textContent = t.year;
+      if (s && t.text != null) s.innerHTML = t.text;
+    });
   }
 })();
