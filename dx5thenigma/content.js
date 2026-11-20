@@ -96,6 +96,14 @@ window.SITE_CONTENT = {
     image: 'images/quote-photo.jpg'
   },
 
+  clock: {
+    photos: [
+      'images/clock-01.jpg', 'images/clock-02.jpg', 'images/clock-03.jpg', 'images/clock-04.jpg',
+      'images/clock-05.jpg', 'images/clock-06.jpg', 'images/clock-07.jpg', 'images/clock-08.jpg',
+      'images/clock-09.jpg', 'images/clock-10.jpg', 'images/clock-11.jpg', 'images/clock-12.jpg'
+    ]
+  },
+
   about: {
     title: 'DX-5 THE NIGMA',
     facts: [
@@ -305,6 +313,13 @@ window.SITE_CONTENT = {
     bottom[0].textContent = C.brand.copyright;
     bottom[1].innerHTML = C.brand.socials.map((s) => `<a href="${s.url}" target="_blank" rel="noopener">${s.label}</a>`).join('&nbsp;&nbsp;&nbsp;');
     bottom[2].textContent = C.brand.signature;
+  }
+
+  // Hero — HORLOGE : 12 photos du cercle d'accueil, pilotées par le Dashboard.
+  // Pose EN PLACE (on garde les <figure> et leurs positions) → aucune régression
+  // d'animation. Sans override : les 12 photos de base (= site actuel) restent.
+  if (C.clock && Array.isArray(C.clock.photos)) {
+    $$('.ch-ph img').forEach((img, i) => { const u = C.clock.photos[i]; if (u) img.src = u; });
   }
 
   // 11 · À propos (DX-5 The Nigma) — piloté par le Dashboard. Pose le contenu EN

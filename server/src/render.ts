@@ -152,6 +152,11 @@ function buildHomeOverrides(d: any): any {
     if (tl.length) about.tl = tl;
   }
   if (Object.keys(about).length) o.about = about;
+  // Horloge hero (bloc artist_clock) : liste d'URLs (jusqu'à 12), ordre = cercle.
+  if (Array.isArray(d.clock_photos)) {
+    const photos = d.clock_photos.filter((u: any) => str(u)).slice(0, 12);
+    if (photos.length) o.clock = { photos };
+  }
   return o;
 }
 
